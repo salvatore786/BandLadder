@@ -1,0 +1,47 @@
+{
+  "updatedAt": "2026-01-09T15:49:20.196Z",
+  "createdAt": "2026-01-09T15:49:20.196Z",
+  "id": "3k3mJesgRa_EXh8y1e6-G",
+  "name": "My workflow",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "de755ccc-1207-454d-aa64-5626a9a3615b",
+      "name": "Telegram Trigger",
+      "webhookId": "6b976604-6626-45ac-9cd5-664563f47cd5",
+      "credentials": {
+        "telegramApi": {
+          "id": "KmkndGu2wWocDqpQ",
+          "name": "Telegram account 3"
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "baf57048-715f-4169-9e65-d6b5ea4f9da0",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": []
+}

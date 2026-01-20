@@ -1,0 +1,290 @@
+{
+  "updatedAt": "2026-01-18T04:41:01.078Z",
+  "createdAt": "2026-01-18T03:46:24.381Z",
+  "id": "ifEegqfihQmjeuJB",
+  "name": "Daily Pulse Report",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every Day 9 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  (SELECT COUNT(*) FROM \"User\" WHERE \"createdAt\" >= CURRENT_DATE - INTERVAL '1 day' AND \"createdAt\" < CURRENT_DATE) as new_signups_yesterday,\n  (SELECT COUNT(*) FROM \"User\" WHERE \"createdAt\" >= CURRENT_DATE - INTERVAL '2 days' AND \"createdAt\" < CURRENT_DATE - INTERVAL '1 day') as new_signups_day_before,\n  (SELECT COUNT(*) FROM \"User\") as total_users;",
+        "options": {}
+      },
+      "id": "new-signups-query",
+      "name": "New Signups",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        224,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "qXQX3J4u4Qi5GW0J",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(DISTINCT \"userId\") as active_users FROM \"StudySession\" WHERE \"createdAt\" >= CURRENT_DATE - INTERVAL '1 day' AND \"createdAt\" < CURRENT_DATE;",
+        "options": {}
+      },
+      "id": "active-users-query",
+      "name": "Active Users",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        448,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "qXQX3J4u4Qi5GW0J",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) as total_mock_tests FROM \"FullMockTestResult\";",
+        "options": {}
+      },
+      "id": "mock-tests-query",
+      "name": "Mock Tests",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        672,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "qXQX3J4u4Qi5GW0J",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get data from all queries\nconst signupsData = $('New Signups').first().json;\nconst newSignups = signupsData.new_signups_yesterday || 0;\nconst dayBefore = signupsData.new_signups_day_before || 0;\nconst totalUsers = signupsData.total_users || 0;\n\n// Calculate growth rate\nlet growthRate = 0;\nif (dayBefore > 0) {\n  growthRate = ((newSignups - dayBefore) / dayBefore * 100).toFixed(1);\n}\n\nconst activeUsers = $('Active Users').first().json.active_users || 0;\nconst mockTests = $('Mock Tests').first().json.total_mock_tests || 0;\n\n// Get today's date\nconst today = new Date().toISOString().split('T')[0];\n\nreturn {\n  json: {\n    date: today,\n    new_signups: newSignups,\n    growth_rate: growthRate + '%',\n    total_users: totalUsers,\n    active_users: activeUsers,\n    mock_tests_completed: mockTests\n  }\n};"
+      },
+      "id": "format-report",
+      "name": "Format Daily Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  name,\n  email,\n  phone,\n  country,\n  \"createdAt\"::date as signup_date,\n  \"lastLogin\"::date as last_login,\n  DATE_PART('day', NOW() - \"lastLogin\")::int as days_inactive,\n  points,\n  streak,\n  level,\n  \"targetBandScore\" as target_score,\n  \"isSubscriptionActive\" as is_subscribed\nFROM \"User\" \nWHERE \"lastLogin\" < NOW() - INTERVAL '30 days' \nAND \"lastLogin\" IS NOT NULL \nORDER BY \"lastLogin\" ASC;",
+        "options": {}
+      },
+      "id": "churn-risk-query",
+      "name": "Get Churn Users",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        880,
+        208
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "qXQX3J4u4Qi5GW0J",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NULGcs81zf18UOEnGMB6sacHUWSCO-lD7gkGqexCkDg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Daily Metrics",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "sheets-daily",
+      "name": "Add to Daily Metrics",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1104,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "g60gNg7utS2L2bZL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NULGcs81zf18UOEnGMB6sacHUWSCO-lD7gkGqexCkDg",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Churn Users",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "sheets-churn",
+      "name": "Add to Churn Users",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1104,
+        208
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "g60gNg7utS2L2bZL",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every Day 9 AM": {
+      "main": [
+        [
+          {
+            "node": "New Signups",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Signups": {
+      "main": [
+        [
+          {
+            "node": "Active Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Active Users": {
+      "main": [
+        [
+          {
+            "node": "Mock Tests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Tests": {
+      "main": [
+        [
+          {
+            "node": "Format Daily Metrics",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Churn Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Daily Metrics": {
+      "main": [
+        [
+          {
+            "node": "Add to Daily Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Churn Users": {
+      "main": [
+        [
+          {
+            "node": "Add to Churn Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "30cab422-86cf-429c-a8bb-2f97fbbca1a7",
+  "activeVersionId": null,
+  "versionCounter": 8,
+  "triggerCount": 0,
+  "tags": []
+}

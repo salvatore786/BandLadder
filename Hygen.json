@@ -1,0 +1,297 @@
+{
+  "updatedAt": "2026-01-14T08:20:19.547Z",
+  "createdAt": "2026-01-11T09:57:20.546Z",
+  "id": "LDxzfh2QEksSpTI15d8jg",
+  "name": "Hygen",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            },
+            {
+              "triggerAtHour": 14
+            },
+            {
+              "triggerAtHour": 19
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2fe9375b-68b1-4ab5-b5da-c7c50908454c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v1/video_status.get",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "video_id",
+              "value": "={{ $json.data.video_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1008,
+        0
+      ],
+      "id": "37112d19-8d76-46ae-af29-1901f772ed53",
+      "name": "get video",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "7Pv0RCkAG2CSQrsf",
+          "name": "Hygen api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_inputs\": [\n    {\n      \"character\": {\n        \"type\": \"avatar\",\n        \"avatar_id\": \"15141bd577c043cea1d58609abf55a74\",\n        \"avatar_style\": \"normal\"\n      },\n      \"voice\": {\n        \"type\": \"text\",\n        \"input_text\": {{ JSON.stringify($json.output) }},\n        \"voice_id\": \"758fe6b6c42c409eb0367d31df091022\",\n        \"speed\": 1.1\n      }\n    }\n  ],\n  \"dimension\": {\n    \"width\": 1280,\n    \"height\": 720\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        576,
+        0
+      ],
+      "id": "9d8028ef-c7c0-4372-85be-31eb51e66da7",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "7Pv0RCkAG2CSQrsf",
+          "name": "Hygen api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/avatars",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        192,
+        -208
+      ],
+      "id": "6f6a00fa-ec58-461f-997f-237bb38a6e23",
+      "name": "HTTP Request1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "7Pv0RCkAG2CSQrsf",
+          "name": "Hygen api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.heygen.com/v2/voices",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        528,
+        -208
+      ],
+      "id": "e6a826e0-e887-4daa-9435-92e38c65d519",
+      "name": "HTTP Request2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "7Pv0RCkAG2CSQrsf",
+          "name": "Hygen api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        784,
+        0
+      ],
+      "id": "c6b0edfc-f225-4430-8fd2-13c5d8ffca19",
+      "name": "Wait",
+      "webhookId": "a74ceab1-4675-4782-a720-326a8c2e4145"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Write a script about the IELTS Listening section format.",
+        "options": {
+          "systemMessage": "=You are an expert English Trainer and Video Content Creator for \"BandLadder,\" a premium platform for IELTS and PTE preparation.\n\nYour task is to write a viral, educational 60-second video script (approx. 130-150 words) based on a specific exam topic.\n\nYou must follow this exact structure:\n\n1. THE HOOK (0-5s): Start immediately by addressing people planning to go abroad. clearly state the topic. (e.g., \"If you are taking the PTE, you need to know this...\")\n2. THE BREAKDOWN (5-50s): Explain the topic step-by-step. Use sequential transition words like \"First,\" \"Next,\" \"Then,\" and \"Finally.\" Include specific details like time limits, question counts, or scoring rules.\n3. THE CALL TO ACTION (50-60s): You MUST end the script with this exact phrase: \"Ready to start practicing? Check out BandLadder today and grab your 3-day free trial to master every section. Link in bio!\"\n\nCRITICAL GUIDELINES:\n- Tone: Professional, clear, and energetic.\n- Formatting: Output ONLY the spoken text. Do not include scene directions, visual cues, bold text, or emojis.\n- Punctuation: Use standard punctuation (commas and periods) to ensure natural pausing for Text-to-Speech engines.\n- No Markdown: Do not use headers or bullet points; write in full flow paragraphs."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6d10a2ca-65d4-4708-9f03-9c78b3d723f8",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "8c289d1c-be86-4c31-afd9-35e5944e8a7e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "get video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "6d730c5a-2b10-4210-a78e-342268964736",
+  "activeVersionId": null,
+  "versionCounter": 7,
+  "triggerCount": 0,
+  "tags": []
+}

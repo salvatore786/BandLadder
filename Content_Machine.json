@@ -1,0 +1,187 @@
+{
+  "updatedAt": "2026-01-09T11:10:48.141Z",
+  "createdAt": "2026-01-09T11:10:48.141Z",
+  "id": "9ExSoKDUUpZ-DCYhSeOip",
+  "name": "Content Machine",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -176
+      ],
+      "id": "80d00e9e-4171-4a13-bc7a-c5f1335ff925",
+      "name": "Telegram Trigger",
+      "webhookId": "f751c005-c2ee-4a7a-b86d-1c3ca1ca1894",
+      "credentials": {
+        "telegramApi": {
+          "id": "tab7uvyvIspg2jbd",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=generate one short, punchy, harsh-truth quote in the style of Alex Hormozi. \nDo NOT imitate him or repeat existing quotes\u2014create an original line.\n\nRules:\n- Output ONLY the quote text, nothing else.\n- 10-20 words max.\n- Tone: direct, blunt, no fluff, no motivation\u2014just truth.\n- Style themes: business, discipline, money, execution, effort.\n- No metaphors, no stories, no positivity.\n- Should feel uncomfortable but accurate.\n- Must trigger self-awareness and high shareability.\n- No clich\u00e9s (\u201cbelieve in yourself\u201d, \u201cfollow your dreams\u201d, etc.)\n- No soft, inspirational language.\n\nExamples of the style (DO NOT repeat or copy):\n- \u201cMost people quit right before it starts working.\u201d\n- \u201cConsistency is more important than intelligence.\u201d\n- \u201cYour excuses are costing you money.\u201d\n- \u201cHard work works. That\u2019s the whole secret.\u201d\n- \u201cYou\u2019re not tired. You\u2019re undisciplined.\u201d"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        -176
+      ],
+      "id": "335aef72-979b-456e-a6c4-00355081a90d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        48
+      ],
+      "id": "94fc1567-ee42-4953-88c7-d409f6d5fdd2",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"quote\": \"quote here\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        48
+      ],
+      "id": "bb243c63-e1ee-401d-b8c8-0e60be8a6a0d",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-templated.templated",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -176
+      ],
+      "id": "f36b0385-ad96-4c5b-a35d-26c5925f7ea3",
+      "name": "Create Design",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "1025113438",
+        "file": "={{ $json.url }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        -176
+      ],
+      "id": "014df36f-5c31-4377-8b4b-a8561cebb9e6",
+      "name": "Send a document",
+      "webhookId": "5dd30078-e63a-4027-9fe0-55191c48c9e3",
+      "credentials": {
+        "telegramApi": {
+          "id": "tab7uvyvIspg2jbd",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Create Design",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Design": {
+      "main": [
+        [
+          {
+            "node": "Send a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": null,
+  "versionId": "f1db1490-c77b-48cd-b9d2-8e2d310c3a6d",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": []
+}

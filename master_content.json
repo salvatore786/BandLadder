@@ -1,0 +1,205 @@
+{
+  "updatedAt": "2026-01-17T02:46:02.175Z",
+  "createdAt": "2026-01-17T02:46:02.175Z",
+  "id": "aKbxhmsp1Nov7j1Q",
+  "name": "master_content",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "Receive_Topic_Input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "master-content",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson"
+      }
+    },
+    {
+      "id": "switch-router",
+      "name": "Branch_Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.branch }}",
+                    "rightValue": "IELTS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IELTS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.branch }}",
+                    "rightValue": "PTE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PTE"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      }
+    },
+    {
+      "id": "ai-agent",
+      "name": "Content_Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        520,
+        300
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate Instagram Carousel content for Bandladder.\n\n**Input Parameters:**\n- Level: {{ $json.level }}\n- Branch: {{ $json.branch }}\n- Module: {{ $json.module }}\n- Topic: {{ $json.topic }}\n\nBased on the level ({{ $json.level }}), generate the appropriate carousel format following the Content Hierarchy rules. Return ONLY valid JSON matching the output schema.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Lead Content Strategist for Bandladder. Your goal is to generate high-value Instagram Carousels.\n\n**THE CONTENT HIERARCHY (Your Knowledge Base):**\nLEVEL 1: Root Content (English Proficiency Exams: What, Why, Who)\nLEVEL 2: Exam Branching (IELTS vs PTE)\n-- IELTS BRANCH --\nLEVEL 3: IELTS Overview (Scoring, Purpose)\nLEVEL 4: IELTS Types (Academic vs General)\nLEVEL 5: IELTS Modules (L/R/W/S format)\nLEVEL 6: Question Types (Strategy, Common Mistakes)\nLEVEL 7: Practice Content (Sample Questions, Band 7+ Solutions)\n-- PTE BRANCH --\nLEVEL 3: PTE Overview (Scoring Algorithm)\nLEVEL 4: PTE Types (Core vs Academic)\nLEVEL 5: PTE Modules (Combined Skills, Formats)\nLEVEL 6: Question Types (Scoring weight, Errors)\nLEVEL 7: Practice Content (Drills, Model Answers)\n\n**OUTPUT RULES (STRICTLY POSTS ONLY):**\n1. **Format:** ALL outputs must be Instagram Carousels.\n2. **If Level 1-4 (Awareness):** Generate a **Short Carousel (3-5 Slides)**.\n   - Goal: Quick education.\n   - Slide 1: Hook/Title.\n   - Slide 2: The Core Concept (What/Why).\n   - Slide 3: Who is this for?\n   - Slide 4: Key Takeaway/CTA.\n3. **If Level 5-7 (Deep Dive/Practice):** Generate a **Long Carousel (5-7 Slides)**.\n   - Goal: Actionable Strategy.\n   - Slide 1: Bold Hook (e.g., \"Stop Making This Mistake\").\n   - Slide 2: The Question Type Explained.\n   - Slide 3: The Common Error (Red Flag).\n   - Slide 4: The Strategy/Fix (Green Check).\n   - Slide 5: Real Example/Model Answer.\n   - Slide 6: Pro Tip (Band 7+ or Algorithm Hack).\n   - Slide 7: CTA (Save this post).\n\n**JSON OUTPUT SCHEMA:**\n{\n  \"type\": \"Carousel\",\n  \"caption\": \"Engaging caption here with line breaks...\",\n  \"hashtags\": [\"#Bandladder\", \"#IELTS\", \"#PTE\"],\n  \"slides\": [\n    { \"slide_number\": 1, \"text_overlay\": \"...\", \"design_instruction\": \"...\" }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "id": "claude-model",
+      "name": "Claude_Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        100
+      ],
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "id",
+          "value": "claude-3-5-sonnet-20241022"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "output-parser",
+      "name": "Output_Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        500
+      ],
+      "parameters": {
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\n  \"type\": \"Carousel\",\n  \"caption\": \"Your engaging caption with line breaks\",\n  \"hashtags\": [\"#Bandladder\", \"#IELTS\"],\n  \"slides\": [\n    {\n      \"slide_number\": 1,\n      \"text_overlay\": \"Hook text for slide 1\",\n      \"design_instruction\": \"Bold title, brand colors\"\n    }\n  ]\n}"
+      }
+    }
+  ],
+  "connections": {
+    "Receive_Topic_Input": {
+      "main": [
+        [
+          {
+            "node": "Branch_Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Branch_Router": {
+      "main": [
+        [
+          {
+            "node": "Content_Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Content_Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude_Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content_Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output_Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Content_Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "meta": null,
+  "versionId": "035c615d-6e46-4f27-89ac-864cc87be494",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "tags": []
+}

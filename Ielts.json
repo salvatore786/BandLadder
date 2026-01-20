@@ -1,0 +1,1074 @@
+{
+  "updatedAt": "2026-01-20T01:06:06.347Z",
+  "createdAt": "2026-01-16T12:11:08.360Z",
+  "id": "ebaSrw0IB9kysyfo",
+  "name": "Ielts",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate",
+        "options": {
+          "systemMessage": "You are the \"BandLadder\" Content Architect. \nGoal: Generate high-density Speaking content for a 3-slide Instagram carousel.\n\n### INSTRUCTIONS:\n1. **Scenario Selection:** RANDOMLY pick one category for the question DO NOT repeat a category until all five have been used in a 5-day cycle:\n   - Category 1: \"Trendy/Viral\" (AI, Social Media, Digital Nomads, Sustainable Living).\n   - Category 2: \"Group Discussion Classics\" (Teamwork vs Individual, Leadership, Work-Life Balance).\n   - Category 3: \"Everyday Intro\" (Daily routines, Local food, Childhood memories, Reading).\n   - Category 4: \"Global Future\" (Space travel, Education 2.0, Future of cities).\n   - Category 5: \"Personal Growth\" (Habits, Resilience, Mental Health).\n\n2. **Slide 1 (The Hook):** Generate one engaging exam-style question based on the category.\n\n3. **Slide 2 (The Content):**\n   - Format: Use ONLY 'col_1' for a single-column vertical layout.\n   - Section A: Header \"BASIC ANSWER\" followed by a 4-5 sentence \"weak long answer\" (simple grammar, repetitive words like 'good' or 'nice').\n   - Section B: Header \"ADVANCED ANSWER\" followed by a 5-6 sentence \"long advanced answer\" (complex structures, 1-2 idioms, and professional transitions).\n\n4. **Slide 3 (The Challenge):**\n   - Create a specific \"Your Turn\" practice question related to the topic.\n   - Include a Call-To-Action (CTA) encouraging them to write their answer in the comments for feedback.\n\n5. **Constraints:** - Use your font size 25 advantage to fill the slide space.\n   - Total length of Slide 2 must not exceed 17 lines to keep the BandLadder logo visible.\n   - Style: Mentorship-focused, teaching like a beginner-friendly expert.\n\n### OUTPUT FORMAT (Strict JSON):\n{\n  \"slide1_heading\": \"[Topic Category]: [The Question]\",\n  \"col_1\": \"BASIC ANSWER\\n[Weak Long Stanza]\\n\\nADVANCED ANSWER\\n[Advanced Stanza]\",\n  \"slide3_practice\": \"YOUR TURN: [Specific Practice Question related to topic]\\n\\n\ud83d\udc47 Write your answer in the comments below! I'll review the best ones.\",\n  \"footer_cta\": \"Comment 'VIP' for the 2026 Trendy Topic Guide!\",\n  \"pdf_tricks\": \"\ud83d\udd25 COACH'S TIP: 5-7 sentences explaining how to transition from a basic paragraph to an advanced stanza during the exam.\",\n  \"pdf_examples\": \"\ud83d\udcdd ALTERNATIVE STANZAS:\\nProvide two more 6-sentence Band 8.5+ variations to fill the study guide.\"\n}\n\nIMPORTANT: Output ONLY the JSON object. No explanations, no markdown, no extra text."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        256,
+        96
+      ],
+      "id": "471176b0-b69e-4109-8fd8-159a88240e38",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        336,
+        320
+      ],
+      "id": "20b6f462-aa03-41ea-8156-0761d342ddae",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nlet rawText = item.output || item.text;\nif (!rawText && item.content && item.content.parts) {\n  rawText = item.content.parts[0].text;\n}\nif (!rawText) {\n  rawText = JSON.stringify(item);\n}\nconst cleanJson = rawText.replace(/```json|```/g, '').trim();\nreturn JSON.parse(cleanJson);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        96
+      ],
+      "id": "392e9ee6-dc26-472e-85a4-1e57171086be",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        96
+      ],
+      "id": "08400f92-4540-47ef-b2f2-5d36ade75a50",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1i64fV728oUgW3YL6VUDk0XgxicwDEM6-IezL42TafYM",
+          "mode": "id"
+        },
+        "name": "p",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        832,
+        96
+      ],
+      "id": "f12dbff0-f1f4-4c5e-873b-0bf202cdb9c5",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "replaceText",
+        "presentationId": "={{ $json.id }}",
+        "textUi": {
+          "textValues": [
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{headline}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.slide1_heading }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3ba91bb7d62_0_3"
+              ],
+              "text": "{{col_1}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_1 }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3ba91bb7d62_0_3"
+              ],
+              "text": "{{col_3}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.footer_cta }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3ba91bb7d62_0_10"
+              ],
+              "text": "{{pdf_tricks}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_tricks }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3ba91bb7d62_0_61"
+              ],
+              "text": "{{pdf_examples}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_examples }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bacc8d8db6_0_5"
+              ],
+              "text": "{{slide3_practice}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.slide3_practice }}"
+            }
+          ]
+        },
+        "options": {
+          "revisionId": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        96
+      ],
+      "id": "306292a0-2477-4fbd-862f-786cb735143f",
+      "name": "Replace text in a presentation",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.presentationId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "slidesToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1280,
+        -192
+      ],
+      "id": "e6c409d7-a96f-45b7-a2d0-a38c99a2623e",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Code in JavaScript').item.json.slide1_heading }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1504,
+        -192
+      ],
+      "id": "a52224e2-da27-4ed1-8bf2-3bb34cb99582",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "=p"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        0
+      ],
+      "id": "77cc57cb-2fe0-4a13-8971-490d1efaa199",
+      "name": "Get the thumbnail for a page_slide_1",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "=g3ba91bb7d62_0_3"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        192
+      ],
+      "id": "24926614-13ad-4aa9-a63b-12986c2a988c",
+      "name": "Get the thumbnail for a page1_slide_2",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "=g3bacc8d8db6_0_5"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        384
+      ],
+      "id": "167cc0df-1db0-48a6-a739-fe7c14e19a80",
+      "name": "Get the thumbnail for a page2_slide_3",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "=g3bacc8d8db6_0_10"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        576
+      ],
+      "id": "5a7762f9-5155-48f2-bbb6-95b50d691286",
+      "name": "Get the thumbnail for a page3_slide_4",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        0
+      ],
+      "id": "779767a2-80d5-42ab-833d-f26526b4b0ab",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        192
+      ],
+      "id": "1887a928-5ea9-4640-b482-8fc6b07e10fb",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        384
+      ],
+      "id": "911f667c-7fb3-49b5-a040-42fab3eae810",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        576
+      ],
+      "id": "47157fa4-555f-4208-9f9d-e09ea1033a89",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Get all items from merged input\nconst items = $input.all();\nconst headline = $('Code in JavaScript').first().json.slide1_heading;\n\n// Extract URLs from the items (each item has contentUrl)\nconst urls = items.map(item => item.json.contentUrl).filter(url => url);\n\nreturn {\n  json: {\n    slide1_url: urls[0] || '',\n    slide2_url: urls[1] || '',\n    slide3_url: urls[2] || '',\n    slide4_url: urls[3] || '',\n    headline: headline,\n    slide_urls: urls\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        288
+      ],
+      "id": "merge-slides",
+      "name": "Merge All Slides"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a caption for a post about: {{ $json.headline }}",
+        "options": {
+          "systemMessage": "You are the Social Media Manager for \"BandLadder\".\nI will give you a topic (e.g., \"Top 10 Synonyms for Bad\").\n\nYour Goal: Write a high-converting Instagram Caption.\n\nSTRUCTURE:\n1. THE HOOK:\n   - Write 1 punchy sentence about the topic.\n   - Example: \"Stop using basic words like 'Bad'\u2014here are 10 alternatives to boost your score! \ud83d\ude80\"\n\n2. THE SALES PITCH (Paste Exactly):\n   \"Achieve your dream IELTS / PTE / CELPIP score with personalized online classes from an expert trainer.\n   \u2022 Live interactive sessions for all modules: Listening, Reading, Writing, Speaking\n   \u2022 Updated exam patterns, tips, and strategies that actually work\n   \u2022 Regular mock tests, detailed feedback, and progress tracking\n   \u2022 Flexible timings for working professionals and students\"\n\n3. THE CTA:\n   \"Dm for online IELTS / PTE / CELPIP classes or comment \"CLASS\" and I'll reach out to you.\"\n\n4. HASHTAGS (Paste Exactly as one block):\n   \"#ielts #learnenglish #studyabroad #englishlearning #ieltspreparation #studyincanada #englishteacher #vocabulary #englishgrammar #esl #studyinuk #internationalstudents #speakenglish #englishcourse #toefl #ieltsexam #englishvocabulary #grammar #studyvisa #englishclass #ieltswriting #ieltstips #englishlanguage #studentvisa #language\"\n\nOUTPUT RULE:\n- Output ONLY the final caption text.\n- Do not add \"Here is the caption\" or quotes.\n- Ensure all hashtags have the '#' symbol."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1952,
+        288
+      ],
+      "id": "27f42f27-58da-43c9-9c2c-f88d07ca8d2b",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2032,
+        512
+      ],
+      "id": "0803ae88-e9a6-41f9-9a4e-456f71822313",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const caption = $input.first().json.output || $input.first().json.text || '';\nconst slideData = $('Merge All Slides').first().json;\n\nreturn {\n  json: {\n    caption: caption,\n    slide1_url: slideData.slide1_url,\n    slide2_url: slideData.slide2_url,\n    slide3_url: slideData.slide3_url,\n    slide4_url: slideData.slide4_url,\n    headline: slideData.headline\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        288
+      ],
+      "id": "prepare-carousel",
+      "name": "Prepare Carousel Data"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.slide1_url }}"
+              },
+              {
+                "name": "is_carousel_item",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        0
+      ],
+      "id": "carousel-item-1",
+      "name": "Create Carousel Item 1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.slide2_url }}"
+              },
+              {
+                "name": "is_carousel_item",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        192
+      ],
+      "id": "carousel-item-2",
+      "name": "Create Carousel Item 2",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.slide3_url }}"
+              },
+              {
+                "name": "is_carousel_item",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        384
+      ],
+      "id": "carousel-item-3",
+      "name": "Create Carousel Item 3",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.slide4_url }}"
+              },
+              {
+                "name": "is_carousel_item",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        576
+      ],
+      "id": "carousel-item-4",
+      "name": "Create Carousel Item 4",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item1 = $('Create Carousel Item 1').first().json.id;\nconst item2 = $('Create Carousel Item 2').first().json.id;\nconst item3 = $('Create Carousel Item 3').first().json.id;\nconst item4 = $('Create Carousel Item 4').first().json.id;\nconst caption = $('Prepare Carousel Data').first().json.caption;\n\nreturn {\n  json: {\n    children_ids: [item1, item2, item3, item4].filter(id => id),\n    caption: caption\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2624,
+        288
+      ],
+      "id": "merge-carousel-ids",
+      "name": "Merge Carousel IDs"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "media_type",
+                "value": "CAROUSEL"
+              },
+              {
+                "name": "children",
+                "value": "={{ $json.children_ids.join(',') }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $json.caption }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2848,
+        288
+      ],
+      "id": "create-carousel-container",
+      "name": "Create Carousel Container",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        3072,
+        288
+      ],
+      "id": "publish-carousel",
+      "name": "Publish Carousel to Instagram",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "=\u2705 IELTS Carousel Posted to Instagram!\n\n\ud83d\udcf8 4 slides posted successfully\n\n\ud83d\udcdd Topic: {{ $('Prepare Carousel Data').first().json.headline }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3296,
+        288
+      ],
+      "id": "notify-success",
+      "name": "Notify Success",
+      "credentials": {
+        "telegramApi": {
+          "id": "a6ZPKX5fbTN6Bklz",
+          "name": "Bandladder Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1680,
+        288
+      ],
+      "id": "wait-for-slides",
+      "name": "Wait For All Slides"
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Replace text in a presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace text in a presentation": {
+      "main": [
+        [
+          {
+            "node": "Get the thumbnail for a page_slide_1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get the thumbnail for a page1_slide_2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get the thumbnail for a page2_slide_3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get the thumbnail for a page3_slide_4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page_slide_1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page1_slide_2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page2_slide_3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page3_slide_4": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait For All Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Wait For All Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Wait For All Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Wait For All Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Slides": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Carousel Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Carousel Data": {
+      "main": [
+        [
+          {
+            "node": "Create Carousel Item 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Carousel Item 2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Carousel Item 3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Carousel Item 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel Item 1": {
+      "main": [
+        [
+          {
+            "node": "Merge Carousel IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel Item 2": {
+      "main": [
+        [
+          {
+            "node": "Merge Carousel IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel Item 3": {
+      "main": [
+        [
+          {
+            "node": "Merge Carousel IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel Item 4": {
+      "main": [
+        [
+          {
+            "node": "Merge Carousel IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Carousel IDs": {
+      "main": [
+        [
+          {
+            "node": "Create Carousel Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel Container": {
+      "main": [
+        [
+          {
+            "node": "Publish Carousel to Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Carousel to Instagram": {
+      "main": [
+        [
+          {
+            "node": "Notify Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For All Slides": {
+      "main": [
+        [
+          {
+            "node": "Merge All Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "51019e2d-cadd-405d-9f87-7ee993d5292f",
+  "activeVersionId": null,
+  "versionCounter": 46,
+  "triggerCount": 1,
+  "tags": []
+}

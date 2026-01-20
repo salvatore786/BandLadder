@@ -1,0 +1,840 @@
+{
+  "updatedAt": "2026-01-19T07:15:39.248Z",
+  "createdAt": "2026-01-09T11:14:07.437Z",
+  "id": "iRpN90IgosGYCB49He1RC",
+  "name": "insta_post",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate",
+        "options": {
+          "systemMessage": "=You are the \"BandLadder\" Senior IELTS & PTE Content Engine.\n\n### GOAL:\nGenerate a high-density \"Synonym Swap\" list for an Instagram Post.\nThe user wants 60 PAIRS of words total (20 pairs per column).\n\n### STRICT FORMATTING RULES:\n1. **The Pair Format:** Every single line must follow this exact format:\n   `[Number]. [Basic Word] - [Advanced Synonym]`\n   Example:\n   1. Important - Crucial\n   2. Big deal - Paramount\n\n2. **Columns:**\n   - `col_1`: Must contain pairs numbered 1 to 20.\n   - `col_2`: Must contain pairs numbered 21 to 40.\n   - `col_4`: Must contain pairs numbered 41 to 60.\n\n3. **Content:**\n   - The \"Basic Word\" (Left side of hyphen) must NOT repeat. Use synonyms (e.g., don't just say \"Very Big\" 20 times. Use \"Huge\", \"Large\", \"Giant\", \"Tall\").\n   - The \"Advanced Synonym\" (Right side of hyphen) must be C1/C2 academic level.\n\n### OUTPUT JSON STRUCTURE:\nReturn ONLY a JSON object (no markdown):\n{\n  \"headline\":{{ $json.headline_request }} \"Short Title (e.g., STOP SAYING 'IMPORTANT', TOP LINKING WORDS FOR BAND 9 , BASIC vs. ADVANCED: VERBS EDITION )\",\n  \"col_1\": \"1. [Basic] - [Advanced]\\n2. [Basic] - [Advanced]\\n... (up to 20)\",\n  \"col_2\": \"21. [Basic] - [Advanced]\\n22. [Basic] - [Advanced]\\n... (up to 40)\",\n  \"col_4\": \"41. [Basic] - [Advanced]\\n22. [Basic] - [Advanced]\\n... (up to 60)\",\n  \"col_3\": \"Comment 'PDF' to get this list + examples!\",\n  \"pdf_tricks\": \"\ud83d\udd25 BAND 9 TRICK: Write 2 sentences explaining why the words in the Advanced list are better.\",\n  \"pdf_examples\": \"\ud83d\udcdd SENTENCE EXAMPLES:\\n1. Write a sentence using a word from the list.\\n2. Write another sentence.\\n3. Write another sentence.\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        192,
+        16
+      ],
+      "id": "3700a2d0-e1a9-4d5d-bdeb-b3e72b21d63f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxOutputTokens": null
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        64,
+        224
+      ],
+      "id": "d86651d7-0549-49ba-96e9-219c44da7d24",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "   // Get the data from the previous node\nconst item = $input.first().json;\n\n// Find the text content safely (checks .output, .text, or nested content)\nlet rawText = item.output || item.text;\n\n// If the text is hidden deep in a \"parts\" structure (common in some versions)\nif (!rawText && item.content && item.content.parts) {\n\u00a0 rawText = item.content.parts[0].text;\n}\n\n// If we still can't find text, fallback to stringifying the whole item to avoid crashing\nif (!rawText) {\n\u00a0 rawText = JSON.stringify(item);\n}\n\n// Clean up the Markdown formatting (removes ```json and ```)\nconst cleanJson = rawText.replace(/```json|```/g, '').trim();\n\n// Parse and return the final JSON object\nreturn JSON.parse(cleanJson);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        208
+      ],
+      "id": "724b6c0e-ab46-42a3-ab0b-d29f9eeedd96",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -512,
+        16
+      ],
+      "id": "afe06208-2eb2-47a7-9ba7-1ca645f9183e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1ZWF6MCEZLnRcc_-DzOjyzk3JE6aVboH_wfzd3EaJsdQ",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        688,
+        48
+      ],
+      "id": "c87502c3-5cef-4e1e-bdc1-10b2b85cbbb9",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "p"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        208
+      ],
+      "id": "c7443982-5120-45db-ac34-1dbdcd8ce4dc",
+      "name": "Get the thumbnail for a page",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        208
+      ],
+      "id": "53768eef-94b9-4df2-819b-592a214c0900",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "replaceText",
+        "presentationId": "={{ $json.id }}",
+        "textUi": {
+          "textValues": [
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{headline}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.headline }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_1}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_1 }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_2}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_2 }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_3}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_3 }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3b7b84d7742_0_5"
+              ],
+              "text": "{{pdf_tricks}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_tricks }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3b72fb39362_0_104"
+              ],
+              "text": "{{pdf_examples}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_examples }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_4}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_4 }}"
+            }
+          ]
+        },
+        "options": {
+          "revisionId": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        880,
+        208
+      ],
+      "id": "5fb5a59e-b9aa-4921-a495-799e808c65ab",
+      "name": "Replace text in a presentation",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a caption for a post about: {{ $('Code in JavaScript').item.json.headline }}",
+        "options": {
+          "systemMessage": "=You are the Social Media Manager for \"BandLadder\".\nI will give you a topic (e.g., \"Top 10 Synonyms for Bad\").\n\nYour Goal: Write a high-converting Instagram Caption.\n\nSTRUCTURE:\n1. THE HOOK:\n   - Write 1 punchy sentence about the topic.\n   - Example: \"Stop using basic words like 'Bad'\u2014here are 10 alternatives to boost your score! \ud83d\ude80\"\n\n2. THE SALES PITCH (Paste Exactly):\n   \"Achieve your dream IELTS / PTE / CELPIP score with personalized online classes from an expert trainer.\n   \u2022 Live interactive sessions for all modules: Listening, Reading, Writing, Speaking\n   \u2022 Updated exam patterns, tips, and strategies that actually work\n   \u2022 Regular mock tests, detailed feedback, and progress tracking\n   \u2022 Flexible timings for working professionals and students\"\n\n3. THE CTA:\n   \"Dm for online IELTS / PTE / CELPIP classes or comment \u201cCLASS\u201d and I\u2019ll reach out to you.\"\n\n4. HASHTAGS (Paste Exactly as one block):\n   \"#ielts #learnenglish #studyabroad #englishlearning #ieltspreparation #studyincanada #englishteacher #vocabulary #englishgrammar #esl #studyinuk #internationalstudents #speakenglish #englishcourse #toefl #ieltsexam #englishvocabulary #grammar #studyvisa #englishclass #ieltswriting #ieltstips #englishlanguage #studentvisa #language\"\n\nOUTPUT RULE:\n- Output ONLY the final caption text.\n- Do not add \"Here is the caption\" or quotes.\n- Ensure all hashtags have the '#' symbol."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1632,
+        208
+      ],
+      "id": "463b6d1b-19f6-4cec-89bd-3bd01491b88c",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        416
+      ],
+      "id": "51be5baa-870c-42ee-85d1-9a184922ee53",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.presentationId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "slidesToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -192
+      ],
+      "id": "ee82187e-fdb8-4fc1-84d1-521206acba3a",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Code in JavaScript').item.json.headline }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1504,
+        -192
+      ],
+      "id": "e533aca1-a840-45ed-a6fe-7e1cdef814a3",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the caption from input (passed from AI Agent1)\nconst inputData = $input.first().json;\nconst caption = inputData.output;\n\n// Get the Image URL from the HTTP Request node output\nlet imageUrl;\ntry {\n  imageUrl = $('HTTP Request').first().json.contentUrl;\n} catch (e) {\n  imageUrl = inputData.contentUrl || '';\n}\n\n// Get the presentation ID\nlet presentationId;\ntry {\n  presentationId = $('Copy file').first().json.id;\n} catch (e) {\n  presentationId = inputData.presentationId || 'unknown';\n}\n\n// Build URL with encoded parameters (URLSearchParams not available in sandbox)\nconst baseUrl = 'https://n8n.srv1258291.hstgr.cloud/webhook/insta-approve';\nconst encodedCaption = encodeURIComponent(caption);\nconst encodedImageUrl = encodeURIComponent(imageUrl);\nconst encodedPresentationId = encodeURIComponent(presentationId);\n\nconst approveUrl = `${baseUrl}?caption=${encodedCaption}&image_url=${encodedImageUrl}&presentationId=${encodedPresentationId}`;\nconst retryUrl = 'https://n8n.srv1258291.hstgr.cloud/webhook/insta-retry';\n\n// Return the data for the next nodes\nreturn {\n  json: {\n    caption: caption,\n    image_url: imageUrl,\n    presentationId: presentationId,\n    approveUrl: approveUrl,\n    retryUrl: retryUrl\n  }\n};"
+      },
+      "id": "store-pending-post",
+      "name": "Store Pending Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "5493233618",
+        "file": "={{ $json.image_url }}",
+        "additionalFields": {
+          "caption": "=\ud83d\udcf8 *New Post Ready!*\n\n{{ $json.caption.substring(0, 700) }}...",
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "send-approval-photo-node",
+      "name": "Send Approval Photo",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2144,
+        192
+      ],
+      "webhookId": "18062bcb-aef1-425d-9401-8160a6deeb52",
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "insta-approve",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "approve-webhook",
+      "name": "Approve Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        704
+      ],
+      "webhookId": "44df2621-baa0-45cf-850c-10cf87e9ed55"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get post data from URL query parameters (passed via the approval link)\nconst query = $input.first().json.query || {};\n\n// Check if we have the required data\nif (!query.image_url || !query.caption) {\n  return { \n    json: { \n      error: 'Missing post data. The approval link may be invalid or expired.',\n      image_url: '',\n      caption: ''\n    } \n  };\n}\n\n// Decode the URL-encoded parameters\nconst imageUrl = decodeURIComponent(query.image_url);\nconst caption = decodeURIComponent(query.caption);\nconst presentationId = query.presentationId ? decodeURIComponent(query.presentationId) : 'unknown';\n\nreturn {\n  json: {\n    caption: caption,\n    image_url: imageUrl,\n    presentationId: presentationId\n  }\n};"
+      },
+      "id": "get-post-approve",
+      "name": "Get Post for Approve",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.image_url }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $json.caption }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "post-insta-approve",
+      "name": "Post Instagram (Approve)",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2608,
+        704
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "publish-insta-approve",
+      "name": "Publish Instagram (Approve)",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2816,
+        704
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg",
+              "name": "message",
+              "value": "\u2705 Post approved and published to Instagram!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "approve-response",
+      "name": "Approve Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3024,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "path": "insta-retry",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "retry-webhook",
+      "name": "Retry Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        912
+      ],
+      "webhookId": "a730bbb3-7d38-40d3-8b82-b4112c585d5f"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg",
+              "name": "message",
+              "value": "\ud83d\udd04 Generating new post... Check Telegram shortly!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "retry-response",
+      "name": "Retry Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2400,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "\u2705 *Post Published Successfully!*\n\nYour Instagram post is now live.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "success-telegram",
+      "name": "Send Success Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3232,
+        704
+      ],
+      "webhookId": "d8b60cd4-6653-430b-b079-5045592fbd84",
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "=\ud83d\udc46 Click to approve or retry:\n\n\u2705 APPROVE:\n{{ $('Store Pending Post').item.json.approveUrl }}\n\n\ud83d\udd04 RETRY:\n{{ $('Store Pending Post').item.json.retryUrl }}",
+        "additionalFields": {
+          "disable_web_page_preview": true
+        }
+      },
+      "id": "send-links",
+      "name": "Send Approval Links",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2352,
+        192
+      ],
+      "webhookId": "1822366b-6084-4a31-87ee-76eaa4d8e600",
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the current day of the month (1-31)\nconst today = new Date().getDate();\n\n// ---------------------------------------------------------\n// 30-DAY LIST WITH ENGAGING, SPACE-FILLING HEADLINES\n// ---------------------------------------------------------\nconst dailyTopics = [\n  // --- DAYS 1-7: TRANSITIONS (Focus on \"Linking Words\") ---\n  { day: 1,  display_headline: \"LINKING WORDS: RESULTS & EFFECTS \", context: \"Words showing result (e.g., So -> Consequently)\" },\n  { day: 2,  display_headline: \"STOP USING 'BUT' REPEATEDLY \", context: \"Words showing contrast (e.g., But -> However)\" },\n  { day: 3,  display_headline: \"BAND 9 CONNECTORS: ADDITION \", context: \"Words adding info (e.g., And -> Furthermore)\" },\n  { day: 4,  display_headline: \"GIVING EXAMPLES LIKE A PRO \", context: \"Words for examples (e.g., Like -> For instance)\" },\n  { day: 5,  display_headline: \"BETTER WAYS TO SAY 'BECAUSE' \", context: \"Words showing cause (e.g., Because -> Due to)\" },\n  { day: 6,  display_headline: \"STATING YOUR OPINION (BAND 9) \", context: \"Words for opinion (e.g., I think -> I opine)\" },\n  { day: 7,  display_headline: \"SEQUENCING WORDS FOR ESSAYS 1\ufe0f\", context: \"Words for sequence (e.g., First -> Primarily)\" },\n\n  // --- DAYS 8-15: VERBS (Focus on \"Action\") ---\n  { day: 8,  display_headline: \"STOP SAYING 'GET' & 'GOT' \", context: \"Synonyms for acquiring (e.g., Get -> Obtain)\" },\n  { day: 9,  display_headline: \"UPGRADE YOUR VERB: 'MAKE' \", context: \"Synonyms for creating (e.g., Make -> Construct)\" },\n  { day: 10, display_headline: \"DON'T JUST SAY 'SHOW' \", context: \"Synonyms for demonstrating (e.g., Show -> Depict)\" },\n  { day: 11, display_headline: \"BETTER SYNONYMS FOR 'HELP' \", context: \"Synonyms for assisting (e.g., Help -> Facilitate)\" },\n  { day: 12, display_headline: \"VOCABULARY BOOSTER: 'USE' \", context: \"Synonyms for utilizing (e.g., Use -> Leverage)\" },\n  { day: 13, display_headline: \"ADVANCED VERBS FOR 'CHANGE' \", context: \"Synonyms for altering (e.g., Change -> Transform)\" },\n  { day: 14, display_headline: \"ACADEMIC WORDS FOR 'THINK' \", context: \"Synonyms for thinking (e.g., Guess -> Speculate)\" },\n  { day: 15, display_headline: \"STOP SAYING 'STOP' & 'END' \", context: \"Synonyms for ending (e.g., Stop -> Cease)\" },\n\n  // --- DAYS 16-23: ADJECTIVES (Focus on \"Description\") ---\n  { day: 16, display_headline: \"STOP SAYING 'VERY IMPORTANT' \", context: \"Words for importance (e.g., Key -> Paramount)\" },\n  { day: 17, display_headline: \"BAND 9 SYNONYMS FOR 'GOOD' \", context: \"Words for positive quality (e.g., Good -> Exemplary)\" },\n  { day: 18, display_headline: \"DON'T USE BASIC WORDS LIKE 'BAD' \", context: \"Words for negative quality (e.g., Bad -> Detrimental)\" },\n  { day: 19, display_headline: \"EXPRESSING 'HAPPINESS' BETTER \", context: \"Words for joy (e.g., Happy -> Elated)\" },\n  { day: 20, display_headline: \"DESCRIBING 'SADNESS' IN ESSAYS \", context: \"Words for sorrow (e.g., Sad -> Despondent)\" },\n  { day: 21, display_headline: \"STOP SAYING 'VERY BIG' / 'HUGE' \", context: \"Words for size (e.g., Big -> Colossal)\" },\n  { day: 22, display_headline: \"BETTER WORDS FOR 'SMALL' \", context: \"Words for size (e.g., Small -> Diminutive)\" },\n  { day: 23, display_headline: \"MODERN VOCABULARY FOR 'NEW' \", context: \"Words for novelty (e.g., New -> Innovative)\" },\n\n  // --- DAYS 24-30: TOPICS (Focus on \"Context\") ---\n  { day: 24, display_headline: \"ESSAY VOCABULARY: CRIME \", context: \"Legal vocabulary (e.g., Jail -> Incarceration)\" },\n  { day: 25, display_headline: \"TOPIC VOCABULARY: NATURE \", context: \"Environment vocabulary (e.g., Trash -> Waste)\" },\n  { day: 26, display_headline: \"ACADEMIC WORDS: EDUCATION \", context: \"School vocabulary (e.g., Teacher -> Pedagogue)\" },\n  { day: 27, display_headline: \"TOPIC VOCABULARY: HEALTH \", context: \"Medical vocabulary (e.g., Sick -> Ailment)\" },\n  { day: 28, display_headline: \"PROFESSIONAL WORDS: WORK \", context: \"Job vocabulary (e.g., Boss -> Supervisor)\" },\n  { day: 29, display_headline: \"ESSAY VOCABULARY: MONEY \", context: \"Financial vocabulary (e.g., Rich -> Affluent)\" },\n  { day: 30, display_headline: \"TOPIC VOCABULARY: HOUSING \", context: \"Real estate vocabulary (e.g., House -> Residence)\" }\n];\n\n// Select strategy based on date\nconst index = (today - 1) % dailyTopics.length;\nconst selectedStrategy = dailyTopics[index];\n\n// Output strict JSON for the AI Agent\nreturn {\n  headline_request: selectedStrategy.display_headline, // This goes to the Image Header\n  context: selectedStrategy.context // This tells AI what words to generate\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        16
+      ],
+      "id": "aaff725f-c555-4d41-b6af-b2da4724b128",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Replace text in a presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace text in a presentation": {
+      "main": [
+        [
+          {
+            "node": "Get the thumbnail for a page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "0": [
+        [
+          {
+            "node": "Store Pending Post",
+            "type": "0",
+            "index": 0
+          }
+        ]
+      ],
+      "main": [
+        [
+          {
+            "node": "Store Pending Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Pending Post": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Post for Approve",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Instagram (Approve)": {
+      "main": [
+        [
+          {
+            "node": "Publish Instagram (Approve)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Instagram (Approve)": {
+      "main": [
+        [
+          {
+            "node": "Approve Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry Webhook": {
+      "main": [
+        [
+          {
+            "node": "Retry Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry Response": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve Response": {
+      "main": [
+        [
+          {
+            "node": "Send Success Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Approval Photo": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Post for Approve": {
+      "main": [
+        [
+          {
+            "node": "Post Instagram (Approve)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "bf7377a6-f7db-4346-acf5-b31cee0f0e9d",
+  "activeVersionId": "bf7377a6-f7db-4346-acf5-b31cee0f0e9d",
+  "versionCounter": 204,
+  "triggerCount": 3,
+  "tags": []
+}
