@@ -52,4 +52,4 @@ Receives Telegram messages, uses AI to extract meeting details, creates Google C
 
 ---
 
-*Last updated: 2026-01-20*
+*Last updated: 2026-01-20 - v2*
