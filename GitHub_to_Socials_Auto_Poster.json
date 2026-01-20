@@ -4,7 +4,7 @@
   "id": "NlRUsHOxJpmujJST",
   "name": "GitHub_to_Socials_Auto_Poster",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -17,7 +17,7 @@
         "repository": {
           "__rl": true,
           "mode": "name",
-          "value": "bandladder-app"
+          "value": "BandLadder"
         },
         "events": [
           "push"
