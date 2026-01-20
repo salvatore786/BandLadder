@@ -51,11 +51,11 @@
           "conditions": [
             {
               "id": "main-branch-condition",
-              "leftValue": "={{ $json.ref }}",
+              "leftValue": "={{ $json.body?.ref || $json.ref }}",
               "rightValue": "refs/heads/main",
               "operator": {
                 "type": "string",
-                "operation": "equals"
+                "operation": "contains"
               }
             }
           ],
