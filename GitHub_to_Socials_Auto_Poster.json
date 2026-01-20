@@ -171,17 +171,6 @@
       "main": [
         [
           {
-            "node": "Filter Main Branch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter Main Branch": {
-      "main": [
-        [
-          {
             "node": "AI Content Generator",
             "type": "main",
             "index": 0
