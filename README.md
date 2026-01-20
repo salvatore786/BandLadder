@@ -12,7 +12,8 @@ This repository contains n8n automation workflows for Bandladder - an IELTS/PTE/
 | **Ielts** | Main IELTS content generation workflow - creates slides and posts Instagram carousels |
 | **IELTS_Instagram_Carousel_Poster** | Posts IELTS content as Instagram carousel from Google Drive |
 | **Content_Machine** | AI-powered content generation for social media |
-| **GitHub_to_Socials_Auto_Poster** | Automatically posts GitHub updates to social media |
+| **GitHub_to_Socials_Auto_Poster** | Automatically posts GitHub updates to LinkedIn & sends Telegram notification |
+| **Daily_Team_Task_Assigner** | AI-powered daily task assignment for team members at 9AM via Telegram |
 | **Daily_Pulse_Report** | Daily automated reporting workflow |
 | **insta_post** | Instagram posting automation |
 | **master_content** | Master content management workflow |
