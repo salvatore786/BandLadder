@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-01-18T17:12:38.734Z",
+  "updatedAt": "2026-01-24T12:00:00.000Z",
   "createdAt": "2026-01-18T13:58:42.330Z",
   "id": "NlRUsHOxJpmujJST",
   "name": "GitHub_to_Socials_Auto_Poster",
-  "description": null,
+  "description": "Auto-posts to LinkedIn when code is pushed to GitHub. Includes error handling and debug logging.",
   "active": true,
   "isArchived": false,
   "nodes": [
@@ -42,6 +42,27 @@
     },
     {
       "parameters": {
+        "chatId": "5765aborr",
+        "text": "=🔔 GitHub Webhook Received!\n\n📦 Repo: {{ $json.repository?.full_name || 'unknown' }}\n🌿 Branch: {{ $json.ref || 'unknown' }}\n📝 Commit: {{ $json.head_commit?.message || 'no commit message' }}\n👤 Author: {{ $json.head_commit?.author?.name || 'unknown' }}\n\n⏳ Processing...",
+        "additionalFields": {}
+      },
+      "id": "debug-trigger-log",
+      "name": "Debug: Webhook Received",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        304
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dMaFcoHdqkmf0DA5",
+          "name": "Tempated"
+        }
+      }
+    },
+    {
+      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -75,7 +96,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Generate social media posts for this GitHub push:\n\nRepository: {{ $json.repository.full_name }}\nCommit Message: {{ $json.head_commit.message }}\nAuthor: {{ $json.head_commit.author.name }}\nChanges: {{ $json.head_commit.added.length }} files added, {{ $json.head_commit.modified.length }} files modified\n\nCreate TWO posts:\n1. A LinkedIn post (professional, 150-200 words, include relevant hashtags)\n2. A Twitter/X post (concise, under 280 characters, include hashtags)\n\nRespond in this exact JSON format:\n{\n  \"linkedin_post\": \"your linkedin content here\",\n  \"twitter_post\": \"your twitter content here\"\n}",
+        "text": "=Generate social media posts for this GitHub push:\n\nRepository: {{ $('Debug: Webhook Received').item.json.repository?.full_name || 'BandLadder' }}\nCommit Message: {{ $('Debug: Webhook Received').item.json.head_commit?.message || 'Code update' }}\nAuthor: {{ $('Debug: Webhook Received').item.json.head_commit?.author?.name || 'Developer' }}\nChanges: {{ $('Debug: Webhook Received').item.json.head_commit?.added?.length || 0 }} files added, {{ $('Debug: Webhook Received').item.json.head_commit?.modified?.length || 0 }} files modified\n\nCreate TWO posts:\n1. A LinkedIn post (professional, 150-200 words, include relevant hashtags)\n2. A Twitter/X post (concise, under 280 characters, include hashtags)\n\nRespond in this exact JSON format:\n{\n  \"linkedin_post\": \"your linkedin content here\",\n  \"twitter_post\": \"your twitter content here\"\n}",
         "options": {
           "systemMessage": "You are a Tech Influencer Social Media Manager for BandLadder. Your job is to create engaging social media content about code updates and releases. Be enthusiastic but professional. Focus on the value and impact of changes, not technical jargon. Always respond with valid JSON only."
         }
@@ -87,7 +108,8 @@
       "position": [
         704,
         304
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -120,6 +142,49 @@
         "linkedInOAuth2Api": {
           "id": "QBoiCHQe9kpAN2Pf",
           "name": "LinkedIn account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "5765aborr",
+        "text": "=❌ LinkedIn Post FAILED!\n\n🔴 Error: {{ $json.error?.message || $json.message || 'Unknown error' }}\n📦 Repo: {{ $('Debug: Webhook Received').item.json.repository?.full_name || 'unknown' }}\n📝 Commit: {{ $('Debug: Webhook Received').item.json.head_commit?.message || 'unknown' }}\n\n💡 Common fixes:\n1. Re-authenticate LinkedIn in n8n credentials\n2. Check LinkedIn API permissions\n3. Verify OAuth token hasn't expired",
+        "additionalFields": {}
+      },
+      "id": "linkedin-error-notify",
+      "name": "LinkedIn Error Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dMaFcoHdqkmf0DA5",
+          "name": "Tempated"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5765aborr",
+        "text": "=❌ AI Content Generation FAILED!\n\n🔴 Error: {{ $json.error?.message || $json.message || 'Unknown error' }}\n📦 Repo: {{ $('Debug: Webhook Received').item.json.repository?.full_name || 'unknown' }}\n📝 Commit: {{ $('Debug: Webhook Received').item.json.head_commit?.message || 'unknown' }}\n\n💡 Check Gemini API key and quota",
+        "additionalFields": {}
+      },
+      "id": "ai-error-notify",
+      "name": "AI Error Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        912,
+        500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "dMaFcoHdqkmf0DA5",
+          "name": "Tempated"
         }
       }
     },
@@ -171,6 +236,17 @@
       "main": [
         [
           {
+            "node": "Debug: Webhook Received",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Debug: Webhook Received": {
+      "main": [
+        [
+          {
             "node": "AI Content Generator",
             "type": "main",
             "index": 0
@@ -183,6 +259,13 @@
         [
           {
             "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Error Alert",
             "type": "main",
             "index": 0
           }
@@ -205,6 +288,13 @@
         [
           {
             "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "LinkedIn Error Alert",
             "type": "main",
             "index": 0
           }
