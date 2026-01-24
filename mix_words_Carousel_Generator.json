@@ -1,0 +1,778 @@
+{
+  "name": "mix_words_Carousel_Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        -112
+      ],
+      "id": "8289f3f7-ad6e-447b-9613-e6b2e8184c70",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Create an Instagram carousel on the topic: \"{{ $json.topic }}\".\n\nThe carousel must have:\n1. A catchy Title Slide (e.g., \"Idioms About Intelligence\" or \"8 Ways to Say...\").\n2. Exactly 8 content slides. Each slide must feature one specific idiom or phrase related to the topic.\n3. For each phrase, provide the Meaning and one Example sentence.\n\nMake the tone encouraging and professional, similar to an IELTS/PTE preparation guide.usel.",
+        "options": {
+          "systemMessage": "=You are an expert English Language Coach and Social Media Content Creator for the Instagram account \"_passionatelearners\". Your goal is to create educational, high-engagement carousel content that teaches English idioms and vocabulary.\n\n**Output Format Rules:**\n1. You must strictly output valid JSON only. Do not add markdown formatting or conversational text.\n2. The JSON must follow this exact structure:\n   {\n     \"carousel_title\": \"String (The main hook for the first slide)\",\n     \"slides\": [\n       {\n         \"item\": \"String (The idiom or word)\",\n         \"meaning\": \"String (Short, clear definition)\",\n         \"example\": \"String (A relatable sentence using the item)\"\n       }\n     ]\n   }\n\n**Content Rules:**\n- The \"carousel_title\" is for Slide 1.\n- You must generate exactly 8 items for the \"slides\" array (Slides 2-9).\n- Definitions must be simple and easy to understand for non-native speakers.\n- Examples should be modern and relatable."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        448,
+        -112
+      ],
+      "id": "40ca502a-d58a-4571-be9d-1026507ba945",
+      "name": "Generate Content"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        320,
+        128
+      ],
+      "id": "3dd99964-f1a3-48de-a2d6-8a5842f076c0",
+      "name": "Google Gemini Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Get and Parse the AI output\nlet content;\ntry {\n  // Handle cases where AI wraps json in markdown blocks\n  const raw = $input.first().json.output.replace(/```json|```/g, '').trim();\n  content = JSON.parse(raw);\n} catch (e) {\n  throw new Error(\"AI did not return valid JSON. Check the output.\");\n}\n\n// 2. Create the mapped object for Google Slides\nconst replacements = {};\n\n// --- Pass through the topic for caption generation ---\nreplacements['topic'] = $('Code in JavaScript').first().json.topic;\n\n// --- Slide 1: Cover Slide ---\n// In your Google Slide template, put {{cover_title}}\nreplacements['cover_title'] = content.carousel_title;\n\n// --- Slides 2-9: Content Slides ---\n// We iterate through the 8 slides provided by the AI\ncontent.slides.forEach((slide, index) => {\n  // Slide index 0 is actually Slide 2 in the presentation\n  const slideNum = index + 2;\n\n  // We map the JSON keys (item, meaning, example) to specific slide variables\n  // Example result: s2_idiom, s2_meaning, s2_example\n\n  replacements[`s${slideNum}_idiom`]   = slide.item;    // The Idiom/Phrase\n  replacements[`s${slideNum}_meaning`] = slide.meaning; // The Definition\n  replacements[`s${slideNum}_example`] = slide.example; // The Example Sentence\n});\n\nreturn [{ json: replacements }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        -112
+      ],
+      "id": "3bd65338-19c7-4c61-80b8-88934914903d",
+      "name": "Format for Slides"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "153nCDRlpLaFJAtDl6LE7kh74ZLFMIOJdPIoqCupwgyA",
+          "mode": "id"
+        },
+        "name": "={{ $json.cover_title }} - Instagram Carousel - {{ $now.toFormat('yyyy-MM-dd') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1024,
+        -112
+      ],
+      "id": "79b720c2-ec76-4fa3-a065-84e982ee9a01",
+      "name": "Copy Template",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "replaceText",
+        "presentationId": "={{ $json.id }}",
+        "textUi": {
+          "textValues": [
+            {
+              "text": "{{cover_title}}",
+              "replaceText": "={{ $('Format for Slides').item.json.cover_title }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_0"
+              ],
+              "text": "{{s2_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s2_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_0"
+              ],
+              "text": "{{s2_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s2_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_0"
+              ],
+              "text": "{{s2_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s2_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_5"
+              ],
+              "text": "{{s3_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s3_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_5"
+              ],
+              "text": "{{s3_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s3_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_5"
+              ],
+              "text": "{{s3_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s3_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_10"
+              ],
+              "text": "{{s4_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s4_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_10"
+              ],
+              "text": "{{s4_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s4_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_10"
+              ],
+              "text": "{{s4_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s4_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_15"
+              ],
+              "text": "{{s5_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s5_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_15"
+              ],
+              "text": "{{s5_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s5_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_15"
+              ],
+              "text": "{{s5_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s5_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_20"
+              ],
+              "text": "{{s6_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s6_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_20"
+              ],
+              "text": "{{s6_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s6_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_20"
+              ],
+              "text": "{{s6_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s6_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_25"
+              ],
+              "text": "{{s7_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s7_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_25"
+              ],
+              "text": "{{s7_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s7_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_25"
+              ],
+              "text": "{{s7_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s7_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_30"
+              ],
+              "text": "{{s8_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s8_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_30"
+              ],
+              "text": "{{s8_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s8_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_30"
+              ],
+              "text": "{{s8_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s8_example }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_35"
+              ],
+              "text": "{{s9_idiom}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s9_idiom }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_35"
+              ],
+              "text": "{{s9_meaning}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s9_meaning }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3bb2ea773a7_0_35"
+              ],
+              "text": "{{s9_example}}",
+              "replaceText": "={{ $('Format for Slides').item.json.s9_example }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -112
+      ],
+      "id": "f58638c4-23d5-46de-8e8f-b94618439a94",
+      "name": "Update Slides",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write an engaging Instagram Caption for a carousel about: {{ $('Format for Slides').item.json.topic }}",
+        "options": {
+          "systemMessage": "=You are a social media expert.\n\n### TASK\nWrite a caption for an educational IELTS Instagram Carousel.\n\n### STRUCTURE\n1. Hook: A punchy question or statement.\n2. Value: Briefly mention that this post compares Band 6 vs Band 8 vocabulary.\n3. CTA: \"Swipe to learn\" or \"Comment PDF for the study sheet\".\n4. Hashtags: #IELTS #Vocabulary #EnglishLearning #Band8\n\n### OUTPUT\nReturn ONLY the caption text. No quotes."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1472,
+        48
+      ],
+      "id": "025211d6-b1e3-4b1a-af39-6d070b46b773",
+      "name": "Generate Caption"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "presentationId": "={{ $('Copy Template').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        48
+      ],
+      "id": "d4fd98ea-3d4d-422c-8ab6-aeabaaf923a2",
+      "name": "Get Slide IDs",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// We need to process exactly 7 slides\n// The previous node returns the presentation object\nconst slides = $input.first().json.slides;\n\n// Return an array of objects, one for each slide\nreturn slides.map(slide => ({\n  json: {\n    pageObjectId: slide.objectId,\n    presentationId: $('Copy Template').item.json.id\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        48
+      ],
+      "id": "921a79ab-be28-4194-aedd-0c391bf7aa44",
+      "name": "Split Slides"
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "={{ $json.pageObjectId }}"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        48
+      ],
+      "id": "2798bc85-48df-4517-b0a0-857521f74ea9",
+      "name": "Get URL",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/17841454136519089/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.contentUrl }}"
+            },
+            {
+              "name": "is_carousel_item",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2496,
+        48
+      ],
+      "id": "f844d388-f9b4-4d8c-8abd-01ce29c3f5e1",
+      "name": "Upload to IG Staging",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect all the Container IDs from the previous step\nconst items = $input.all();\nconst containerIds = items.map(item => item.json.id);\n\nreturn {\n  json: {\n    containerIds: containerIds,\n    caption: $('Generate Caption').item.json.output\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2720,
+        48
+      ],
+      "id": "8afe0b4a-7b5d-4f50-a9a0-64cfad76d917",
+      "name": "Aggregate IDs"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/17841454136519089/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "media_type",
+              "value": "CAROUSEL"
+            },
+            {
+              "name": "children",
+              "value": "={{ $json.containerIds.join(',') }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2944,
+        48
+      ],
+      "id": "4230d58f-88a9-4b23-8f73-5f56ee5a0dd7",
+      "name": "Create Carousel",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/17841454136519089/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3168,
+        48
+      ],
+      "id": "12541971-e024-4ca6-85a7-6cfb57f1f1ea",
+      "name": "Publish Post",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        272
+      ],
+      "id": "86231d44-b18e-4335-a27c-670178b3e8d4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.presentationId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "slidesToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1536,
+        -256
+      ],
+      "id": "9c266c8d-3680-41e0-b504-9e7d9dffb3a4",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Copy Template').item.json.name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1824,
+        -256
+      ],
+      "id": "c6bd5722-90ac-4eee-8532-fa55ceb53b28",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// A list of 60 distinct English learning topics (Idioms, Phrasal Verbs, Vocab)\nconst topics = [\n  \"Idioms about Intelligence\", \"Idioms about Time\", \"Idioms about Money\", \"Idioms about Love & Relationships\", \"Idioms about Success\",\n  \"Idioms about Failure\", \"Idioms about Happiness\", \"Idioms about Anger\", \"Idioms about Health\", \"Idioms about Food (metaphorical)\",\n  \"Idioms about Weather\", \"Idioms about Travel\", \"Idioms about Work & Business\", \"Idioms about Friendship\", \"Idioms about Honesty\",\n  \"Idioms about Secrets\", \"Idioms about Luck\", \"Idioms about Decisions\", \"Idioms about Negotiation\", \"Idioms about Risk\",\n  \"Phrasal Verbs with 'Get'\", \"Phrasal Verbs with 'Take'\", \"Phrasal Verbs with 'Look'\", \"Phrasal Verbs with 'Put'\", \"Phrasal Verbs with 'Go'\",\n  \"Phrasal Verbs with 'Come'\", \"Phrasal Verbs with 'Turn'\", \"Phrasal Verbs with 'Make'\", \"Phrasal Verbs with 'Break'\", \"Phrasal Verbs with 'Bring'\",\n  \"Advanced Adjectives for Describing People\", \"Advanced Adjectives for Emotions\", \"Words to Replace 'Very Good'\", \"Words to Replace 'Very Bad'\", \"Words to Replace 'Happy'\",\n  \"Words to Replace 'Sad'\", \"Words to Replace 'Big'\", \"Words to Replace 'Small'\", \"Professional Synonyms for 'Said'\", \"Professional Synonyms for 'Think'\",\n  \"Idioms involving Animals\", \"Idioms involving Body Parts\", \"Idioms involving Colors\", \"Idioms involving Numbers\", \"Idioms involving Clothes\",\n  \"Idioms involving Sports\", \"Idioms involving Nature\", \"Idioms involving Music\", \"Idioms involving House/Home\", \"Idioms involving Technology\",\n  \"Proverbs about Wisdom\", \"Proverbs about Patience\", \"Proverbs about Hard Work\", \"Collocations with 'Do' vs 'Make'\", \"Collocations with 'Have' vs 'Take'\",\n  \"Formal vs Informal Words (Verbs)\", \"Formal vs Informal Words (Adjectives)\", \"Transition Words for Essays\", \"Linking Words for Speaking\", \"Slang Words used in 2025\"\n];\n\n// Get the current day of the year (1-366)\nconst now = new Date();\nconst start = new Date(now.getFullYear(), 0, 0);\nconst diff = now - start;\nconst oneDay = 1000 * 60 * 60 * 24;\nconst dayOfYear = Math.floor(diff / oneDay);\n\n// Use the modulo operator (%) to cycle through the list\n// This guarantees a specific topic for each specific day, looping after 60 days\nconst topicIndex = dayOfYear % topics.length;\n\nreturn [{ json: { topic: topics[topicIndex] } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        -112
+      ],
+      "id": "61c83488-9da6-4af7-a049-08f6991cb454",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Content",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Content": {
+      "main": [
+        [
+          {
+            "node": "Format for Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Slides": {
+      "main": [
+        [
+          {
+            "node": "Copy Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy Template": {
+      "main": [
+        [
+          {
+            "node": "Update Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Caption": {
+      "main": [
+        [
+          {
+            "node": "Get Slide IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Slide IDs": {
+      "main": [
+        [
+          {
+            "node": "Split Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Slides": {
+      "main": [
+        [
+          {
+            "node": "Get URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get URL": {
+      "main": [
+        [
+          {
+            "node": "Upload to IG Staging",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to IG Staging": {
+      "main": [
+        [
+          {
+            "node": "Aggregate IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate IDs": {
+      "main": [
+        [
+          {
+            "node": "Create Carousel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel": {
+      "main": [
+        [
+          {
+            "node": "Publish Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Slides": {
+      "main": [
+        [
+          {
+            "node": "Generate Caption",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Caption",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Generate Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "8d206786-ddfe-4509-b025-9f40217cf800",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "72b965ff05fd6108ae3d911df9419573660cab85f8018091695fbf2be57be2f7"
+  },
+  "id": "wxQ3rmxCr9KvZKGI",
+  "tags": []
+}

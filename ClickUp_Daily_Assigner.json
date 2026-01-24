@@ -1,0 +1,256 @@
+{
+  "name": "ClickUp_Daily_Assigner",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "triggerAtHour": 9,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-001",
+      "name": "Schedule Trigger - 9AM Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300],
+      "notes": "Triggers every day at 9:00 AM to start the daily task assignment process"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Define the 4 team members with their ClickUp assignee IDs\nconst teamMembers = [\n  {\n    name: \"Sarah Johnson\",\n    role: \"Content Writer\",\n    email: \"sarah.johnson@bandladder.com\",\n    clickup_assignee_id: \"12345678\",\n    telegram_chat_id: \"123456789\"\n  },\n  {\n    name: \"Michael Chen\",\n    role: \"Social Media Manager\",\n    email: \"michael.chen@bandladder.com\",\n    clickup_assignee_id: \"23456789\",\n    telegram_chat_id: \"234567890\"\n  },\n  {\n    name: \"Emily Williams\",\n    role: \"IELTS Instructor\",\n    email: \"emily.williams@bandladder.com\",\n    clickup_assignee_id: \"34567890\",\n    telegram_chat_id: \"345678901\"\n  },\n  {\n    name: \"David Kumar\",\n    role: \"Student Support Specialist\",\n    email: \"david.kumar@bandladder.com\",\n    clickup_assignee_id: \"45678901\",\n    telegram_chat_id: \"456789012\"\n  }\n];\n\n// Return each team member as a separate item for processing\nreturn teamMembers.map(member => ({ json: member }));"
+      },
+      "id": "code-team-config-001",
+      "name": "Team Config",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300],
+      "notes": "Defines 4 team members with Name, Role, and clickup_assignee_id"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a task assignment AI for Bandladder, an IELTS/PTE/CELPIP preparation business.\n\nGenerate a specific, actionable daily task for a {{ $json.role }} to be completed by 6 PM today.\n\n**Team Member:** {{ $json.name }}\n**Role:** {{ $json.role }}\n**Current Date:** {{ $now.format('yyyy-MM-dd') }}\n\nYou MUST respond with ONLY a valid JSON object in this exact format (no markdown, no code blocks, just raw JSON):\n{\n  \"task_name\": \"Short task title (max 50 chars)\",\n  \"description\": \"Detailed task description with specific deliverables and success criteria. 2-3 sentences.\",\n  \"due_date\": \"{{ $now.format('yyyy-MM-dd') }}T18:00:00\"\n}\n\nThe task must:\n1. Be completable by 6:00 PM today\n2. Be specific to their role\n3. Include measurable deliverables\n4. Contribute to student success",
+        "options": {
+          "systemMessage": "You are a professional task manager for Bandladder. Always respond with valid JSON only. No explanations, no markdown formatting, just the JSON object."
+        }
+      },
+      "id": "ai-agent-001",
+      "name": "AI Task Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [720, 300],
+      "notes": "Generates role-specific daily task as JSON with task_name, description, due_date"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "gemini-model-001",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [720, 520],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "YOUR_GEMINI_CREDENTIAL_ID",
+          "name": "Google Gemini API"
+        }
+      },
+      "notes": "Gemini 1.5 Flash model for task generation"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Parse the AI response to extract task details\nconst aiResponse = $input.item.json.output;\nconst teamMember = $('Team Config').item.json;\n\ntry {\n  let parsed;\n  \n  // Check if response contains JSON in markdown code block\n  const jsonMatch = aiResponse.match(/```json?\\s*([\\s\\S]*?)```/);\n  if (jsonMatch) {\n    parsed = JSON.parse(jsonMatch[1].trim());\n  } else {\n    // Try direct JSON parse\n    parsed = JSON.parse(aiResponse.trim());\n  }\n  \n  // Convert due_date to Unix timestamp (milliseconds)\n  const dueDate = new Date(parsed.due_date);\n  const dueDateTimestamp = dueDate.getTime();\n  \n  return {\n    json: {\n      // Team member info\n      name: teamMember.name,\n      role: teamMember.role,\n      email: teamMember.email,\n      clickup_assignee_id: teamMember.clickup_assignee_id,\n      telegram_chat_id: teamMember.telegram_chat_id,\n      // Task info from AI\n      task_name: parsed.task_name || 'Daily Task',\n      description: parsed.description || aiResponse,\n      due_date: parsed.due_date,\n      due_date_timestamp: dueDateTimestamp\n    }\n  };\n} catch (e) {\n  // Fallback if JSON parsing fails\n  const today = new Date();\n  today.setHours(18, 0, 0, 0);\n  \n  return {\n    json: {\n      name: teamMember.name,\n      role: teamMember.role,\n      email: teamMember.email,\n      clickup_assignee_id: teamMember.clickup_assignee_id,\n      telegram_chat_id: teamMember.telegram_chat_id,\n      task_name: `Daily Task for ${teamMember.role}`,\n      description: aiResponse,\n      due_date: today.toISOString(),\n      due_date_timestamp: today.getTime(),\n      parse_error: e.message\n    }\n  };\n}"
+      },
+      "id": "code-parse-001",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 300],
+      "notes": "Parses AI JSON output and combines with team member data"
+    },
+    {
+      "parameters": {
+        "resource": "task",
+        "operation": "create",
+        "list": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_CLICKUP_LIST_ID"
+        },
+        "name": "={{ $json.task_name }}",
+        "additionalFields": {
+          "assignees": ["={{ $json.clickup_assignee_id }}"],
+          "content": "={{ $json.description }}",
+          "dueDate": "={{ $json.due_date_timestamp }}",
+          "dueDateTime": true,
+          "priority": 3,
+          "status": "to do",
+          "tags": ["daily-task", "ai-assigned"]
+        }
+      },
+      "id": "clickup-create-001",
+      "name": "Create ClickUp Task",
+      "type": "n8n-nodes-base.clickUp",
+      "typeVersion": 1,
+      "position": [1200, 300],
+      "credentials": {
+        "clickUpApi": {
+          "id": "YOUR_CLICKUP_CREDENTIAL_ID",
+          "name": "ClickUp API"
+        }
+      },
+      "notes": "Creates task in ClickUp with assignee, description, and due date"
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $('Parse AI Response').item.json.telegram_chat_id }}",
+        "text": "=🌅 *Good morning, {{ $('Parse AI Response').item.json.name }}!*\n\nYour daily task is ready in ClickUp:\n\n📋 *Task:* {{ $('Parse AI Response').item.json.task_name }}\n\n📝 *Description:*\n{{ $('Parse AI Response').item.json.description }}\n\n🔗 *ClickUp Link:* {{ $json.url }}\n\n⏰ *Due:* 6:00 PM today\n\n━━━━━━━━━━━━━━━━━━━━━\n_🤖 Assigned by Bandladder AI Task Manager_",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-notify-001",
+      "name": "Send Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1440, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      },
+      "notes": "Sends notification with task details and ClickUp URL to team member"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Log the task assignment for tracking\nconst now = new Date();\nconst parsedData = $('Parse AI Response').item.json;\nconst clickupTask = $input.item.json;\n\nconst assignmentLog = {\n  timestamp: now.toISOString(),\n  date: now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),\n  memberName: parsedData.name,\n  memberRole: parsedData.role,\n  taskName: parsedData.task_name,\n  taskDescription: parsedData.description,\n  clickupTaskId: clickupTask.id,\n  clickupTaskUrl: clickupTask.url,\n  dueDate: parsedData.due_date,\n  status: 'assigned',\n  notificationSent: true\n};\n\nconsole.log(`✅ Task assigned to ${assignmentLog.memberName}: ${assignmentLog.taskName}`);\n\nreturn { json: assignmentLog };"
+      },
+      "id": "code-log-001",
+      "name": "Log Assignment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1680, 300],
+      "notes": "Logs task assignment with ClickUp task ID and URL"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger - 9AM Daily": {
+      "main": [
+        [
+          {
+            "node": "Team Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Team Config": {
+      "main": [
+        [
+          {
+            "node": "AI Task Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Task Generator": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Task Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "Create ClickUp Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create ClickUp Task": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Notification": {
+      "main": [
+        [
+          {
+            "node": "Log Assignment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "automation"
+    },
+    {
+      "name": "scheduled"
+    },
+    {
+      "name": "clickup"
+    },
+    {
+      "name": "ai-workflow"
+    }
+  ],
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "bandladder-n8n"
+  }
+}
