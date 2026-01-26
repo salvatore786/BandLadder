@@ -72,7 +72,7 @@
           "conditions": [
             {
               "id": "main-branch-condition",
-              "leftValue": "={{ $json.body?.ref || $json.ref }}",
+              "leftValue": "={{ $('GitHub Push Trigger').item.json.ref }}",
               "rightValue": "refs/heads/main",
               "operator": {
                 "type": "string",
