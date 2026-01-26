@@ -1,0 +1,336 @@
+{
+  "name": "Error_Handler_Central",
+  "description": "Centralized error handler that catches errors from all workflows, sends detailed Telegram notifications, and uses AI to analyze and suggest fixes.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract comprehensive error details\nconst execution = $input.first().json.execution;\nconst workflow = $input.first().json.workflow;\n\n// Get the failed node info\nconst lastNodeExecuted = execution?.lastNodeExecuted || 'Unknown';\nconst errorMessage = execution?.error?.message || 'No error message available';\nconst errorStack = execution?.error?.stack || '';\nconst errorDescription = execution?.error?.description || '';\n\n// Get workflow info\nconst workflowId = workflow?.id || 'Unknown';\nconst workflowName = workflow?.name || 'Unknown Workflow';\n\n// Get execution info\nconst executionId = execution?.id || 'Unknown';\nconst executionMode = execution?.mode || 'Unknown';\nconst startedAt = execution?.startedAt || new Date().toISOString();\n\n// Get node-specific data if available\nconst nodeData = execution?.data?.resultData?.runData || {};\nlet failedNodeInput = '';\nlet failedNodeType = '';\n\nif (lastNodeExecuted && nodeData[lastNodeExecuted]) {\n  const nodeRun = nodeData[lastNodeExecuted];\n  if (nodeRun && nodeRun[0]) {\n    failedNodeType = nodeRun[0]?.source?.[0]?.previousNode || 'Unknown';\n    try {\n      failedNodeInput = JSON.stringify(nodeRun[0]?.data?.main?.[0]?.[0]?.json || {}, null, 2).substring(0, 500);\n    } catch (e) {\n      failedNodeInput = 'Could not parse input data';\n    }\n  }\n}\n\n// Categorize error type for smart fixing\nlet errorCategory = 'unknown';\nlet suggestedFix = '';\n\nconst errorLower = errorMessage.toLowerCase();\n\nif (errorLower.includes('authentication') || errorLower.includes('unauthorized') || errorLower.includes('401') || errorLower.includes('credentials')) {\n  errorCategory = 'authentication';\n  suggestedFix = '🔑 Re-authenticate the credential in n8n Settings > Credentials';\n} else if (errorLower.includes('rate limit') || errorLower.includes('429') || errorLower.includes('too many requests')) {\n  errorCategory = 'rate_limit';\n  suggestedFix = '⏱️ Rate limited - workflow will auto-retry in 5 minutes';\n} else if (errorLower.includes('timeout') || errorLower.includes('timed out')) {\n  errorCategory = 'timeout';\n  suggestedFix = '⏰ Timeout error - workflow will auto-retry';\n} else if (errorLower.includes('network') || errorLower.includes('econnrefused') || errorLower.includes('enotfound')) {\n  errorCategory = 'network';\n  suggestedFix = '🌐 Network error - check internet connection, will auto-retry';\n} else if (errorLower.includes('json') || errorLower.includes('parse') || errorLower.includes('syntax')) {\n  errorCategory = 'parsing';\n  suggestedFix = '📝 JSON/Parsing error - check the data format from previous node';\n} else if (errorLower.includes('quota') || errorLower.includes('limit exceeded')) {\n  errorCategory = 'quota';\n  suggestedFix = '📊 API quota exceeded - wait or upgrade plan';\n} else if (errorLower.includes('not found') || errorLower.includes('404')) {\n  errorCategory = 'not_found';\n  suggestedFix = '🔍 Resource not found - verify the ID/path exists';\n} else if (errorLower.includes('permission') || errorLower.includes('forbidden') || errorLower.includes('403')) {\n  errorCategory = 'permission';\n  suggestedFix = '🚫 Permission denied - check API scopes/permissions';\n}\n\n// Determine if auto-retry is appropriate\nconst autoRetryCategories = ['rate_limit', 'timeout', 'network'];\nconst shouldAutoRetry = autoRetryCategories.includes(errorCategory);\n\nreturn {\n  json: {\n    // Error details\n    errorMessage,\n    errorStack: errorStack.substring(0, 1000),\n    errorDescription,\n    errorCategory,\n    suggestedFix,\n    shouldAutoRetry,\n    \n    // Workflow details\n    workflowId,\n    workflowName,\n    \n    // Execution details\n    executionId,\n    executionMode,\n    startedAt,\n    \n    // Node details\n    failedNodeName: lastNodeExecuted,\n    failedNodeType,\n    failedNodeInput,\n    \n    // Timestamp\n    errorTime: new Date().toISOString(),\n    \n    // For AI analysis\n    fullErrorContext: `Workflow: ${workflowName}\\nNode: ${lastNodeExecuted}\\nError: ${errorMessage}\\nCategory: ${errorCategory}\\nInput Data: ${failedNodeInput}`\n  }\n};"
+      },
+      "id": "extract-error-details",
+      "name": "Extract Error Details",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "=🚨 **WORKFLOW ERROR ALERT** 🚨\n\n📋 **Workflow:** {{ $json.workflowName }}\n🔢 **Workflow ID:** {{ $json.workflowId }}\n\n❌ **Failed Node:** {{ $json.failedNodeName }}\n🏷️ **Error Category:** {{ $json.errorCategory }}\n\n💬 **Error Message:**\n```\n{{ $json.errorMessage }}\n```\n\n💡 **Suggested Fix:**\n{{ $json.suggestedFix }}\n\n⏰ **Time:** {{ $json.errorTime }}\n🔗 **Execution ID:** {{ $json.executionId }}\n\n{{ $json.shouldAutoRetry ? '🔄 Auto-retry scheduled...' : '⚠️ Manual intervention may be needed' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-error-alert",
+      "name": "Send Error Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        180
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this n8n workflow error and provide:\n1. Root cause analysis (1-2 sentences)\n2. Step-by-step fix instructions (numbered list)\n3. Prevention tips for the future\n\nError Context:\n{{ $json.fullErrorContext }}\n\nError Stack (partial):\n{{ $json.errorStack }}\n\nRespond in a clear, actionable format. Be specific to n8n workflows.",
+        "options": {
+          "systemMessage": "You are an n8n workflow automation expert. Analyze errors and provide clear, actionable fixes. Be concise and specific. Focus on practical solutions that a non-developer can follow."
+        }
+      },
+      "id": "ai-error-analyzer",
+      "name": "AI Error Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        680,
+        420
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite-001",
+        "options": {}
+      },
+      "id": "gemini-model",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        680,
+        620
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "=🤖 **AI ERROR ANALYSIS**\n\n📋 Workflow: {{ $('Extract Error Details').item.json.workflowName }}\n❌ Node: {{ $('Extract Error Details').item.json.failedNodeName }}\n\n🔍 **Analysis & Fix:**\n{{ $json.output }}\n\n---\n_Reply with /retry to attempt auto-fix_",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-ai-analysis",
+      "name": "Send AI Analysis",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        420
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "auto-retry-condition",
+              "leftValue": "={{ $json.shouldAutoRetry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-auto-retry",
+      "name": "Should Auto-Retry?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        900,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "unit": "minutes",
+        "amount": 5
+      },
+      "id": "wait-before-retry",
+      "name": "Wait 5 Minutes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://localhost:5678/api/v1/workflows/' + $('Extract Error Details').item.json.workflowId + '/run' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "options": {}
+      },
+      "id": "retry-workflow",
+      "name": "Retry Failed Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        100
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "=🔄 **AUTO-RETRY INITIATED**\n\n📋 Workflow: {{ $('Extract Error Details').item.json.workflowName }}\n⏰ Retried at: {{ $now.toISO() }}\n\n{{ $json.error ? '❌ Retry failed: ' + $json.error.message : '✅ Workflow re-triggered successfully' }}",
+        "additionalFields": {}
+      },
+      "id": "telegram-retry-status",
+      "name": "Send Retry Status",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1560,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log error to workflow static data for tracking\nconst errorDetails = $('Extract Error Details').item.json;\nconst staticData = $getWorkflowStaticData('global');\n\n// Initialize error log if not exists\nif (!staticData.errorLog) {\n  staticData.errorLog = [];\n}\n\n// Add current error (keep last 50 errors)\nstaticData.errorLog.unshift({\n  timestamp: errorDetails.errorTime,\n  workflow: errorDetails.workflowName,\n  node: errorDetails.failedNodeName,\n  category: errorDetails.errorCategory,\n  message: errorDetails.errorMessage.substring(0, 200),\n  resolved: false\n});\n\n// Trim to last 50\nstaticData.errorLog = staticData.errorLog.slice(0, 50);\n\nreturn {\n  json: {\n    logged: true,\n    totalErrors: staticData.errorLog.length,\n    recentErrors: staticData.errorLog.slice(0, 5)\n  }\n};"
+      },
+      "id": "log-error",
+      "name": "Log Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract Error Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Error Details": {
+      "main": [
+        [
+          {
+            "node": "Send Error Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Error Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Error Alert": {
+      "main": [
+        [
+          {
+            "node": "Should Auto-Retry?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Error Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Send AI Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Auto-Retry?": {
+      "main": [
+        [
+          {
+            "node": "Wait 5 Minutes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Retry Failed Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry Failed Workflow": {
+      "main": [
+        [
+          {
+            "node": "Send Retry Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Retry Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Error Analyzer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

@@ -827,7 +827,8 @@
   "settings": {
     "executionOrder": "v1",
     "availableInMCP": false,
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "cvshxmj3jYHG9qzu1Z8r8"
   },
   "meta": {
     "templateCredsSetupCompleted": true

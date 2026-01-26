@@ -766,7 +766,8 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "errorWorkflow": "cvshxmj3jYHG9qzu1Z8r8"
   },
   "versionId": "8d206786-ddfe-4509-b025-9f40217cf800",
   "meta": {
