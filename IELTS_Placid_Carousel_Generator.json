@@ -1,0 +1,216 @@
+{
+  "name": "IELTS Placid Carousel Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 10-Slide Pro IELTS Tips Carousel Content\nconst slides = [\n  {\n    slide_number: \"1\",\n    headline: \"Ace IELTS: Your 4-Week Success Blueprint\",\n    subheadline: \"Master all 4 sections with proven strategies\",\n    tip_1: \"Listening \\ud83c\\udfa7\",\n    tip_2: \"Reading \\ud83d\\udcd6\",\n    tip_3: \"Speaking \\ud83d\\udde3\\ufe0f\",\n    key_stat: \"Writing \\u270d\\ufe0f\"\n  },\n  {\n    slide_number: \"2\",\n    headline: \"Listening Mastery\",\n    subheadline: \"40 questions \\u2022 30 minutes\",\n    tip_1: \"Read questions BEFORE audio plays\",\n    tip_2: \"Listen for signpost words (however, finally)\",\n    tip_3: \"Don't pause on missed answers\\u2014move forward\",\n    key_stat: \"Pro tip: Practice with BBC podcasts daily\"\n  },\n  {\n    slide_number: \"3\",\n    headline: \"Reading Strategies\",\n    subheadline: \"3 passages \\u2022 60 minutes \\u2022 40 questions\",\n    tip_1: \"Skim first, read second\\u201460 sec overview\",\n    tip_2: \"Keywords are your GPS\\u2014underline & match\",\n    tip_3: \"TRUE/FALSE/NOT GIVEN: stick to text only\",\n    key_stat: \"Pro tip: 20 min MAX per passage\"\n  },\n  {\n    slide_number: \"4\",\n    headline: \"Speaking Confidence\",\n    subheadline: \"11-14 minutes \\u2022 3 parts\",\n    tip_1: \"Extend answers naturally\\u20143-4 sentences\",\n    tip_2: \"Use discourse markers (Well, Actually...)\",\n    tip_3: \"Part 2: Use 1-min prep\\u2014bullet points only\",\n    key_stat: \"Pro tip: Record yourself daily\"\n  },\n  {\n    slide_number: \"5\",\n    headline: \"Writing Excellence\",\n    subheadline: \"Task 1: 150 words \\u2022 Task 2: 250 words\",\n    tip_1: \"Task 1: Describe trends, not every data point\",\n    tip_2: \"Task 2: Clear position + 2 body paragraphs\",\n    tip_3: \"Spend 5 min planning, 35 min writing Task 2\",\n    key_stat: \"Pro tip: Task 2 is worth DOUBLE\\u2014prioritize it\"\n  },\n  {\n    slide_number: \"6\",\n    headline: \"Week-by-Week Study Plan\",\n    subheadline: \"Your 4-week roadmap to success\",\n    tip_1: \"Week 1: Diagnostic test + identify weak areas\",\n    tip_2: \"Week 2: Focus on weakest 2 sections\",\n    tip_3: \"Week 3: Full practice tests (timed)\",\n    key_stat: \"Week 4: Review mistakes + rest before test\"\n  },\n  {\n    slide_number: \"7\",\n    headline: \"Practice Like a Pro\",\n    subheadline: \"Quality beats quantity every time\",\n    tip_1: \"Simulate real test conditions (no phone, timed)\",\n    tip_2: \"3 focused hours > 6 distracted hours\",\n    tip_3: \"Use official Cambridge IELTS books 15-18\",\n    key_stat: \"Daily: 1 Listening test, 1 Reading passage, 10 min Speaking\"\n  },\n  {\n    slide_number: \"8\",\n    headline: \"Get Feedback That Works\",\n    subheadline: \"Self-study has limits\\u2014get expert eyes\",\n    tip_1: \"Find a speaking partner or tutor\",\n    tip_2: \"Review EVERY wrong answer\\u2014understand WHY\",\n    tip_3: \"Keep an error journal for patterns\",\n    key_stat: \"Pro tip: Get 3 essays scored before test day\"\n  },\n  {\n    slide_number: \"9\",\n    headline: \"Test Day Pacing\",\n    subheadline: \"Time kills more scores than difficulty\",\n    tip_1: \"Listening: Use 10 min transfer time to review\",\n    tip_2: \"Reading: 20 min per passage MAX\",\n    tip_3: \"Writing: Task 1 = 20 min \\u2022 Task 2 = 40 min\",\n    key_stat: \"Pro tip: Wear a watch\\u2014wall clocks may be behind you\"\n  },\n  {\n    slide_number: \"10\",\n    headline: \"Your Action Plan Starts Now\",\n    subheadline: \"Don't wait for the perfect moment\",\n    tip_1: \"Book your test 6-8 weeks out\",\n    tip_2: \"Follow @BandLadder for daily IELTS tips\",\n    tip_3: \"Download our free 4-week study planner\",\n    key_stat: \"The deadline creates urgency\\u2014commit today! \\ud83d\\ude80\"\n  }\n];\n\nreturn slides.map(slide => ({ json: slide }));"
+      },
+      "id": "code-slides",
+      "name": "Generate Slide Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-batches",
+      "name": "Process One Slide",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.placid.app/api/rest/images",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer placid-1ksgknffovcydtih-97tio3ozbcqqb8ls"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"template_id\": \"eaxuow3gfzrvx\",\n  \"layers\": {\n    \"slide_number\": \"{{ $json.slide_number }}/10\",\n    \"headline\": \"{{ $json.headline }}\",\n    \"subheadline\": \"{{ $json.subheadline }}\",\n    \"tip_1\": \"{{ $json.tip_1 }}\",\n    \"tip_2\": \"{{ $json.tip_2 }}\",\n    \"tip_3\": \"{{ $json.tip_3 }}\",\n    \"key_stat\": \"{{ $json.key_stat }}\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "http-placid",
+      "name": "Generate Image via Placid",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "wait-rate-limit",
+      "name": "Wait (Rate Limit)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect all generated image URLs\nconst items = $input.all();\nconst imageUrls = items.map((item, index) => ({\n  slide: index + 1,\n  image_url: item.json.image_url || item.json.url || 'pending',\n  status: item.json.status || 'generated'\n}));\n\nreturn [{ json: { slides: imageUrls, total: imageUrls.length } }];"
+      },
+      "id": "code-collect",
+      "name": "Collect Image URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "5493233618",
+        "text": "=🎯 **IELTS Carousel Generated!**\n\n{{ $json.total }} slides created successfully.\n\nSlide URLs:\n{{ $json.slides.map(s => `Slide ${s.slide}: ${s.image_url}`).join('\\n') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-notify",
+      "name": "Notify via Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "a6ZPKX5fbTN6Bklz",
+          "name": "Bandladder Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## IELTS Placid Carousel Generator\\n\\n**Ready to use!**\\n\\nCredentials pre-configured:\\n- Placid API: ✅\\n- Telegram Bot: ✅\\n\\n**How to use:**\\n1. Import this workflow\\n2. Click Execute Workflow\\n3. 10 slides will be generated\\n4. URLs sent to Telegram",
+        "height": 280,
+        "width": 320
+      },
+      "id": "sticky-note",
+      "name": "Instructions",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [240, 40]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Slide Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Slide Content": {
+      "main": [
+        [
+          {
+            "node": "Process One Slide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process One Slide": {
+      "main": [
+        [
+          {
+            "node": "Generate Image via Placid",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Collect Image URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image via Placid": {
+      "main": [
+        [
+          {
+            "node": "Wait (Rate Limit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait (Rate Limit)": {
+      "main": [
+        [
+          {
+            "node": "Process One Slide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Image URLs": {
+      "main": [
+        [
+          {
+            "node": "Notify via Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "IELTS",
+      "createdAt": "2026-01-31T00:00:00.000Z",
+      "updatedAt": "2026-01-31T00:00:00.000Z"
+    },
+    {
+      "name": "Placid",
+      "createdAt": "2026-01-31T00:00:00.000Z",
+      "updatedAt": "2026-01-31T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-01-31T00:00:00.000Z",
+  "versionId": "1"
+}
