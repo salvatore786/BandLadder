@@ -1,0 +1,250 @@
+{
+  "name": "Daily_Team_Task_Assigner",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "triggerAtHour": 9,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-001",
+      "name": "Schedule Trigger - 9AM Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [250, 300],
+      "notes": "Triggers every day at 9:00 AM to start the daily task assignment process"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Define the 4 team members with their details\nconst teamMembers = [\n  {\n    name: \"Sarah Johnson\",\n    role: \"Content Writer\",\n    email: \"sarah.johnson@bandladder.com\",\n    telegramChatId: \"123456789\",\n    responsibilities: \"Creating IELTS/PTE/CELPIP study materials, blog posts, and educational content\"\n  },\n  {\n    name: \"Michael Chen\",\n    role: \"Social Media Manager\",\n    email: \"michael.chen@bandladder.com\",\n    telegramChatId: \"234567890\",\n    responsibilities: \"Managing Instagram, Facebook, and LinkedIn presence, scheduling posts, engaging with students\"\n  },\n  {\n    name: \"Emily Williams\",\n    role: \"IELTS Instructor\",\n    email: \"emily.williams@bandladder.com\",\n    telegramChatId: \"345678901\",\n    responsibilities: \"Conducting online classes, reviewing student essays, providing speaking feedback\"\n  },\n  {\n    name: \"David Kumar\",\n    role: \"Student Support Specialist\",\n    email: \"david.kumar@bandladder.com\",\n    telegramChatId: \"456789012\",\n    responsibilities: \"Handling student inquiries, scheduling consultations, managing enrollments\"\n  }\n];\n\n// Return each team member as a separate item for processing\nreturn teamMembers.map(member => ({ json: member }));"
+      },
+      "id": "code-team-members-001",
+      "name": "Define Team Members",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300],
+      "notes": "Defines the 4 team members with Name, Role, Email, Telegram ID, and responsibilities"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a daily task assignment AI for Bandladder, an IELTS/PTE/CELPIP preparation business.\n\nGenerate ONE specific, actionable daily objective for the following team member:\n\n**Name:** {{ $json.name }}\n**Role:** {{ $json.role }}\n**Responsibilities:** {{ $json.responsibilities }}\n**Current Date:** {{ $now.format('EEEE, MMMM d, yyyy') }}\n\nThe task MUST:\n1. Be completable by 6:00 PM today (realistic scope)\n2. Be specific and measurable (include numbers or deliverables)\n3. Directly align with their role responsibilities\n4. Contribute to student success or business growth\n5. Be varied day-to-day (not repetitive generic tasks)\n\nRespond with ONLY the task description in 1-2 clear sentences. No greetings, explanations, or extra formatting.",
+        "options": {
+          "systemMessage": "You are a professional task manager for an IELTS/PTE/CELPIP preparation business called Bandladder. Your job is to assign specific, actionable daily tasks to team members based on their roles. Keep tasks realistic, measurable, and completable within a workday."
+        }
+      },
+      "id": "ai-agent-001",
+      "name": "AI Task Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [720, 300],
+      "notes": "Uses LangChain AI Agent to generate role-specific daily objectives"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "gemini-model-001",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [720, 520],
+      "credentials": {
+        "googleGeminiApi": {
+          "id": "YOUR_GEMINI_CREDENTIAL_ID",
+          "name": "Google Gemini API"
+        }
+      },
+      "notes": "Gemini 1.5 Flash model for fast, cost-effective task generation"
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "formatted-message",
+              "name": "message",
+              "value": "=🎯 *Daily Task Assignment*\n━━━━━━━━━━━━━━━━━━━━━\n\nGood morning, *{{ $('Define Team Members').item.json.name }}*! 👋\n\n📋 *Your Role:* {{ $('Define Team Members').item.json.role }}\n\n✅ *Today's Objective:*\n{{ $json.output }}\n\n⏰ *Deadline:* 6:00 PM today\n📅 *Date:* {{ $now.format('EEEE, MMMM d, yyyy') }}\n\n━━━━━━━━━━━━━━━━━━━━━\n_🤖 Assigned by Bandladder AI Task Manager_",
+              "type": "string"
+            },
+            {
+              "id": "chat-id",
+              "name": "chatId",
+              "value": "={{ $('Define Team Members').item.json.telegramChatId }}",
+              "type": "string"
+            },
+            {
+              "id": "member-name",
+              "name": "memberName",
+              "value": "={{ $('Define Team Members').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "member-email",
+              "name": "memberEmail",
+              "value": "={{ $('Define Team Members').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "member-role",
+              "name": "memberRole",
+              "value": "={{ $('Define Team Members').item.json.role }}",
+              "type": "string"
+            },
+            {
+              "id": "task-assigned",
+              "name": "taskContent",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-format-001",
+      "name": "Format Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [960, 300],
+      "notes": "Formats the AI-generated task into a Telegram-friendly message with markdown"
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-send-001",
+      "name": "Send Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1200, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      },
+      "notes": "Sends the formatted task assignment to each team member via Telegram"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Log the task assignment for tracking and analytics\nconst now = new Date();\nconst assignmentLog = {\n  timestamp: now.toISOString(),\n  date: now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),\n  time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),\n  memberName: $input.item.json.memberName,\n  memberEmail: $input.item.json.memberEmail,\n  memberRole: $input.item.json.memberRole,\n  taskAssigned: $input.item.json.taskContent,\n  deadline: '6:00 PM',\n  notificationChannel: 'Telegram',\n  notificationSent: true,\n  status: 'assigned'\n};\n\nconsole.log(`✅ Task assigned to ${assignmentLog.memberName} (${assignmentLog.memberRole})`);\n\nreturn { json: assignmentLog };"
+      },
+      "id": "code-log-001",
+      "name": "Log Assignment",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1440, 300],
+      "notes": "Logs each task assignment for tracking and analytics purposes"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger - 9AM Daily": {
+      "main": [
+        [
+          {
+            "node": "Define Team Members",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Define Team Members": {
+      "main": [
+        [
+          {
+            "node": "AI Task Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Task Generator": {
+      "main": [
+        [
+          {
+            "node": "Format Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Task Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Message": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Telegram Notification": {
+      "main": [
+        [
+          {
+            "node": "Log Assignment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "automation"
+    },
+    {
+      "name": "scheduled"
+    },
+    {
+      "name": "team-management"
+    }
+  ],
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "bandladder-n8n"
+  }
+}

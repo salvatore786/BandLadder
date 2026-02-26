@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<title>IELTS Sentence Completion</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(170deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #ffffff;
+    position: relative;
+  }
+
+  /* ── Decorative Elements ── */
+  .bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+  .bg-circle-1 {
+    width: 600px; height: 600px;
+    top: -150px; right: -200px;
+    background: radial-gradient(circle, #e94560, transparent);
+  }
+  .bg-circle-2 {
+    width: 400px; height: 400px;
+    bottom: 200px; left: -150px;
+    background: radial-gradient(circle, #0f3460, transparent);
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 70px 60px 0;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .logo-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .logo-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #e94560, #c23152);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.4);
+  }
+  .logo-text {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #ffffff 0%, #a8b2d1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .practice-label {
+    font-size: 26px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+
+  /* ── Title Section ── */
+  .title-section {
+    text-align: center;
+    padding: 0 60px;
+    position: relative;
+    z-index: 2;
+  }
+  .main-title {
+    font-size: 52px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .title-underline {
+    width: 200px;
+    height: 5px;
+    background: linear-gradient(90deg, #e94560, #ff6b6b);
+    margin: 0 auto 30px;
+    border-radius: 3px;
+  }
+  .scenario-text {
+    font-size: 26px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.5;
+    padding: 0 20px;
+  }
+
+  /* ── Category Badge ── */
+  .category-badge {
+    display: inline-block;
+    padding: 10px 30px;
+    background: rgba(233, 69, 96, 0.15);
+    border: 1px solid rgba(233, 69, 96, 0.3);
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #ff6b6b;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+  }
+
+  /* ── Instructions ── */
+  .instructions {
+    text-align: center;
+    margin: 35px 60px;
+    padding: 20px 30px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    z-index: 2;
+  }
+  .instructions p {
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 400;
+  }
+  .instructions .headphone-icon {
+    font-size: 28px;
+    margin-right: 8px;
+  }
+
+  /* ── Sentences Container ── */
+  .sentences-container {
+    padding: 30px 60px;
+    position: relative;
+    z-index: 2;
+  }
+  .sentence-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .sentence-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .sentence-number {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #e94560, #c23152);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-top: 4px;
+    box-shadow: 0 3px 15px rgba(233, 69, 96, 0.3);
+  }
+  .sentence-text {
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .blank {
+    display: inline-block;
+    min-width: 120px;
+    border-bottom: 3px solid #ffd369;
+    color: #ffd369;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 6px;
+    margin: 0 4px;
+  }
+
+  /* ── Answer Reveal ── */
+  .sentence-item.reveal .blank {
+    color: #4ecca3;
+    border-bottom-color: #4ecca3;
+    animation: pulse-answer 0.5s ease-out;
+  }
+  @keyframes pulse-answer {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+
+  /* ── Progress Bar ── */
+  .progress-section {
+    position: absolute;
+    bottom: 160px;
+    left: 60px;
+    right: 60px;
+    z-index: 2;
+  }
+  .progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #e94560, #ff6b6b, #ffd369);
+    border-radius: 4px;
+    transition: width 0.3s linear;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 500;
+  }
+
+  /* ── Watermark ── */
+  .watermark {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2;
+  }
+  .watermark span {
+    font-size: 28px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="bg-circle bg-circle-1"></div>
+  <div class="bg-circle bg-circle-2"></div>
+
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon">B</div>
+      <div class="logo-text">BandLadder</div>
+    </div>
+    <div class="practice-label">IELTS Listening Practice</div>
+  </div>
+
+  <div class="title-section">
+    <div class="category-badge" id="categoryBadge"></div>
+    <h1 class="main-title">Sentence Completion</h1>
+    <div class="title-underline"></div>
+    <p class="scenario-text" id="scenarioText"></p>
+  </div>
+
+  <div class="instructions">
+    <p><span class="headphone-icon">&#127911;</span> Listen and complete the sentences</p>
+  </div>
+
+  <div class="sentences-container" id="sentencesContainer"></div>
+
+  <div class="progress-section">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-label">
+      <span>Listening...</span>
+      <span id="timeLabel">0:00</span>
+    </div>
+  </div>
+
+  <div class="watermark">
+    <span>@bandladder</span>
+  </div>
+
+<script>
+  const SENTENCES = ["The new student is looking for a ___ room.", "The cost of a single room is \u00a3___ per week.", "The single room accommodation includes ___ and internet.", "The student can purchase a ___ plan for \u00a330 per week.", "The student needs to pay a deposit of \u00a3___ to secure the accommodation."];
+  const ANSWERS   = ["single", "120", "bills", "meal", "200"];
+  const DURATION  = 55.584;
+  const INTERVAL  = 7.78176;
+  const CATEGORY  = "University";
+  const SCENARIO  = `New student registering for accommodation on campus`;
+
+  // Populate static content
+  document.getElementById('categoryBadge').textContent = CATEGORY;
+  document.getElementById('scenarioText').textContent = SCENARIO;
+
+  // Build sentence elements
+  const container = document.getElementById('sentencesContainer');
+  SENTENCES.forEach((sentence, i) => {
+    const item = document.createElement('div');
+    item.className = 'sentence-item';
+    item.id = `sentence-${i}`;
+
+    const num = document.createElement('div');
+    num.className = 'sentence-number';
+    num.textContent = i + 1;
+
+    const text = document.createElement('div');
+    text.className = 'sentence-text';
+    // Replace ___ with styled blank
+    text.innerHTML = sentence.replace(/___/g,
+      `<span class="blank" id="blank-${i}">____</span>`);
+
+    item.appendChild(num);
+    item.appendChild(text);
+    container.appendChild(item);
+  });
+
+  // ── Animation Timeline ──
+  const startTime = Date.now();
+  const sentenceStartPct = 0.12;   // sentences start at 12%
+  const answerRevealPct  = 0.82;   // answers revealed at 82%
+  const totalMs = DURATION * 1000;
+
+  function animate() {
+    const elapsed = Date.now() - startTime;
+    const pct = Math.min(elapsed / totalMs, 1);
+
+    // Progress bar
+    document.getElementById('progressFill').style.width = (pct * 100) + '%';
+
+    // Time label
+    const secs = Math.floor(elapsed / 1000);
+    const mm = Math.floor(secs / 60);
+    const ss = String(secs % 60).padStart(2, '0');
+    document.getElementById('timeLabel').textContent = mm + ':' + ss;
+
+    // Show sentences one by one
+    for (let i = 0; i < 5; i++) {
+      const showAt = sentenceStartPct + (i * INTERVAL / DURATION);
+      if (pct >= showAt) {
+        document.getElementById(`sentence-${i}`).classList.add('visible');
+      }
+    }
+
+    // Reveal answers
+    if (pct >= answerRevealPct) {
+      for (let i = 0; i < 5; i++) {
+        const blank = document.getElementById(`blank-${i}`);
+        const item  = document.getElementById(`sentence-${i}`);
+        if (blank && blank.textContent === '____') {
+          blank.textContent = ANSWERS[i];
+          item.classList.add('reveal');
+        }
+      }
+    }
+
+    if (pct < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      // Signal done
+      document.body.setAttribute('data-animation-done', 'true');
+    }
+  }
+
+  // Start after a brief pause
+  setTimeout(animate, 300);
+</script>
+</body>
+</html>

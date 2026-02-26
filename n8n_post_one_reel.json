@@ -1,0 +1,190 @@
+{
+  "name": "Post One Reel NOW (Manual Trigger)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "post-one-reel",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-800, 300],
+      "id": "pw-11111111-1111-1111-1111-111111111111",
+      "name": "Trigger",
+      "webhookId": "post-one-reel-now"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "'1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu' in parents and mimeType='video/mp4' and trashed=false",
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-540, 300],
+      "id": "pw-22222222-2222-2222-2222-222222222222",
+      "name": "List Files",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst mp4Files = items.filter(item => item.json.name && item.json.name.endsWith('.mp4'));\nif (mp4Files.length === 0) {\n  throw new Error('No .mp4 files found in folder');\n}\nconst file = mp4Files[0].json;\nconst caption = file.description || 'Practice your listening skills! Follow @bandladder_ for daily practice!\\n\\n#IELTS #BandLadder #IELTSListening #IELTSPreparation';\nreturn [{\n  json: {\n    file_id: file.id,\n    file_name: file.name,\n    caption: caption\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-280, 300],
+      "id": "pw-33333333-3333-3333-3333-333333333333",
+      "name": "Pick File"
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.file_id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [-20, 300],
+      "id": "pw-44444444-4444-4444-4444-444444444444",
+      "name": "Make Public",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const fileId = $('Pick File').item.json.file_id;\nconst caption = $('Pick File').item.json.caption;\nconst fileName = $('Pick File').item.json.file_name;\nconst videoUrl = 'https://drive.google.com/uc?export=download&id=' + fileId;\nreturn [{\n  json: {\n    file_id: fileId,\n    file_name: fileName,\n    caption: caption,\n    video_url: videoUrl\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "id": "pw-55555555-5555-5555-5555-555555555555",
+      "name": "Build URL"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v24.0/17841480170396892/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "media_type", "value": "REELS"},
+            {"name": "video_url", "value": "={{ $json.video_url }}"},
+            {"name": "caption", "value": "={{ $json.caption }}"}
+          ]
+        },
+        "options": {"timeout": 120000}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 300],
+      "id": "pw-66666666-6666-6666-6666-666666666666",
+      "name": "Create Reel",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "21RJddQlSqo5ebO3",
+          "name": "Facebook Graph account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 60,
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [760, 300],
+      "id": "pw-77777777-7777-7777-7777-777777777777",
+      "name": "Wait 60s",
+      "webhookId": "wait-post-one-reel"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v24.0/17841480170396892/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "creation_id", "value": "={{ $('Create Reel').item.json.id }}"}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 300],
+      "id": "pw-88888888-8888-8888-8888-888888888888",
+      "name": "Publish Reel",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "21RJddQlSqo5ebO3",
+          "name": "Facebook Graph account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Pick File').item.json.file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1280, 300],
+      "id": "pw-99999999-9999-9999-9999-999999999999",
+      "name": "Delete from Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger": {"main": [[{"node": "List Files", "type": "main", "index": 0}]]},
+    "List Files": {"main": [[{"node": "Pick File", "type": "main", "index": 0}]]},
+    "Pick File": {"main": [[{"node": "Make Public", "type": "main", "index": 0}]]},
+    "Make Public": {"main": [[{"node": "Build URL", "type": "main", "index": 0}]]},
+    "Build URL": {"main": [[{"node": "Create Reel", "type": "main", "index": 0}]]},
+    "Create Reel": {"main": [[{"node": "Wait 60s", "type": "main", "index": 0}]]},
+    "Wait 60s": {"main": [[{"node": "Publish Reel", "type": "main", "index": 0}]]},
+    "Publish Reel": {"main": [[{"node": "Delete from Drive", "type": "main", "index": 0}]]}
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata"
+  }
+}

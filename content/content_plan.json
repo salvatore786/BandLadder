@@ -1,0 +1,1674 @@
+[
+  {
+    "id": 1,
+    "question_type": "sentence_completion",
+    "category": "University",
+    "scenario": "Student enquiring about library membership",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 2,
+    "question_type": "sentence_completion",
+    "category": "University",
+    "scenario": "New student registering for accommodation on campus",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 3,
+    "question_type": "sentence_completion",
+    "category": "Travel",
+    "scenario": "Traveller booking a guided tour at a tourist office",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 4,
+    "question_type": "sentence_completion",
+    "category": "Travel",
+    "scenario": "Passenger enquiring about train schedules and fares",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 5,
+    "question_type": "sentence_completion",
+    "category": "Healthcare",
+    "scenario": "Patient registering at a new dental clinic",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 6,
+    "question_type": "sentence_completion",
+    "category": "Healthcare",
+    "scenario": "Person calling to book a health check-up appointment",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 7,
+    "question_type": "sentence_completion",
+    "category": "Housing",
+    "scenario": "Tenant enquiring about renting a flat through an agency",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 8,
+    "question_type": "sentence_completion",
+    "category": "Housing",
+    "scenario": "Homeowner calling about a property maintenance service",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 9,
+    "question_type": "sentence_completion",
+    "category": "Employment",
+    "scenario": "Job seeker enquiring about a part-time position at a retail store",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 10,
+    "question_type": "sentence_completion",
+    "category": "Employment",
+    "scenario": "Employee calling HR about workplace training sessions",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 11,
+    "question_type": "sentence_completion",
+    "category": "Banking",
+    "scenario": "Customer opening a new savings account at a bank",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 12,
+    "question_type": "sentence_completion",
+    "category": "Banking",
+    "scenario": "Person enquiring about international money transfer services",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 13,
+    "question_type": "sentence_completion",
+    "category": "Library",
+    "scenario": "Visitor asking about borrowing rules and facilities at a public library",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 14,
+    "question_type": "sentence_completion",
+    "category": "Library",
+    "scenario": "Parent enquiring about children's reading programmes",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 15,
+    "question_type": "sentence_completion",
+    "category": "Transport",
+    "scenario": "Commuter enquiring about monthly bus pass options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 16,
+    "question_type": "sentence_completion",
+    "category": "Transport",
+    "scenario": "Person reporting a lost item on public transport",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 17,
+    "question_type": "sentence_completion",
+    "category": "Shopping",
+    "scenario": "Customer returning a faulty electronic item to a store",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 18,
+    "question_type": "sentence_completion",
+    "category": "Shopping",
+    "scenario": "Shopper enquiring about a store loyalty card programme",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 19,
+    "question_type": "sentence_completion",
+    "category": "Tourism",
+    "scenario": "Tourist booking tickets for a river cruise excursion",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 20,
+    "question_type": "sentence_completion",
+    "category": "Tourism",
+    "scenario": "Visitor enquiring about entry fees and opening hours at a castle",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 21,
+    "question_type": "sentence_completion",
+    "category": "Restaurant",
+    "scenario": "Customer making a reservation for a group dinner",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 22,
+    "question_type": "sentence_completion",
+    "category": "Restaurant",
+    "scenario": "Person enquiring about catering services for an event",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 23,
+    "question_type": "sentence_completion",
+    "category": "Sports Club",
+    "scenario": "Person enquiring about joining a local fitness centre",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 24,
+    "question_type": "sentence_completion",
+    "category": "Sports Club",
+    "scenario": "Parent signing up a child for swimming lessons",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 25,
+    "question_type": "sentence_completion",
+    "category": "Insurance",
+    "scenario": "Driver enquiring about car insurance policy options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 26,
+    "question_type": "sentence_completion",
+    "category": "Insurance",
+    "scenario": "Tenant calling about contents insurance for a rented flat",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 27,
+    "question_type": "sentence_completion",
+    "category": "Museum",
+    "scenario": "Teacher arranging a school group visit to a science museum",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 28,
+    "question_type": "sentence_completion",
+    "category": "Museum",
+    "scenario": "Visitor enquiring about a special art exhibition and workshops",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 29,
+    "question_type": "sentence_completion",
+    "category": "Conference",
+    "scenario": "Delegate registering for an international business conference",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 30,
+    "question_type": "sentence_completion",
+    "category": "Conference",
+    "scenario": "Organiser booking a venue and equipment for a seminar",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 31,
+    "question_type": "mcq_single",
+    "category": "University",
+    "scenario": "Student choosing between accommodation options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 32,
+    "question_type": "mcq_single",
+    "category": "Travel",
+    "scenario": "Tourist asking about local transport options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 33,
+    "question_type": "mcq_single",
+    "category": "Healthcare",
+    "scenario": "Patient discussing treatment options with a doctor",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 34,
+    "question_type": "mcq_single",
+    "category": "Employment",
+    "scenario": "Applicant discussing job benefits with HR",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 35,
+    "question_type": "mcq_single",
+    "category": "Banking",
+    "scenario": "Customer choosing between savings account types",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 36,
+    "question_type": "mcq_single",
+    "category": "Housing",
+    "scenario": "Tenant asking about lease renewal options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 37,
+    "question_type": "mcq_single",
+    "category": "Library",
+    "scenario": "Member asking about different borrowing plans",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 38,
+    "question_type": "mcq_single",
+    "category": "Transport",
+    "scenario": "Commuter comparing bus and train services",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 39,
+    "question_type": "mcq_single",
+    "category": "Shopping",
+    "scenario": "Customer comparing product warranty options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 40,
+    "question_type": "mcq_single",
+    "category": "Tourism",
+    "scenario": "Visitor choosing between guided tour packages",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 41,
+    "question_type": "note_completion",
+    "category": "University",
+    "scenario": "New student registering for orientation week",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 42,
+    "question_type": "note_completion",
+    "category": "Travel",
+    "scenario": "Guest booking a hotel room over the phone",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 43,
+    "question_type": "note_completion",
+    "category": "Healthcare",
+    "scenario": "Patient registering at a new dental clinic",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 44,
+    "question_type": "note_completion",
+    "category": "Employment",
+    "scenario": "New hire completing onboarding paperwork",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 45,
+    "question_type": "note_completion",
+    "category": "Insurance",
+    "scenario": "Customer filing a vehicle insurance claim",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 46,
+    "question_type": "note_completion",
+    "category": "Housing",
+    "scenario": "Tenant completing a rental application form",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 47,
+    "question_type": "note_completion",
+    "category": "Restaurant",
+    "scenario": "Customer placing a large catering order",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 48,
+    "question_type": "note_completion",
+    "category": "Sports Club",
+    "scenario": "New member signing up for gym membership",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 49,
+    "question_type": "note_completion",
+    "category": "Museum",
+    "scenario": "Teacher booking a group visit for school students",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 50,
+    "question_type": "note_completion",
+    "category": "Conference",
+    "scenario": "Delegate registering for a two-day conference",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 51,
+    "question_type": "table_completion",
+    "category": "University",
+    "scenario": "Academic advisor explaining course options and fees",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 52,
+    "question_type": "table_completion",
+    "category": "Travel",
+    "scenario": "Agent comparing flight options and prices",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 53,
+    "question_type": "table_completion",
+    "category": "Healthcare",
+    "scenario": "Receptionist explaining clinic hours and services",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 54,
+    "question_type": "table_completion",
+    "category": "Employment",
+    "scenario": "Manager explaining shift schedules and pay rates",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 55,
+    "question_type": "table_completion",
+    "category": "Transport",
+    "scenario": "Officer explaining parking zone rates and hours",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 56,
+    "question_type": "table_completion",
+    "category": "Shopping",
+    "scenario": "Sales assistant comparing product features and prices",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 57,
+    "question_type": "table_completion",
+    "category": "Housing",
+    "scenario": "Agent comparing rental properties and costs",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 58,
+    "question_type": "table_completion",
+    "category": "Library",
+    "scenario": "Librarian explaining membership tiers and benefits",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 59,
+    "question_type": "table_completion",
+    "category": "Tourism",
+    "scenario": "Guide comparing excursion options and durations",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 60,
+    "question_type": "table_completion",
+    "category": "Banking",
+    "scenario": "Advisor comparing credit card features and rates",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 61,
+    "question_type": "write_from_dictation",
+    "category": "University",
+    "scenario": "Academic sentence about research methodology",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 62,
+    "question_type": "write_from_dictation",
+    "category": "University",
+    "scenario": "Statement about campus facility upgrades",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 63,
+    "question_type": "write_from_dictation",
+    "category": "Healthcare",
+    "scenario": "Announcement about new health screening program",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 64,
+    "question_type": "write_from_dictation",
+    "category": "Employment",
+    "scenario": "Notice about workplace safety regulations",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 65,
+    "question_type": "write_from_dictation",
+    "category": "Travel",
+    "scenario": "Information about international flight procedures",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 66,
+    "question_type": "write_from_dictation",
+    "category": "Banking",
+    "scenario": "Statement about online banking security measures",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 67,
+    "question_type": "write_from_dictation",
+    "category": "Housing",
+    "scenario": "Announcement about building maintenance schedule",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 68,
+    "question_type": "write_from_dictation",
+    "category": "Transport",
+    "scenario": "Notice about public transport fare changes",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 69,
+    "question_type": "write_from_dictation",
+    "category": "Shopping",
+    "scenario": "Statement about consumer protection rights",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 70,
+    "question_type": "write_from_dictation",
+    "category": "Tourism",
+    "scenario": "Information about heritage site visiting hours",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 71,
+    "question_type": "highlight_incorrect",
+    "category": "University",
+    "scenario": "Lecture excerpt about climate change effects",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 72,
+    "question_type": "highlight_incorrect",
+    "category": "University",
+    "scenario": "Discussion about student assessment methods",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 73,
+    "question_type": "highlight_incorrect",
+    "category": "Healthcare",
+    "scenario": "Presentation about nutrition and wellness",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 74,
+    "question_type": "highlight_incorrect",
+    "category": "Employment",
+    "scenario": "Briefing about company expansion plans",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 75,
+    "question_type": "highlight_incorrect",
+    "category": "Travel",
+    "scenario": "Guide describing historical landmarks",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 76,
+    "question_type": "highlight_incorrect",
+    "category": "Banking",
+    "scenario": "Presentation about investment strategies",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 77,
+    "question_type": "highlight_incorrect",
+    "category": "Housing",
+    "scenario": "Discussion about urban development projects",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 78,
+    "question_type": "highlight_incorrect",
+    "category": "Transport",
+    "scenario": "Report on public infrastructure improvements",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 79,
+    "question_type": "highlight_incorrect",
+    "category": "Tourism",
+    "scenario": "Commentary about cultural festival traditions",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 80,
+    "question_type": "highlight_incorrect",
+    "category": "Conference",
+    "scenario": "Speaker discussing technological innovation",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 81,
+    "question_type": "form_completion",
+    "category": "University",
+    "scenario": "Student enrolling in an evening language class",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 82,
+    "question_type": "form_completion",
+    "category": "Travel",
+    "scenario": "Tourist booking a guided bus tour of the city",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 83,
+    "question_type": "form_completion",
+    "category": "Healthcare",
+    "scenario": "Patient registering at a new medical clinic",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 84,
+    "question_type": "form_completion",
+    "category": "Housing",
+    "scenario": "Tenant filling in a rental application for an apartment",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 85,
+    "question_type": "form_completion",
+    "category": "Employment",
+    "scenario": "Job applicant completing an interview registration form",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 86,
+    "question_type": "form_completion",
+    "category": "Banking",
+    "scenario": "Customer opening a joint savings account",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 87,
+    "question_type": "form_completion",
+    "category": "Transport",
+    "scenario": "Driver applying for a parking permit at the council office",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 88,
+    "question_type": "form_completion",
+    "category": "Insurance",
+    "scenario": "Person filing a travel insurance claim over the phone",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 89,
+    "question_type": "form_completion",
+    "category": "Leisure",
+    "scenario": "Member signing up for a gym and fitness centre",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 90,
+    "question_type": "form_completion",
+    "category": "Community",
+    "scenario": "Volunteer registering for a charity fundraising event",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 91,
+    "question_type": "matching_classification",
+    "category": "University",
+    "scenario": "Comparing features of different student accommodation options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 92,
+    "question_type": "matching_classification",
+    "category": "Travel",
+    "scenario": "Matching tourist attractions to different city districts",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 93,
+    "question_type": "matching_classification",
+    "category": "Healthcare",
+    "scenario": "Classifying symptoms and treatments into medical categories",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 94,
+    "question_type": "matching_classification",
+    "category": "Employment",
+    "scenario": "Sorting job benefits into different employment contract types",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 95,
+    "question_type": "matching_classification",
+    "category": "Housing",
+    "scenario": "Comparing features of houses, flats, and shared accommodation",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 96,
+    "question_type": "matching_classification",
+    "category": "Banking",
+    "scenario": "Matching financial products to customer needs and risk levels",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 97,
+    "question_type": "matching_classification",
+    "category": "Transport",
+    "scenario": "Classifying transport options by speed, cost, and convenience",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 98,
+    "question_type": "matching_classification",
+    "category": "Education",
+    "scenario": "Sorting course modules into compulsory and elective categories",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 99,
+    "question_type": "matching_classification",
+    "category": "Leisure",
+    "scenario": "Matching recreational activities to suitable age groups",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 100,
+    "question_type": "matching_classification",
+    "category": "Conference",
+    "scenario": "Classifying conference sessions by topic and difficulty level",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 101,
+    "question_type": "mcq_multiple",
+    "category": "University",
+    "scenario": "Lecture on the effects of urbanisation on wildlife habitats",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 102,
+    "question_type": "mcq_multiple",
+    "category": "Healthcare",
+    "scenario": "Discussion about preventive healthcare measures in schools",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 103,
+    "question_type": "mcq_multiple",
+    "category": "Employment",
+    "scenario": "Seminar on effective strategies for remote team management",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 104,
+    "question_type": "mcq_multiple",
+    "category": "Environment",
+    "scenario": "Presentation about ocean pollution and conservation efforts",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 105,
+    "question_type": "mcq_multiple",
+    "category": "Technology",
+    "scenario": "Discussion on artificial intelligence in modern education",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 106,
+    "question_type": "mcq_multiple",
+    "category": "Economics",
+    "scenario": "Analysis of factors driving inflation in developing countries",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 107,
+    "question_type": "mcq_multiple",
+    "category": "Science",
+    "scenario": "Lecture on the benefits and risks of genetic engineering",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 108,
+    "question_type": "mcq_multiple",
+    "category": "History",
+    "scenario": "Discussion about the impact of the Industrial Revolution",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 109,
+    "question_type": "mcq_multiple",
+    "category": "Psychology",
+    "scenario": "Seminar on cognitive biases affecting decision making",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 110,
+    "question_type": "mcq_multiple",
+    "category": "Sociology",
+    "scenario": "Lecture on social media influence on public opinion",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 111,
+    "question_type": "mcq_single_pte",
+    "category": "University",
+    "scenario": "Academic advisor explaining dissertation submission requirements",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 112,
+    "question_type": "mcq_single_pte",
+    "category": "Healthcare",
+    "scenario": "Doctor discussing treatment options with a patient",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 113,
+    "question_type": "mcq_single_pte",
+    "category": "Environment",
+    "scenario": "Researcher presenting findings on deforestation rates",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 114,
+    "question_type": "mcq_single_pte",
+    "category": "Technology",
+    "scenario": "Professor explaining blockchain technology applications",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 115,
+    "question_type": "mcq_single_pte",
+    "category": "Economics",
+    "scenario": "Discussion about central bank monetary policy decisions",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 116,
+    "question_type": "mcq_single_pte",
+    "category": "Science",
+    "scenario": "Lecture about climate change mitigation strategies",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 117,
+    "question_type": "mcq_single_pte",
+    "category": "History",
+    "scenario": "Academic discussion on ancient civilisation trade routes",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 118,
+    "question_type": "mcq_single_pte",
+    "category": "Psychology",
+    "scenario": "Professor explaining theories of language acquisition",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 119,
+    "question_type": "mcq_single_pte",
+    "category": "Sociology",
+    "scenario": "Seminar about cultural diversity in urban communities",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 120,
+    "question_type": "mcq_single_pte",
+    "category": "Education",
+    "scenario": "Discussion on the effectiveness of online learning platforms",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Gardening",
+    "scenario": "Gardener inquiring about greenhouse maintenance costs",
+    "id": 121,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Dentistry",
+    "scenario": "Patient discussing options for tooth implant procedures",
+    "id": 122,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Transport",
+    "scenario": "Traveler asking about bus route schedules and ticket prices",
+    "id": 123,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Manufacturing",
+    "scenario": "Manager comparing production costs of different factory equipment",
+    "id": 124,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "write_from_dictation",
+    "scenario": "Announcement about new weather forecasting technology",
+    "category": "Weather",
+    "id": 125,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Science",
+    "scenario": "Professor explaining the process of climate change mitigation",
+    "id": 126,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Childcare",
+    "scenario": "Parent filling out daycare enrollment application forms",
+    "id": 127,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Mining",
+    "scenario": "Geologist categorizing rock samples by mineral composition",
+    "id": 128,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Journalism",
+    "scenario": "Panel discussing the impact of social media on news consumption",
+    "id": 129,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Leisure",
+    "scenario": "Tourist choosing between holiday packages and travel guides",
+    "id": 130,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Photography",
+    "scenario": "Photographer discussing camera lens cleaning techniques and materials",
+    "id": 131,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Retail",
+    "scenario": "Customer choosing between different smartphone models and plans",
+    "id": 132,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Volunteering",
+    "scenario": "Volunteer coordinator explaining charity event registration procedures",
+    "id": 133,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Transport",
+    "scenario": "Travel agent comparing airline flight schedules and ticket prices",
+    "id": 134,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "write_from_dictation",
+    "scenario": "Announcement about new solar panel energy technologies and benefits",
+    "category": "Energy",
+    "id": 135,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Sociology",
+    "scenario": "Lecture on the history and development of social welfare systems",
+    "id": 136,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Childcare",
+    "scenario": "Parent filling out application forms for nursery enrollment",
+    "id": 137,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Wildlife",
+    "scenario": "Zoologist categorizing animal species by their habitats and characteristics",
+    "id": 138,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Economics",
+    "scenario": "Economists discussing the impact of inflation on international trade and commerce",
+    "id": 139,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Environment",
+    "scenario": "Researcher discussing methods for reducing plastic waste in oceans and waterways",
+    "id": 140,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Retail",
+    "scenario": "Customer inquiring about product warranty and return policies",
+    "id": 141,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Telecommunications",
+    "scenario": "Person choosing between different internet service providers and plans",
+    "id": 142,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Education",
+    "scenario": "Lecturer discussing course requirements and assessment criteria",
+    "id": 143,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Travel",
+    "scenario": "Traveler comparing hotel prices and amenities in different cities",
+    "id": 144,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "write_from_dictation",
+    "category": "Environment",
+    "scenario": "Announcement about new recycling program and its benefits",
+    "id": 145,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Economics",
+    "scenario": "Lecture about the effects of monetary policy on economic growth",
+    "id": 146,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Hospitality",
+    "scenario": "Guest filling out hotel registration and reservation forms",
+    "id": 147,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Wildlife",
+    "scenario": "Biologist categorizing animal species by their diets and habitats",
+    "id": 148,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Healthcare",
+    "scenario": "Seminar discussing various approaches to disease prevention and treatment",
+    "id": 149,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Real Estate",
+    "scenario": "Buyer discussing options for mortgage financing and interest rates",
+    "id": 150,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Telecommunications",
+    "scenario": "Engineer explaining network configuration options to client",
+    "id": 151,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "University",
+    "scenario": "Student deciding between part-time and full-time course options",
+    "id": 152,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Safety",
+    "scenario": "Trainer teaching first aid procedures to new employees",
+    "id": 153,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Aviation",
+    "scenario": "Traveler comparing flight schedules and ticket prices online",
+    "id": 154,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Science",
+    "scenario": "Lecturer discussing common misconceptions about climate change",
+    "id": 155,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Childcare",
+    "scenario": "Parent filling out application form for childcare services",
+    "id": 156,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Fashion",
+    "scenario": "Stylist categorizing clothing items by style and occasion",
+    "id": 157,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Sports Club",
+    "scenario": "Coach discussing team strategy and player fitness levels",
+    "id": 158,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Law",
+    "scenario": "Lawyer discussing contract terms with new client",
+    "id": 159,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Wildlife",
+    "scenario": "Ranger discussing conservation efforts for endangered species habitats",
+    "id": 160,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Telecommunications",
+    "scenario": "Customer choosing between internet service provider packages and plans",
+    "id": 161,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Music",
+    "scenario": "Music teacher instructing student on playing guitar chord progressions",
+    "id": 162,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Government",
+    "scenario": "Analyst comparing budget allocations for different government departments",
+    "id": 163,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "write_from_dictation",
+    "scenario": "An announcement about new regulations for housing development projects",
+    "category": "Housing",
+    "id": 164,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Technology",
+    "scenario": "Lecturer explaining common misconceptions about artificial intelligence applications",
+    "id": 165,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Leisure",
+    "scenario": "Tourist filling out application for travel visa and insurance",
+    "id": 166,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Social Work",
+    "scenario": "Counselor categorizing community services into support and outreach programs",
+    "id": 167,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Law",
+    "scenario": "Seminars discussing implications of new legislation on business and commerce",
+    "id": 168,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Architecture",
+    "scenario": "Client discussing design options for sustainable and energy-efficient building constructions",
+    "id": 169,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Psychology",
+    "scenario": "Counselor discussing patient mental health treatment options and progress",
+    "id": 170,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Telecommunications",
+    "scenario": "Customer choosing between mobile phone plan options and pricing",
+    "id": 171,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Agriculture",
+    "scenario": "Farmer inquiring about crop insurance policies and claims process",
+    "id": 172,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Travel",
+    "scenario": "Travel agent comparing tour package features and prices for clients",
+    "id": 173,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "write_from_dictation",
+    "scenario": " Announcement about new regulations for food safety standards in restaurants",
+    "category": "Healthcare",
+    "id": 174,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Economics",
+    "scenario": "Professor lecturing on common myths about international trade agreements and policies",
+    "id": 175,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Immigration",
+    "scenario": "Applicant filling out registration form for temporary work visa program",
+    "id": 176,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Recycling",
+    "scenario": "Volunteer sorting donated items into recyclable and non-recyclable categories",
+    "id": 177,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Mining",
+    "scenario": "Expert discussing environmental impact and safety protocols for mining operations",
+    "id": 178,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Law",
+    "scenario": "Lawyer advising client on legal options for dispute resolution and mediation",
+    "id": 179,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Telecommunications",
+    "scenario": "Customer asking about mobile data plan upgrades and international roaming options",
+    "id": 180,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Mining",
+    "scenario": "Prospect discussing underground mining equipment lease versus purchase for new site",
+    "id": 181,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Economics",
+    "scenario": "Analyst enquiring about quarterly GDP growth figures and inflation trends",
+    "id": 182,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Nutrition",
+    "scenario": "Nutritionist comparing protein, carbohydrate, and fat content across five snack brands",
+    "id": 183,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "write_from_dictation",
+    "category": "Housing",
+    "scenario": "Government releases announcement detailing new affordable housing development timelines",
+    "id": 184,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Hospitality",
+    "scenario": "Hotel manager presenting incorrect data on seasonal occupancy rates and revenue projections",
+    "id": 185,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Volunteering",
+    "scenario": "Volunteer filling out registration form for community garden planting event",
+    "id": 186,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Military",
+    "scenario": "Officer classifying emergency response equipment into medical, fire, and rescue categories",
+    "id": 187,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "University",
+    "scenario": "University seminar debating benefits, challenges, and ethics of online degree programs",
+    "id": 188,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Emergency Services",
+    "scenario": "Dispatcher choosing appropriate ambulance dispatch protocol for cardiac arrest versus stroke cases",
+    "id": 189,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Library",
+    "scenario": "Parent asking about library membership renewal process for children",
+    "id": 190,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Environment",
+    "scenario": "Customer choosing between solar panel plans for home installation",
+    "id": 191,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Fitness",
+    "scenario": "Tourist noting details of fitness centre opening hours near beach",
+    "id": 192,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Technology",
+    "scenario": "Analyst comparing pricing, battery life, and warranty of three smartwatch models",
+    "id": 193,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "write_from_dictation",
+    "category": "Science",
+    "scenario": "Government announces new research grant for renewable energy projects starting next quarter",
+    "id": 194,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Mining",
+    "scenario": "Professor explains incorrect assumptions about mineral extraction impacts on groundwater",
+    "id": 195,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Healthcare",
+    "scenario": "Nurse filling out patient intake form for allergy screening",
+    "id": 196,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Photography",
+    "scenario": "Volunteer classifying photography equipment into handheld, studio, and drone categories",
+    "id": 197,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Law",
+    "scenario": "Seminar debating legal implications of AI surveillance in public spaces",
+    "id": 198,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Shopping",
+    "scenario": "Shopper deciding between organic and conventional coffee beans at supermarket",
+    "id": 199,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "sentence_completion",
+    "category": "Law",
+    "scenario": "Lawyer seeking clarification on tenant eviction notice procedures",
+    "id": 200,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_single",
+    "category": "Banking",
+    "scenario": "Customer comparing interest rates of fixed deposit versus savings account",
+    "id": 201,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "note_completion",
+    "category": "Travel",
+    "scenario": "Tourist asking about visa requirements for backpacking across Southeast Asia",
+    "id": 202,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "table_completion",
+    "category": "Safety",
+    "scenario": "Supervisor reviewing fire alarm response times, drill frequencies, and maintenance costs",
+    "id": 203,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "write_from_dictation",
+    "category": "Housing",
+    "scenario": "Announcement detailing new urban co‑living spaces with shared amenities and flexible leases",
+    "id": 204,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "highlight_incorrect",
+    "category": "Aviation",
+    "scenario": "Lecture explaining misconceptions about turbulence causes and aircraft structural resilience",
+    "id": 205,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "form_completion",
+    "category": "Journalism",
+    "scenario": "Reporter filling out incident report for interview with local environmental activist",
+    "id": 206,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "matching_classification",
+    "category": "Recycling",
+    "scenario": "Coordinator sorting plastic types into PET, HDPE, and LDPE categories",
+    "id": 207,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_multiple",
+    "category": "Science",
+    "scenario": "Seminar debating quantum computing benefits, challenges, and ethical implications",
+    "id": 208,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "mcq_single_pte",
+    "category": "Marine",
+    "scenario": "Fisherman choosing sustainable fishing method: trawl, longline, or pole-and-line",
+    "id": 209,
+    "difficulty": "medium",
+    "used": false
+  }
+]

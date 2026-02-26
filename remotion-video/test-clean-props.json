@@ -1,0 +1,14 @@
+{
+  "headerText": "IELTS 6 listening",
+  "question": "What was the focus of her internship in Sydney?",
+  "options": ["A. Marine biology research", "B. Water quality monitoring", "C. Urban planning project"],
+  "correctIndex": 1,
+  "durationSeconds": 45.5,
+  "audioDurationSeconds": 29.5,
+  "audioFileName": "audio.mp3",
+  "hookDuration": 3,
+  "hookText": "Can you answer this?",
+  "ctaDuration": 5,
+  "ctaLine1": "Boost your Band Score,",
+  "ctaLine2": "One Quiz at a Time!"
+}

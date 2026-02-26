@@ -1,0 +1,531 @@
+{
+  "updatedAt": "2026-01-13T15:48:03.230Z",
+  "createdAt": "2026-01-12T02:20:59.664Z",
+  "id": "RT3NSr7uapopZY4F",
+  "name": "post template 2",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate",
+        "options": {
+          "systemMessage": "=You are the \"BandLadder\" Content Engine. \nYour goal is to generate \"Do's & Don'ts\" that apply to professional and daily English, not just exams, and fit perfectly on a single slide.\n\n### INSTRUCTIONS:\n1. **Real-Life Focus:** Use scenarios like \"Writing a Business Email,\" \"Asking for a Raise,\" or \"Ordering at a Restaurant.\"\n2. **Strict Limit:** Generate exactly 4 to 5 critical points for each column.\n3. **Format Compliance:**\n   - col_1 (Don'ts): Start every point with a \"\u274c\" emoji.\n   - col_2 (Do's): Start every point with a \"\u2705\" emoji.\n   - Use single newlines between points (No double spacing).\n4. **Output Format:** Return ONLY a JSON object with this exact structure (No markdown):\n\n{\n  \"headline\": \"DO'S & DON'TS: [Short Topic]\",\n  \"col_1\": \"List of 4-5 'Don'ts' (Max 10 words per point) \\n Separated by newlines\",\n  \"col_2\": \"List of 4-5 'Do's' (Max 10 words per point) \\n Separated by newlines\",\n  \"col_3\": \"Comment 'PDF' for the full guide!\",\n  \"pdf_tricks\": \"\ud83d\udd25 STRATEGY: 8 concise sentences for the PDF guide.\",\n  \"pdf_examples\": \"\ud83d\udcdd IN ACTION:\\n2. [Real-life example]\\n2. [Real-life example]\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        192,
+        16
+      ],
+      "id": "3700a2d0-e1a9-4d5d-bdeb-b3e72b21d63f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {
+          "maxOutputTokens": null
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        64,
+        224
+      ],
+      "id": "d86651d7-0549-49ba-96e9-219c44da7d24",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the data from the previous node\nconst item = $input.first().json;\n\n// Find the text content safely (checks .output, .text, or nested content)\nlet rawText = item.output || item.text;\n\n// If the text is hidden deep in a \"parts\" structure (common in some versions)\nif (!rawText && item.content && item.content.parts) {\n  rawText = item.content.parts[0].text;\n}\n\n// If we still can't find text, fallback to stringifying the whole item to avoid crashing\nif (!rawText) {\n  rawText = JSON.stringify(item);\n}\n\n// Clean up the Markdown formatting (removes ```json and ```)\nconst cleanJson = rawText.replace(/```json|```/g, '').trim();\n\n// Parse and return the final JSON object\nreturn JSON.parse(cleanJson);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        208
+      ],
+      "id": "724b6c0e-ab46-42a3-ab0b-d29f9eeedd96",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 14
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        16
+      ],
+      "id": "afe06208-2eb2-47a7-9ba7-1ca645f9183e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1zcKr5n_-EleTJXEDCbXCgLCB7Ixhw4V2eNEZdITaRuM",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        688,
+        48
+      ],
+      "id": "c87502c3-5cef-4e1e-bdc1-10b2b85cbbb9",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "p"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        208
+      ],
+      "id": "c7443982-5120-45db-ac34-1dbdcd8ce4dc",
+      "name": "Get the thumbnail for a page",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        208
+      ],
+      "id": "53768eef-94b9-4df2-819b-592a214c0900",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "replaceText",
+        "presentationId": "={{ $json.id }}",
+        "textUi": {
+          "textValues": [
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{headline}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.headline }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_1}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_2 }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_2}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_1 }}"
+            },
+            {
+              "pageObjectIds": [
+                "p"
+              ],
+              "text": "{{col_3}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_3 }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3b6b5251900_0_0"
+              ],
+              "text": "{{pdf_tricks}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_tricks }}"
+            },
+            {
+              "pageObjectIds": [
+                "g3b6d92e43ec_0_3"
+              ],
+              "text": "{{pdf_examples}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_examples }}"
+            }
+          ]
+        },
+        "options": {
+          "revisionId": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        880,
+        208
+      ],
+      "id": "5fb5a59e-b9aa-4921-a495-799e808c65ab",
+      "name": "Replace text in a presentation",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $('HTTP Request').item.json.contentUrl }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $json.output }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        208
+      ],
+      "id": "5b8daaf4-7da5-4230-bce8-36a9df169b2c",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        208
+      ],
+      "id": "0577cdfb-2add-444e-b19c-c774246cbb53",
+      "name": "Facebook Graph API1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a caption for a post about: {{ $('Code in JavaScript').item.json.headline }}",
+        "options": {
+          "systemMessage": "=You are the Social Media Manager for \"BandLadder\".\nI will give you a topic (e.g., \"Top 10 Synonyms for Bad\").\n\nYour Goal: Write a high-converting Instagram Caption.\n\nSTRUCTURE:\n1. THE HOOK:\n   - Write 1 punchy sentence about the topic.\n   - Example: \"Stop using basic words like 'Bad'\u2014here are 10 alternatives to boost your score! \ud83d\ude80\"\n\n2. THE SALES PITCH (Paste Exactly):\n   \"Achieve your dream IELTS / PTE / CELPIP score with personalized online classes from an expert trainer.\n   \u2022 Live interactive sessions for all modules: Listening, Reading, Writing, Speaking\n   \u2022 Updated exam patterns, tips, and strategies that actually work\n   \u2022 Regular mock tests, detailed feedback, and progress tracking\n   \u2022 Flexible timings for working professionals and students\"\n\n3. THE CTA:\n   \"Dm for online IELTS / PTE / CELPIP classes or comment \u201cCLASS\u201d and I\u2019ll reach out to you.\"\n\n4. HASHTAGS (Paste Exactly as one block):\n   \"#ielts #learnenglish #studyabroad #englishlearning #ieltspreparation #studyincanada #englishteacher #vocabulary #englishgrammar #esl #studyinuk #internationalstudents #speakenglish #englishcourse #toefl #ieltsexam #englishvocabulary #grammar #studyvisa #englishclass #ieltswriting #ieltstips #englishlanguage #studentvisa #language\"\n\nOUTPUT RULE:\n- Output ONLY the final caption text.\n- Do not add \"Here is the caption\" or quotes.\n- Ensure all hashtags have the '#' symbol."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1712,
+        208
+      ],
+      "id": "463b6d1b-19f6-4cec-89bd-3bd01491b88c",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        416
+      ],
+      "id": "51be5baa-870c-42ee-85d1-9a184922ee53",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.presentationId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "slidesToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1056,
+        -80
+      ],
+      "id": "24321ec7-2f46-4ae9-8436-afb8e4aacf61",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Code in JavaScript').item.json.headline }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1264,
+        -80
+      ],
+      "id": "e7c08563-0943-46f5-9058-6f98f49afea2",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Replace text in a presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace text in a presentation": {
+      "main": [
+        [
+          {
+            "node": "Get the thumbnail for a page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "fbbec35f-f060-4c4d-a5d4-b570fa751ea6",
+  "activeVersionId": null,
+  "versionCounter": 15,
+  "triggerCount": 1,
+  "tags": []
+}

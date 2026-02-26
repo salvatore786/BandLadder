@@ -1,0 +1,19 @@
+{
+  "question": "What caused the problem?",
+  "options": [
+    "A) Broken machine",
+    "B) No fresh coffee",
+    "C) Late meeting"
+  ],
+  "correctIndex": 1,
+  "level": "B1",
+  "durationSeconds": 30,
+  "audioDurationSeconds": 11,
+  "audioFileName": "audio.mp3",
+  "hookDuration": 3,
+  "hookText": "Can you get this right?",
+  "ctaDuration": 5,
+  "ctaLine1": "Boost your Band Score,",
+  "ctaLine2": "One Quiz at a Time!",
+  "brandName": "BANDLADDER"
+}

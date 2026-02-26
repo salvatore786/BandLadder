@@ -1,0 +1,554 @@
+[
+  {
+    "id": 1,
+    "question_type": "cue_card",
+    "category": "Books & Reading",
+    "scenario": "Describe a book that had a significant impact on you",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 2,
+    "question_type": "cue_card",
+    "category": "Books & Reading",
+    "scenario": "Describe a time when you read a news article that surprised you",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 3,
+    "question_type": "cue_card",
+    "category": "Travel & Holidays",
+    "scenario": "Describe a memorable trip or holiday you took",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 4,
+    "question_type": "cue_card",
+    "category": "Travel & Holidays",
+    "scenario": "Describe a place you visited that exceeded your expectations",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 5,
+    "question_type": "cue_card",
+    "category": "People & Relationships",
+    "scenario": "Describe a person who has influenced you greatly",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 6,
+    "question_type": "cue_card",
+    "category": "People & Relationships",
+    "scenario": "Describe a friend you have known for a long time",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 7,
+    "question_type": "cue_card",
+    "category": "Technology",
+    "scenario": "Describe a piece of technology that you find very useful in your daily life",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 8,
+    "question_type": "cue_card",
+    "category": "Technology",
+    "scenario": "Describe a website or app that you use frequently",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 9,
+    "question_type": "cue_card",
+    "category": "Education & Learning",
+    "scenario": "Describe a subject you enjoyed studying at school",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 10,
+    "question_type": "cue_card",
+    "category": "Education & Learning",
+    "scenario": "Describe a skill you learned that you are proud of",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 11,
+    "question_type": "cue_card",
+    "category": "Food & Cooking",
+    "scenario": "Describe a meal you had that was special to you",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 12,
+    "question_type": "cue_card",
+    "category": "Food & Cooking",
+    "scenario": "Describe a dish from your country that you would recommend to others",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 13,
+    "question_type": "cue_card",
+    "category": "Achievements & Success",
+    "scenario": "Describe an achievement you are proud of",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 14,
+    "question_type": "cue_card",
+    "category": "Achievements & Success",
+    "scenario": "Describe a goal you set and successfully achieved",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 15,
+    "question_type": "cue_card",
+    "category": "Places & Cities",
+    "scenario": "Describe a city you would like to visit in the future",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 16,
+    "question_type": "cue_card",
+    "category": "Places & Cities",
+    "scenario": "Describe a place in your hometown that you like to visit",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 17,
+    "question_type": "cue_card",
+    "category": "Hobbies & Leisure",
+    "scenario": "Describe a hobby you enjoy doing in your free time",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 18,
+    "question_type": "cue_card",
+    "category": "Hobbies & Leisure",
+    "scenario": "Describe an outdoor activity you tried for the first time",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 19,
+    "question_type": "cue_card",
+    "category": "Environment & Nature",
+    "scenario": "Describe a natural place you visited that you found beautiful",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 20,
+    "question_type": "cue_card",
+    "category": "Environment & Nature",
+    "scenario": "Describe something you do to help protect the environment",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 21,
+    "question_type": "cue_card",
+    "category": "Health & Fitness",
+    "scenario": "Describe an activity you do to stay healthy",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 22,
+    "question_type": "cue_card",
+    "category": "Health & Fitness",
+    "scenario": "Describe a time when you made a positive change to your lifestyle",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 23,
+    "question_type": "cue_card",
+    "category": "Entertainment & Media",
+    "scenario": "Describe a movie or TV show that left a strong impression on you",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 24,
+    "question_type": "cue_card",
+    "category": "Entertainment & Media",
+    "scenario": "Describe a live performance or concert you attended",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 25,
+    "question_type": "cue_card",
+    "category": "Work & Career",
+    "scenario": "Describe a job you would like to have in the future",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 26,
+    "question_type": "cue_card",
+    "category": "Work & Career",
+    "scenario": "Describe a time when you worked hard to complete a task",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 27,
+    "question_type": "cue_card",
+    "category": "Childhood & Memories",
+    "scenario": "Describe a happy memory from your childhood",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 28,
+    "question_type": "cue_card",
+    "category": "Childhood & Memories",
+    "scenario": "Describe a gift you received as a child that you still remember",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 29,
+    "question_type": "cue_card",
+    "category": "Culture & Traditions",
+    "scenario": "Describe a traditional festival or celebration in your culture",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 30,
+    "question_type": "cue_card",
+    "category": "Culture & Traditions",
+    "scenario": "Describe a custom from your country that you think is important",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Childhood & Memories",
+    "scenario": "Describe an object you used to play with as a child",
+    "id": 31,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Hobbies & Leisure",
+    "scenario": "Describe a skill you learned through a hobby or activity",
+    "id": 32,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Transport & Travel",
+    "scenario": "Describe a city you visited that was very different from your own",
+    "id": 33,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "People & Relationships",
+    "scenario": "Describe a teacher who had a significant influence on your education",
+    "id": 34,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Communication & Language",
+    "scenario": "Describe a difficult conversation you had with someone in a foreign language",
+    "id": 35,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Fashion & Style",
+    "scenario": "Describe an article of clothing that holds sentimental value to you",
+    "id": 36,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Travel & Holidays",
+    "scenario": "Describe a holiday experience that was affected by the weather",
+    "id": 37,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Work & Career",
+    "scenario": "Describe a change you made to your career or study path",
+    "id": 38,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Weather & Seasons",
+    "scenario": "Describe a season that is significant to you and why",
+    "id": 39,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Social Media & Internet",
+    "scenario": "Describe a website or online platform that has been useful to you",
+    "id": 40,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Health & Fitness",
+    "scenario": "Describe a healthy habit you recently adopted",
+    "id": 41,
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Weather & Seasons",
+    "scenario": "Describe a time when the weather changed your plans suddenly",
+    "id": 42,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Hobbies & Leisure",
+    "scenario": "Describe a friend you made through a hobby or interest",
+    "id": 43,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Festivals & Events",
+    "scenario": "Describe an event that you attended which was raising money for charity",
+    "id": 44,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Environment & Nature",
+    "scenario": "Describe a place of natural beauty that you visited",
+    "id": 45,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Places & Cities",
+    "scenario": "Describe a historical building you visited and learned about",
+    "id": 46,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Food & Cooking",
+    "scenario": "Describe a traditional meal you cooked for a special occasion",
+    "id": 47,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Sports & Competition",
+    "scenario": "Describe a sporting event you participated in and enjoyed",
+    "id": 48,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Music & Dance",
+    "scenario": "Describe a concert or music festival you attended and enjoyed",
+    "id": 49,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Health & Fitness",
+    "scenario": "Describe a person who motivated you to adopt a healthier lifestyle",
+    "id": 50,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Weather & Seasons",
+    "scenario": "Describe a season that you enjoy most and why it appeals to you",
+    "id": 51,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Entertainment & Media",
+    "scenario": "Describe a book that significantly changed your perspective on a social issue",
+    "id": 52,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Festivals & Events",
+    "scenario": "Describe a cultural festival you attended that left a lasting impression on you",
+    "id": 53,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Social Media & Internet",
+    "scenario": "Describe an online community where you actively participate and what you gain from it",
+    "id": 54,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Hobbies & Leisure",
+    "scenario": "Describe a hobby you started during adulthood that brings you relaxation and satisfaction",
+    "id": 55,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Animals & Pets",
+    "scenario": "Describe a pet you once owned that taught you an important life lesson",
+    "id": 56,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "History & Heritage",
+    "scenario": "Describe a historic monument you visited that helped you understand your country's past",
+    "id": 57,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Fashion & Style",
+    "scenario": "Describe an outfit you wore for a special occasion and why it felt memorable",
+    "id": 58,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Travel & Holidays",
+    "scenario": "Describe a city you explored where the local customs surprised and interested you",
+    "id": 59,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Sports & Competition",
+    "scenario": "Describe a memorable sports event you attended and why it was exciting",
+    "id": 60,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Animals & Pets",
+    "scenario": "Describe an animal you encountered in the wild that left an impression",
+    "id": 61,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Books & Reading",
+    "scenario": "Describe a book you reread recently and what new insights you gained",
+    "id": 62,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Health & Fitness",
+    "scenario": "Describe a fitness challenge you completed and how it affected your confidence",
+    "id": 63,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Fashion & Style",
+    "scenario": "Describe an outfit you chose for a professional interview and why it worked",
+    "id": 64,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Environment & Nature",
+    "scenario": "Describe a community garden you visited and the activities you participated in",
+    "id": 65,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "People & Relationships",
+    "scenario": "Describe a friend you reconnected with after many years and how you felt",
+    "id": 66,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Transport & Travel",
+    "scenario": "Describe a train journey that offered unexpected scenic views and memorable experiences",
+    "id": 67,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Music & Dance",
+    "scenario": "Describe a concert you attended where the performance blended different musical genres",
+    "id": 68,
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "question_type": "cue_card",
+    "category": "Social Media & Internet",
+    "scenario": "Describe an online tutorial that helped you acquire a new practical skill",
+    "id": 69,
+    "difficulty": "medium",
+    "used": false
+  }
+]

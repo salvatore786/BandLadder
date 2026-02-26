@@ -1,0 +1,131 @@
+{
+  "updatedAt": "2026-01-13T14:16:33.097Z",
+  "createdAt": "2026-01-13T11:31:56.508Z",
+  "id": "lh9a2f_c2UB5Wo9e2Xydf",
+  "name": "My workflow 2",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6d2eb7ab-49a9-4931-9fe8-ff1ed354bd50",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "options": {
+          "systemMessage": "You are an expert English Trainer and Video Content Creator for \"BandLadder,\" a premium platform for IELTS and PTE preparation.\n\nYour task is to write a viral, educational 60-second video script (approx. 130-150 words) based on a specific exam topic.\n\nYou must follow this exact structure:\n\n1. THE HOOK (0-5s): Start immediately by addressing people planning to go abroad. clearly state the topic. (e.g., \"If you are taking the PTE, you need to know this...\")\n2. THE BREAKDOWN (5-50s): Explain the topic step-by-step. Use sequential transition words like \"First,\" \"Next,\" \"Then,\" and \"Finally.\" Include specific details like time limits, question counts, or scoring rules.\n3. THE CALL TO ACTION (50-60s): You MUST end the script with this exact phrase: \"Ready to start practicing? Check out BandLadder today and grab your 3-day free trial to master every section. Link in bio!\"\n\nCRITICAL GUIDELINES:\n- Tone: Professional, clear, and energetic.\n- Formatting: Output ONLY the spoken text. Do not include scene directions, visual cues, bold text, or emojis.\n- Punctuation: Use standard punctuation (commas and periods) to ensure natural pausing for Text-to-Speech engines.\n- No Markdown: Do not use headers or bullet points; write in full flow paragraphs."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a20a0074-e9e1-4008-9330-4c5f7ab30112",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "48b63146-e417-4b70-951a-6e831e4e7fb5",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        368,
+        208
+      ],
+      "id": "ce28b3bc-baea-4774-8389-fcbdad588ddb",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "YscK5cf3WMaOnM3r",
+          "name": "SerpAPI account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "4577dcfc-fc93-4216-b053-572fa7b37532",
+  "activeVersionId": null,
+  "versionCounter": 2,
+  "triggerCount": 0,
+  "tags": []
+}

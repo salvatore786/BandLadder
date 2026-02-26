@@ -1,0 +1,497 @@
+{
+  "name": "IELTS Instagram Stories - Template Based",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Daily 9AM Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Topic Generator - Synchronized with other Bandladder workflows\nconst topics = [\n  \"Intelligence\", \"Happiness\", \"Sadness\", \"Anger\", \"Fear\", \"Success\", \"Failure\", \"Money\", \"Time\", \"Laziness\",\n  \"Honesty\", \"Secrets\", \"Friendship\", \"Love\", \"Travel\", \"Weather\", \"Health\", \"Food\", \"Music\", \"Books\",\n  \"Nature\", \"Animals\", \"Colors\", \"Numbers\", \"Sports\", \"Speed\", \"Patience\", \"Risk\", \"Luck\", \"Decisions\",\n  \"Negotiation\", \"Leadership\", \"Teamwork\", \"Creativity\", \"Confusion\", \"Memory\", \"Sleep\", \"Dreams\", \"Fashion\",\n  \"Technology\", \"Family\", \"Education\", \"Law\", \"Politics\", \"History\", \"Science\", \"The Future\"\n];\n\nconst now = new Date();\nconst start = new Date(now.getFullYear(), 0, 0);\nconst diff = now - start;\nconst oneDay = 1000 * 60 * 60 * 24;\nconst dayOfYear = Math.floor(diff / oneDay);\nconst topicIndex = dayOfYear % topics.length;\n\nreturn { topic: topics[topicIndex], dayOfYear: dayOfYear, topicIndex: topicIndex };"
+      },
+      "id": "topic-generator",
+      "name": "Topic Generator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a creative content strategist for \"Bandladder\", an IELTS preparation brand.\n\nToday's Topic: {{ $json.topic }}\n\nGenerate content for a 5-SLIDE Instagram Story sequence. Each slide has specific placeholders to fill.\n\n**STRICT FORMAT - Return ONLY valid JSON:**\n\n{\n  \"topic\": \"{{ $json.topic }}\",\n  \"slide1\": {\n    \"HOOK_EMOJI\": \"🎯\",\n    \"HOOK_HEADLINE\": \"Attention-grabbing question (max 8 words)\",\n    \"HOOK_SUBTEXT\": \"Brief teaser about today's topic (max 15 words)\"\n  },\n  \"slide2\": {\n    \"VOCAB_WORD_1\": \"Advanced IELTS word\",\n    \"VOCAB_MEANING_1\": \"Simple 5-word definition\",\n    \"VOCAB_WORD_2\": \"Second advanced word\",\n    \"VOCAB_MEANING_2\": \"Simple 5-word definition\"\n  },\n  \"slide3\": {\n    \"EXAMPLE_CONTEXT\": \"Speaking Part 2 or Writing Task 2\",\n    \"EXAMPLE_SENTENCE\": \"Model sentence using vocabulary (max 25 words)\"\n  },\n  \"slide4\": {\n    \"TIP_HEADLINE\": \"Pro Tip\",\n    \"TIP_CONTENT\": \"Actionable IELTS strategy (max 20 words)\"\n  },\n  \"slide5\": {\n    \"CTA_HEADLINE\": \"Ready to Master {{ $json.topic }}?\",\n    \"CTA_SUBTEXT\": \"Follow @bandladder for daily tips!\",\n    \"CTA_HASHTAGS\": \"#IELTS #IELTSPrep #Bandladder\"\n  }\n}\n\nIMPORTANT: Return ONLY the JSON object, no markdown or explanations.",
+        "options": {
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "ai-content-generator",
+      "name": "AI Content Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [440, 220],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse AI response and extract JSON content\nconst aiOutput = $input.first().json.output;\n\nlet content;\ntry {\n  let jsonString = aiOutput;\n  if (jsonString.includes('```json')) {\n    jsonString = jsonString.replace(/```json\\n?/g, '').replace(/```\\n?/g, '');\n  } else if (jsonString.includes('```')) {\n    jsonString = jsonString.replace(/```\\n?/g, '');\n  }\n  content = JSON.parse(jsonString.trim());\n} catch (e) {\n  throw new Error('Failed to parse AI response: ' + e.message);\n}\n\nreturn content;"
+      },
+      "id": "parse-ai-response",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_TEMPLATE_PRESENTATION_ID"
+        },
+        "name": "=Bandladder Stories - {{ $json.topic }} - {{ $now.format('yyyy-MM-dd') }}",
+        "options": {}
+      },
+      "id": "copy-template",
+      "name": "Copy Template Presentation",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [880, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YOUR_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build text replacement requests for all placeholders\nconst content = $('Parse AI Response').first().json;\nconst presentationId = $input.first().json.id;\n\n// Build all replacement requests\nconst replacements = [];\n\n// Slide 1 - Hook\nif (content.slide1) {\n  replacements.push(\n    { replaceAllText: { containsText: { text: '{{HOOK_EMOJI}}', matchCase: true }, replaceText: content.slide1.HOOK_EMOJI || '🎯' }},\n    { replaceAllText: { containsText: { text: '{{HOOK_HEADLINE}}', matchCase: true }, replaceText: content.slide1.HOOK_HEADLINE || '' }},\n    { replaceAllText: { containsText: { text: '{{HOOK_SUBTEXT}}', matchCase: true }, replaceText: content.slide1.HOOK_SUBTEXT || '' }}\n  );\n}\n\n// Slide 2 - Vocabulary\nif (content.slide2) {\n  replacements.push(\n    { replaceAllText: { containsText: { text: '{{VOCAB_WORD_1}}', matchCase: true }, replaceText: content.slide2.VOCAB_WORD_1 || '' }},\n    { replaceAllText: { containsText: { text: '{{VOCAB_MEANING_1}}', matchCase: true }, replaceText: content.slide2.VOCAB_MEANING_1 || '' }},\n    { replaceAllText: { containsText: { text: '{{VOCAB_WORD_2}}', matchCase: true }, replaceText: content.slide2.VOCAB_WORD_2 || '' }},\n    { replaceAllText: { containsText: { text: '{{VOCAB_MEANING_2}}', matchCase: true }, replaceText: content.slide2.VOCAB_MEANING_2 || '' }}\n  );\n}\n\n// Slide 3 - Example\nif (content.slide3) {\n  replacements.push(\n    { replaceAllText: { containsText: { text: '{{EXAMPLE_CONTEXT}}', matchCase: true }, replaceText: content.slide3.EXAMPLE_CONTEXT || '' }},\n    { replaceAllText: { containsText: { text: '{{EXAMPLE_SENTENCE}}', matchCase: true }, replaceText: content.slide3.EXAMPLE_SENTENCE || '' }}\n  );\n}\n\n// Slide 4 - Tip\nif (content.slide4) {\n  replacements.push(\n    { replaceAllText: { containsText: { text: '{{TIP_HEADLINE}}', matchCase: true }, replaceText: content.slide4.TIP_HEADLINE || 'Pro Tip' }},\n    { replaceAllText: { containsText: { text: '{{TIP_CONTENT}}', matchCase: true }, replaceText: content.slide4.TIP_CONTENT || '' }}\n  );\n}\n\n// Slide 5 - CTA\nif (content.slide5) {\n  replacements.push(\n    { replaceAllText: { containsText: { text: '{{CTA_HEADLINE}}', matchCase: true }, replaceText: content.slide5.CTA_HEADLINE || '' }},\n    { replaceAllText: { containsText: { text: '{{CTA_SUBTEXT}}', matchCase: true }, replaceText: content.slide5.CTA_SUBTEXT || '' }},\n    { replaceAllText: { containsText: { text: '{{CTA_HASHTAGS}}', matchCase: true }, replaceText: content.slide5.CTA_HASHTAGS || '' }}\n  );\n}\n\n// Common replacements\nreplacements.push(\n  { replaceAllText: { containsText: { text: '{{TOPIC}}', matchCase: true }, replaceText: content.topic || '' }},\n  { replaceAllText: { containsText: { text: '{{DATE}}', matchCase: true }, replaceText: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) }}\n);\n\nreturn {\n  presentationId: presentationId,\n  requests: replacements,\n  topic: content.topic\n};"
+      },
+      "id": "build-replacement-requests",
+      "name": "Build Replacement Requests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $json.presentationId }}:batchUpdate",
+        "authentication": "oAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": {{ JSON.stringify($json.requests) }}\n}",
+        "options": {}
+      },
+      "id": "replace-placeholders",
+      "name": "Replace Placeholders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "YOUR_GOOGLE_SLIDES_CREDENTIAL_ID",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $('Build Replacement Requests').first().json.presentationId }}",
+        "authentication": "oAuth2",
+        "options": {}
+      },
+      "id": "get-presentation",
+      "name": "Get Presentation Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "YOUR_GOOGLE_SLIDES_CREDENTIAL_ID",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare loop items - one per slide\nconst presentation = $input.first().json;\nconst presentationId = presentation.presentationId;\nconst slides = presentation.slides || [];\nconst topic = $('Build Replacement Requests').first().json.topic;\n\nconst items = slides.map((slide, index) => ({\n  json: {\n    presentationId: presentationId,\n    pageId: slide.objectId,\n    slideIndex: index,\n    slideNumber: index + 1,\n    topic: topic\n  }\n}));\n\nreturn items;"
+      },
+      "id": "prepare-loop-items",
+      "name": "Prepare Loop Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 0]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-slides",
+      "name": "Loop Through Slides",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1980, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Store current slide context\nconst item = $input.first().json;\nreturn {\n  presentationId: item.presentationId,\n  pageId: item.pageId,\n  slideIndex: item.slideIndex,\n  slideNumber: item.slideNumber,\n  topic: item.topic\n};"
+      },
+      "id": "store-context",
+      "name": "Store Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2200, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $json.presentationId }}/pages/{{ $json.pageId }}/thumbnail?thumbnailProperties.mimeType=PNG&thumbnailProperties.thumbnailSize=LARGE",
+        "authentication": "oAuth2",
+        "options": {}
+      },
+      "id": "get-thumbnail",
+      "name": "Get Slide Thumbnail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2420, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "YOUR_GOOGLE_SLIDES_CREDENTIAL_ID",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge thumbnail URL with context\nconst thumbnail = $input.first().json;\nconst context = $('Store Context').first().json;\nreturn {\n  contentUrl: thumbnail.contentUrl,\n  presentationId: context.presentationId,\n  pageId: context.pageId,\n  slideNumber: context.slideNumber,\n  topic: context.topic\n};"
+      },
+      "id": "merge-thumbnail",
+      "name": "Merge Thumbnail",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2640, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "download-image",
+      "name": "Download Slide Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2860, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare for upload with context\nconst context = $('Merge Thumbnail').first().json;\nconst binaryData = $input.first().binary;\nreturn {\n  json: {\n    slideNumber: context.slideNumber,\n    topic: context.topic\n  },\n  binary: binaryData\n};"
+      },
+      "id": "prepare-upload",
+      "name": "Prepare Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3080, 0]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "name": "=bandladder_{{ $json.topic }}_slide{{ $json.slideNumber }}_{{ $now.format('yyyyMMdd') }}.png",
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_GOOGLE_DRIVE_FOLDER_ID"
+        },
+        "options": {}
+      },
+      "id": "upload-to-drive",
+      "name": "Upload to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [3300, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YOUR_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge upload result with context\nconst uploadResult = $input.first().json;\nconst context = $('Prepare Upload').first().json;\nreturn {\n  fileId: uploadResult.id,\n  slideNumber: context.slideNumber,\n  topic: context.topic\n};"
+      },
+      "id": "merge-upload",
+      "name": "Merge Upload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3520, 0]
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.fileId }}"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "id": "make-public",
+      "name": "Make Public",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [3740, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YOUR_GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Instagram data\nconst context = $('Merge Upload').first().json;\nconst imageUrl = `https://drive.google.com/uc?export=view&id=${context.fileId}`;\n\nreturn {\n  imageUrl: imageUrl,\n  slideNumber: context.slideNumber,\n  fileId: context.fileId,\n  topic: context.topic\n};"
+      },
+      "id": "prepare-instagram",
+      "name": "Prepare Instagram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3960, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $credentials.instagramBusinessAccountId }}/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "instagramBasicDisplayApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.imageUrl }}"
+            },
+            {
+              "name": "media_type",
+              "value": "STORIES"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $credentials.accessToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-media-container",
+      "name": "Create Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4180, 0],
+      "credentials": {
+        "instagramBasicDisplayApi": {
+          "id": "YOUR_INSTAGRAM_CREDENTIAL_ID",
+          "name": "Instagram Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge container with context\nconst container = $input.first().json;\nconst context = $('Prepare Instagram').first().json;\nreturn {\n  containerId: container.id,\n  slideNumber: context.slideNumber,\n  topic: context.topic\n};"
+      },
+      "id": "merge-container",
+      "name": "Merge Container",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4400, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v18.0/{{ $credentials.instagramBusinessAccountId }}/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "instagramBasicDisplayApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.containerId }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $credentials.accessToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "publish-story",
+      "name": "Publish Story",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4620, 0],
+      "credentials": {
+        "instagramBasicDisplayApi": {
+          "id": "YOUR_INSTAGRAM_CREDENTIAL_ID",
+          "name": "Instagram Graph API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Delay and prepare result\nconst result = $input.first().json;\nconst context = $('Merge Container').first().json;\n\n// 3 second delay between posts\nawait new Promise(r => setTimeout(r, 3000));\n\nreturn {\n  success: true,\n  slideNumber: context.slideNumber,\n  mediaId: result.id,\n  topic: context.topic\n};"
+      },
+      "id": "delay-result",
+      "name": "Delay & Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4840, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Final summary\nconst items = $input.all();\nreturn {\n  success: true,\n  totalSlides: items.length,\n  topic: items[0]?.json.topic,\n  postedAt: new Date().toISOString(),\n  slides: items.map(i => ({\n    slideNumber: i.json.slideNumber,\n    mediaId: i.json.mediaId\n  }))\n};"
+      },
+      "id": "summary",
+      "name": "Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [5280, 0]
+    }
+  ],
+  "connections": {
+    "Daily 9AM Trigger": {
+      "main": [[{ "node": "Topic Generator", "type": "main", "index": 0 }]]
+    },
+    "Topic Generator": {
+      "main": [[{ "node": "AI Content Generator", "type": "main", "index": 0 }]]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [[{ "node": "AI Content Generator", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "AI Content Generator": {
+      "main": [[{ "node": "Parse AI Response", "type": "main", "index": 0 }]]
+    },
+    "Parse AI Response": {
+      "main": [[{ "node": "Copy Template Presentation", "type": "main", "index": 0 }]]
+    },
+    "Copy Template Presentation": {
+      "main": [[{ "node": "Build Replacement Requests", "type": "main", "index": 0 }]]
+    },
+    "Build Replacement Requests": {
+      "main": [[{ "node": "Replace Placeholders", "type": "main", "index": 0 }]]
+    },
+    "Replace Placeholders": {
+      "main": [[{ "node": "Get Presentation Details", "type": "main", "index": 0 }]]
+    },
+    "Get Presentation Details": {
+      "main": [[{ "node": "Prepare Loop Items", "type": "main", "index": 0 }]]
+    },
+    "Prepare Loop Items": {
+      "main": [[{ "node": "Loop Through Slides", "type": "main", "index": 0 }]]
+    },
+    "Loop Through Slides": {
+      "main": [
+        [{ "node": "Store Context", "type": "main", "index": 0 }],
+        [{ "node": "Summary", "type": "main", "index": 0 }]
+      ]
+    },
+    "Store Context": {
+      "main": [[{ "node": "Get Slide Thumbnail", "type": "main", "index": 0 }]]
+    },
+    "Get Slide Thumbnail": {
+      "main": [[{ "node": "Merge Thumbnail", "type": "main", "index": 0 }]]
+    },
+    "Merge Thumbnail": {
+      "main": [[{ "node": "Download Slide Image", "type": "main", "index": 0 }]]
+    },
+    "Download Slide Image": {
+      "main": [[{ "node": "Prepare Upload", "type": "main", "index": 0 }]]
+    },
+    "Prepare Upload": {
+      "main": [[{ "node": "Upload to Drive", "type": "main", "index": 0 }]]
+    },
+    "Upload to Drive": {
+      "main": [[{ "node": "Merge Upload", "type": "main", "index": 0 }]]
+    },
+    "Merge Upload": {
+      "main": [[{ "node": "Make Public", "type": "main", "index": 0 }]]
+    },
+    "Make Public": {
+      "main": [[{ "node": "Prepare Instagram", "type": "main", "index": 0 }]]
+    },
+    "Prepare Instagram": {
+      "main": [[{ "node": "Create Media Container", "type": "main", "index": 0 }]]
+    },
+    "Create Media Container": {
+      "main": [[{ "node": "Merge Container", "type": "main", "index": 0 }]]
+    },
+    "Merge Container": {
+      "main": [[{ "node": "Publish Story", "type": "main", "index": 0 }]]
+    },
+    "Publish Story": {
+      "main": [[{ "node": "Delay & Result", "type": "main", "index": 0 }]]
+    },
+    "Delay & Result": {
+      "main": [[{ "node": "Loop Through Slides", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": { "instanceId": "" },
+  "tags": [
+    { "name": "Instagram" },
+    { "name": "IELTS" },
+    { "name": "Bandladder" },
+    { "name": "Template" }
+  ]
+}

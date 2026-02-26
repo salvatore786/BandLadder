@@ -1,0 +1,71 @@
+{
+  "name": "TEMP - Create BandLadder Drive Folders",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "create-bandladder-folders",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "id": "a1b2c3d4-1111-2222-3333-444455556666",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "createFolder",
+        "name": "BandLadder_Reels",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [260, 300],
+      "id": "a1b2c3d4-1111-2222-3333-444455557777",
+      "name": "Create Main Folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createFolder",
+        "name": "posted",
+        "createIn": "folder",
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [520, 300],
+      "id": "a1b2c3d4-1111-2222-3333-444455558888",
+      "name": "Create Posted Subfolder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{"node": "Create Main Folder", "type": "main", "index": 0}]]
+    },
+    "Create Main Folder": {
+      "main": [[{"node": "Create Posted Subfolder", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

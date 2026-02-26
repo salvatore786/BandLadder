@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "A student asking about library opening hours",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 2,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "Two students discussing a group assignment deadline",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 3,
+    "question_type": "mcq_single_clean",
+    "category": "Travel",
+    "scenario": "A tourist asking about bus routes to the city centre",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 4,
+    "question_type": "mcq_single_clean",
+    "category": "Travel",
+    "scenario": "A passenger checking in at a hotel reception",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 5,
+    "question_type": "mcq_single_clean",
+    "category": "Health",
+    "scenario": "A patient booking a dental appointment",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 6,
+    "question_type": "mcq_single_clean",
+    "category": "Health",
+    "scenario": "A nurse explaining visiting hours at a hospital",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 7,
+    "question_type": "mcq_single_clean",
+    "category": "Employment",
+    "scenario": "A job candidate asking about the interview schedule",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 8,
+    "question_type": "mcq_single_clean",
+    "category": "Employment",
+    "scenario": "An employee discussing shift changes with a manager",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 9,
+    "question_type": "mcq_single_clean",
+    "category": "Shopping",
+    "scenario": "A customer enquiring about a product return policy",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 10,
+    "question_type": "mcq_single_clean",
+    "category": "Shopping",
+    "scenario": "A shopper asking about store discount offers",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 11,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "A student registering for an elective course",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 12,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "A tutor explaining essay submission guidelines",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 13,
+    "question_type": "mcq_single_clean",
+    "category": "Accommodation",
+    "scenario": "A tenant discussing a maintenance issue with a landlord",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 14,
+    "question_type": "mcq_single_clean",
+    "category": "Accommodation",
+    "scenario": "A student enquiring about flatshare availability",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 15,
+    "question_type": "mcq_single_clean",
+    "category": "Travel",
+    "scenario": "A traveller asking about luggage allowance at an airport",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 16,
+    "question_type": "mcq_single_clean",
+    "category": "Travel",
+    "scenario": "A tourist booking a day trip to a nearby island",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 17,
+    "question_type": "mcq_single_clean",
+    "category": "Health",
+    "scenario": "A caller registering with a new GP clinic",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 18,
+    "question_type": "mcq_single_clean",
+    "category": "Health",
+    "scenario": "A pharmacist explaining medication dosage",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 19,
+    "question_type": "mcq_single_clean",
+    "category": "Employment",
+    "scenario": "A new hire asking about the company dress code",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 20,
+    "question_type": "mcq_single_clean",
+    "category": "Employment",
+    "scenario": "Two colleagues discussing a project deadline extension",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 21,
+    "question_type": "mcq_single_clean",
+    "category": "Sports",
+    "scenario": "A receptionist explaining gym membership options",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 22,
+    "question_type": "mcq_single_clean",
+    "category": "Sports",
+    "scenario": "A coach describing the training schedule for a team",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 23,
+    "question_type": "mcq_single_clean",
+    "category": "Food & Dining",
+    "scenario": "A customer making a restaurant reservation over the phone",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 24,
+    "question_type": "mcq_single_clean",
+    "category": "Food & Dining",
+    "scenario": "Two friends discussing where to go for lunch",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 25,
+    "question_type": "mcq_single_clean",
+    "category": "Banking",
+    "scenario": "A customer opening a savings account at a bank",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 26,
+    "question_type": "mcq_single_clean",
+    "category": "Banking",
+    "scenario": "A caller reporting a lost debit card to customer service",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 27,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "A lecturer announcing changes to the exam timetable",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 28,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "A student asking about scholarship application requirements",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 29,
+    "question_type": "mcq_single_clean",
+    "category": "Entertainment",
+    "scenario": "A caller booking tickets for a theatre show",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 30,
+    "question_type": "mcq_single_clean",
+    "category": "Entertainment",
+    "scenario": "Two friends deciding which film to watch at the cinema",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 31,
+    "question_type": "mcq_single_clean",
+    "category": "Transport",
+    "scenario": "A driver asking about parking fees in the city centre",
+    "difficulty": "medium",
+    "used": true
+  },
+  {
+    "id": 32,
+    "question_type": "mcq_single_clean",
+    "category": "Transport",
+    "scenario": "A commuter buying a monthly rail pass",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 33,
+    "question_type": "mcq_single_clean",
+    "category": "Environment",
+    "scenario": "A volunteer asking about a beach clean-up event",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 34,
+    "question_type": "mcq_single_clean",
+    "category": "Environment",
+    "scenario": "A council officer explaining recycling collection days",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 35,
+    "question_type": "mcq_single_clean",
+    "category": "Technology",
+    "scenario": "A customer calling tech support about an internet outage",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 36,
+    "question_type": "mcq_single_clean",
+    "category": "Technology",
+    "scenario": "Two students comparing laptop specifications for study",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 37,
+    "question_type": "mcq_single_clean",
+    "category": "Community",
+    "scenario": "A resident enquiring about a local craft fair",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 38,
+    "question_type": "mcq_single_clean",
+    "category": "Community",
+    "scenario": "A parent signing up a child for swimming lessons",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 39,
+    "question_type": "mcq_single_clean",
+    "category": "Accommodation",
+    "scenario": "A guest complaining about noise in a hotel room",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 40,
+    "question_type": "mcq_single_clean",
+    "category": "Accommodation",
+    "scenario": "A student arranging to move into university halls",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 41,
+    "question_type": "mcq_single_clean",
+    "category": "Health",
+    "scenario": "A patient asking about waiting time at a walk-in clinic",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 42,
+    "question_type": "mcq_single_clean",
+    "category": "Shopping",
+    "scenario": "A customer ordering a birthday cake at a bakery",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 43,
+    "question_type": "mcq_single_clean",
+    "category": "Employment",
+    "scenario": "A worker requesting annual leave from a supervisor",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 44,
+    "question_type": "mcq_single_clean",
+    "category": "Travel",
+    "scenario": "A backpacker asking about hostel check-in times",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 45,
+    "question_type": "mcq_single_clean",
+    "category": "University",
+    "scenario": "An advisor explaining the grading system to a new student",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 46,
+    "question_type": "mcq_single_clean",
+    "category": "Sports",
+    "scenario": "A caller enquiring about yoga class timetable",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 47,
+    "question_type": "mcq_single_clean",
+    "category": "Food & Dining",
+    "scenario": "A waiter explaining the daily specials to a customer",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 48,
+    "question_type": "mcq_single_clean",
+    "category": "Banking",
+    "scenario": "A student asking about overdraft facilities",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 49,
+    "question_type": "mcq_single_clean",
+    "category": "Entertainment",
+    "scenario": "A visitor asking about museum opening hours and entry fees",
+    "difficulty": "medium",
+    "used": false
+  },
+  {
+    "id": 50,
+    "question_type": "mcq_single_clean",
+    "category": "Transport",
+    "scenario": "A passenger asking about delays on the morning express train",
+    "difficulty": "medium",
+    "used": false
+  }
+]

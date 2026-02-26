@@ -1,0 +1,855 @@
+{
+  "updatedAt": "2026-01-19T07:00:02.766Z",
+  "createdAt": "2026-01-14T10:45:13.185Z",
+  "id": "LxdouF0C9WcqEo6s",
+  "name": "advance and basic",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Generate",
+        "options": {
+          "systemMessage": "=You are the \"BandLadder\" Senior Content Engine. \nYour goal is to generate high-density \"Basic vs. Advanced\" vocabulary lists for a SPECIFIC real-life scenario provided to you.\n\n### INSTRUCTIONS:\n1. **The Scenario:** Today's mandatory scenario is: \"{{ $json.todays_topic }}\".\n   (Do NOT select a random topic. You must use the specific scenario provided above).\n\n2. **Word Logic:** - Generate exactly 15 \"Basic\" words commonly used in this scenario.\n   - Generate exactly 15 \"Advanced\" professional alternatives for those words.\n\n3. **Template Fit:** - col_1 (Advanced): Exactly 15 words, one per line (Max 1-2 words each).\n   - col_2 (Basic): Exactly 15 words, one per line (Max 1-2 words each).\n\n4. **PDF Content Expansion:** - pdf_tricks (Slide 2): Write 5-7 detailed sentences explaining the nuance, tone, and cultural importance of using advanced vocabulary in this specific scenario to fill the slide space.\n   - pdf_examples (Slide 3): Choose 5 words from your list. For each, provide:\n     - Line 1: A sentence using the Basic word.\n     - Line 2: The same sentence upgraded with the Advanced word.\n     (Repeat this for all 5 words to ensure the slide is full).\n\n### OUTPUT FORMAT (Strict JSON):\n{\n  \"headline\": \"Vocab for {{ $json.todays_topic }}\",\n  \"col_1\": \"List of 15 Advanced words \\n Separated by newlines\",\n  \"col_2\": \"List of 15 Basic words \\n Separated by newlines\",\n  \"col_3\": \"Comment 'PDF' for the {{ $json.todays_topic }} Vocabulary Guide!\",\n  \"pdf_tricks\": \"\ud83d\udd25 PROFESSIONAL STRATEGY: [5-7 sentences of detailed advice regarding the scenario's tone and word choice]\",\n  \"pdf_examples\": \"\ud83d\udcdd COMPARISON IN ACTION:\\n\\n. Basic: [Sentence]\\n Advanced: [Upgraded Sentence]\\n. Basic: [Sentence]\\n Advanced: [Upgraded Sentence]\\n. Basic: [Sentence]\\n   Advanced: [Upgraded Sentence]\\n. Basic: [Sentence]\\n Advanced: [Upgraded Sentence]\\n. Basic: [Sentence]\\n Advanced: [Upgraded Sentence]\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        192,
+        16
+      ],
+      "id": "9d9de920-282a-49d9-91f7-9daceddfe726",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        64,
+        224
+      ],
+      "id": "0ed34688-d6cc-4683-afc3-2854b31a84bd",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "   // Get the data from the previous node\nconst item = $input.first().json;\n\n// Find the text content safely (checks .output, .text, or nested content)\nlet rawText = item.output || item.text;\n\n// If the text is hidden deep in a \"parts\" structure (common in some versions)\nif (!rawText && item.content && item.content.parts) {\n\u00a0 rawText = item.content.parts[0].text;\n}\n\n// If we still can't find text, fallback to stringifying the whole item to avoid crashing\nif (!rawText) {\n\u00a0 rawText = JSON.stringify(item);\n}\n\n// Clean up the Markdown formatting (removes ```json and ```)\nconst cleanJson = rawText.replace(/```json|```/g, '').trim();\n\n// Parse and return the final JSON object\nreturn JSON.parse(cleanJson);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        208
+      ],
+      "id": "4c442bfb-cf05-41b3-a94b-690b51e33643",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": null
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        16
+      ],
+      "id": "0546f94c-1ded-4e5b-99d4-35b1305657dc",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1VpqFgVeIqiG31QMMYAaBEQnh9yf43sqRQFuJgplLr4M",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        688,
+        48
+      ],
+      "id": "ba9ad066-2cc6-4e49-b956-5053617d5500",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "getThumbnail",
+        "presentationId": "={{ $json.presentationId }}",
+        "pageObjectId": "=g3ba54f812c8_0_52"
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        208
+      ],
+      "id": "9c666b17-a145-4ce5-922f-718707027d56",
+      "name": "Get the thumbnail for a page",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        208
+      ],
+      "id": "a956be6d-49be-4e76-bbf5-1ce632b537ec",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "replaceText",
+        "presentationId": "={{ $json.id }}",
+        "textUi": {
+          "textValues": [
+            {
+              "pageObjectIds": [
+                "g3ba54f812c8_0_52"
+              ],
+              "text": "{{headline}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.headline }}"
+            },
+            {
+              "text": "{{col_1}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_2 }}"
+            },
+            {
+              "pageObjectIds": "={{ [\"g3ba54f812c8_0_52\"] }}",
+              "text": "{{col_2}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_1 }}"
+            },
+            {
+              "pageObjectIds": "={{ [\"g3ba54f812c8_0_52\"] }}",
+              "text": "{{col_3}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.col_3 }}"
+            },
+            {
+              "pageObjectIds": "={{ [\"g3ba54f812c8_0_161\"] }}",
+              "text": "{{pdf_tricks}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_tricks }}"
+            },
+            {
+              "pageObjectIds": "={{ [\"g3ba54f812c8_0_218\"] }}",
+              "text": "{{pdf_examples}}",
+              "replaceText": "={{ $('Code in JavaScript').item.json.pdf_examples }}"
+            }
+          ]
+        },
+        "options": {
+          "revisionId": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSlides",
+      "typeVersion": 2,
+      "position": [
+        864,
+        208
+      ],
+      "id": "a1babe23-4869-4522-befe-9a5efa17a644",
+      "name": "Replace text in a presentation",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "iYuO9DBOap0c1dnx",
+          "name": "Google Slides account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.image_url }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $json.caption }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2688,
+        928
+      ],
+      "id": "56e255f3-ad1d-47c0-beec-b27610a50cac",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "17841454136519089",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2896,
+        928
+      ],
+      "id": "5b4dac0e-1333-4704-9260-4180c78b9054",
+      "name": "Facebook Graph API1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a caption for a post about: {{ $('Code in JavaScript').item.json.headline }}",
+        "options": {
+          "systemMessage": "=You are the Social Media Manager for \"BandLadder\".\nI will give you a topic (e.g., \"Top 10 Synonyms for Bad\").\n\nYour Goal: Write a high-converting Instagram Caption.\n\nSTRUCTURE:\n1. THE HOOK:\n   - Write 1 punchy sentence about the topic.\n   - Example: \"Stop using basic words like 'Bad'\u2014here are 10 alternatives to boost your score! \ud83d\ude80\"\n\n2. THE SALES PITCH (Paste Exactly):\n   \"Achieve your dream IELTS / PTE / CELPIP score with personalized online classes from an expert trainer.\n   \u2022 Live interactive sessions for all modules: Listening, Reading, Writing, Speaking\n   \u2022 Updated exam patterns, tips, and strategies that actually work\n   \u2022 Regular mock tests, detailed feedback, and progress tracking\n   \u2022 Flexible timings for working professionals and students\"\n\n3. THE CTA:\n   \"Dm for online IELTS / PTE / CELPIP classes or comment \u201cCLASS\u201d and I\u2019ll reach out to you.\"\n\n4. HASHTAGS (Paste Exactly as one block):\n   \"#ielts #learnenglish #studyabroad #englishlearning #ieltspreparation #studyincanada #englishteacher #vocabulary #englishgrammar #esl #studyinuk #internationalstudents #speakenglish #englishcourse #toefl #ieltsexam #englishvocabulary #grammar #studyvisa #englishclass #ieltswriting #ieltstips #englishlanguage #studentvisa #language\"\n\nOUTPUT RULE:\n- Output ONLY the final caption text.\n- Do not add \"Here is the caption\" or quotes.\n- Ensure all hashtags have the '#' symbol."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1712,
+        208
+      ],
+      "id": "1ee0e90a-9406-4c4f-95f9-4d570f413fac",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        416
+      ],
+      "id": "50330290-3503-4d4b-a3a0-65be8dac9b61",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "AkxgrZBH93w35kMj",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.presentationId }}",
+          "mode": "id"
+        },
+        "options": {
+          "googleFileConversion": {
+            "conversion": {
+              "slidesToFormat": "application/pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -192
+      ],
+      "id": "7c8eb758-45a8-4ed5-9b16-cc4f9c13403b",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "name": "={{ $('Code in JavaScript').item.json.headline }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1504,
+        -192
+      ],
+      "id": "0792d81f-8fe0-4481-bea1-707c937df76a",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the caption from the AI Agent\nconst caption = $('AI Agent1').item.json.output;\n\n// Get the Image URL from the Thumbnail node\nconst imageUrl = $('Get the thumbnail for a page').item.json.contentUrl;\n\n// Get the presentation ID for later use\nconst presentationId = $('Copy file').item.json.id;\n\n// Build URL with encoded parameters for approval link\nconst baseUrl = 'https://n8n.srv1258291.hstgr.cloud/webhook/ab-approve';\nconst encodedCaption = encodeURIComponent(caption);\nconst encodedImageUrl = encodeURIComponent(imageUrl);\nconst encodedPresentationId = encodeURIComponent(presentationId);\n\nconst approveUrl = `${baseUrl}?caption=${encodedCaption}&image_url=${encodedImageUrl}&presentationId=${encodedPresentationId}`;\nconst retryUrl = 'https://n8n.srv1258291.hstgr.cloud/webhook/ab-retry';\n\n// Return the data for the next nodes\nreturn {\n  json: {\n    caption: caption,\n    image_url: imageUrl,\n    presentationId: presentationId,\n    approveUrl: approveUrl,\n    retryUrl: retryUrl\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        704
+      ],
+      "id": "ad29eb7c-c4d6-4893-96e7-8ff3e5245f33",
+      "name": "Store Post Data"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "5493233618",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "=\ud83d\udcf8 *New Post Ready!*\n\n{{ $('Store Post Data').item.json.caption.substring(0, 700) }}...",
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        704
+      ],
+      "id": "cd6398b7-3ff3-4be6-ae41-fa652e5b82d7",
+      "name": "Send a photo message",
+      "webhookId": "40823bba-47aa-46b6-b6c3-75af2ce0ae7c",
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://docs.google.com/presentation/d/{{ $('Copy file').item.json.id }}/export/png?pageid=g3ba54f812c8_0_52",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2256,
+        704
+      ],
+      "id": "818a3674-ab21-4ba5-b698-25b39c4b3a08",
+      "name": "HTTP Request1",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "S1aqbsS7cjoxaAYY",
+          "name": "Google Slides account"
+        },
+        "googleDriveOAuth2Api": {
+          "id": "8YK4YgGXohrNXxWI",
+          "name": "Google Drive account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get today's day of the month (1-31)\nconst today = new Date().getDate();\n\n// The Master List of 31 Topics (One for each day)\nconst topics = [\n  \"Job Interviews\",\n  \"Salary Negotiations\",\n  \"Project Management Updates\",\n  \"Client Feedback & Reviews\",\n  \"Business Networking Events\",\n  \"Airport & Air Travel\",\n  \"Hotel Check-in & Stay\",\n  \"Business Lunch & Fine Dining\",\n  \"Giving Presentations\",\n  \"Professional Email Writing\",\n  \"Conflict Resolution at Work\",\n  \"Performance Appraisals\",\n  \"Remote Work & Zoom Calls\",\n  \"Customer Service Disputes\",\n  \"Marketing & Branding Strategy\",\n  \"Financial Reporting & Budgeting\",\n  \"Legal Contracts & Agreements\",\n  \"IT & Tech Support Requests\",\n  \"Hiring & Recruitment\",\n  \"Office Small Talk (Watercooler)\",\n  \"Leadership & Team Motivation\",\n  \"Sales Pitches & Closing Deals\",\n  \"Academic Research & Thesis\",\n  \"University Lectures & Seminars\",\n  \"Study Group Discussions\",\n  \"Exam Preparation Strategy\",\n  \"Visa & Immigration Process\",\n  \"International Cultural Festivals\",\n  \"Corporate Health & Wellness\",\n  \"Real Estate & Housing Hunting\",\n  \"Supply Chain & Logistics\"\n];\n\n// Pick the topic for today (Subtract 1 because arrays start at 0)\n// If today is the 1st, it picks \"Job Interviews\". If 31st, \"Supply Chain\".\nconst dailyTopic = topics[today - 1] || \"General Business English\";\n\nreturn {\n  json: {\n    todays_topic: dailyTopic\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        16
+      ],
+      "id": "90c4c412-cafe-44a8-bf6c-f2de9aae8ea2",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "id": "send-links-ab",
+      "name": "Send Approval Links",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2608,
+        704
+      ],
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "5493233618",
+        "text": "=\ud83d\udc46 Click to approve or retry:\n\n\u2705 APPROVE:\n{{ $('Store Post Data').item.json.approveUrl }}\n\n\ud83d\udd04 RETRY:\n{{ $('Store Post Data').item.json.retryUrl }}",
+        "additionalFields": {
+          "disable_web_page_preview": true
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "id": "approve-webhook-ab",
+      "name": "Approve Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        1200
+      ],
+      "parameters": {
+        "path": "ab-approve",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "webhookId": "ab-approve-webhook-id"
+    },
+    {
+      "id": "get-post-approve-ab",
+      "name": "Get Post for Approve",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        1200
+      ],
+      "parameters": {
+        "jsCode": "// Get post data from URL query parameters (passed via the approval link)\nconst query = $input.first().json.query || {};\n\n// Check if we have the required data\nif (!query.image_url || !query.caption) {\n  return { \n    json: { \n      error: 'Missing post data. The approval link may be invalid or expired.',\n      image_url: '',\n      caption: ''\n    } \n  };\n}\n\n// Decode the URL-encoded parameters\nconst imageUrl = decodeURIComponent(query.image_url);\nconst caption = decodeURIComponent(query.caption);\nconst presentationId = query.presentationId ? decodeURIComponent(query.presentationId) : 'unknown';\n\nreturn {\n  json: {\n    caption: caption,\n    image_url: imageUrl,\n    presentationId: presentationId\n  }\n};"
+      }
+    },
+    {
+      "id": "approve-response-ab",
+      "name": "Approve Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3104,
+        928
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg",
+              "name": "message",
+              "value": "\u2705 Post approved and published to Instagram!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "success-telegram-ab",
+      "name": "Send Success Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3312,
+        928
+      ],
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "5493233618",
+        "text": "\u2705 *Post Published Successfully!*\n\nYour Instagram post is now live.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "bH5MHRG3rqcqvphv",
+          "name": "Master"
+        }
+      }
+    },
+    {
+      "id": "retry-webhook-ab",
+      "name": "Retry Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        1400
+      ],
+      "parameters": {
+        "path": "ab-retry",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "webhookId": "ab-retry-webhook-id"
+    },
+    {
+      "id": "retry-response-ab",
+      "name": "Retry Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2400,
+        1400
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg",
+              "name": "message",
+              "value": "\ud83d\udd04 Generating new post... Check Telegram shortly!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Replace text in a presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thumbnail for a page": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace text in a presentation": {
+      "main": [
+        [
+          {
+            "node": "Get the thumbnail for a page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Store Post Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Post Data": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a photo message": {
+      "main": [
+        [
+          {
+            "node": "Send Approval Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Post for Approve",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Post for Approve": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "Approve Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve Response": {
+      "main": [
+        [
+          {
+            "node": "Send Success Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry Webhook": {
+      "main": [
+        [
+          {
+            "node": "Retry Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry Response": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "versionId": "d2fd9960-7751-469c-80a9-1fb7034c5176",
+  "activeVersionId": "d2fd9960-7751-469c-80a9-1fb7034c5176",
+  "versionCounter": 115,
+  "triggerCount": 3,
+  "tags": []
+}

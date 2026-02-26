@@ -1,0 +1,830 @@
+{
+  "name": "IELTS Instagram Stories Poster",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, -200]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Daily 9AM Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Topic Generator - Synchronized with other Bandladder workflows\nconst topics = [\n  \"Intelligence\", \"Happiness\", \"Sadness\", \"Anger\", \"Fear\", \"Success\", \"Failure\", \"Money\", \"Time\", \"Laziness\",\n  \"Honesty\", \"Secrets\", \"Friendship\", \"Love\", \"Travel\", \"Weather\", \"Health\", \"Food\", \"Music\", \"Books\",\n  \"Nature\", \"Animals\", \"Colors\", \"Numbers\", \"Sports\", \"Speed\", \"Patience\", \"Risk\", \"Luck\", \"Decisions\",\n  \"Negotiation\", \"Leadership\", \"Teamwork\", \"Creativity\", \"Confusion\", \"Memory\", \"Sleep\", \"Dreams\", \"Fashion\",\n  \"Technology\", \"Family\", \"Education\", \"Law\", \"Politics\", \"History\", \"Science\", \"The Future\"\n];\n\nconst now = new Date();\nconst start = new Date(now.getFullYear(), 0, 0);\nconst diff = now - start;\nconst oneDay = 1000 * 60 * 60 * 24;\nconst dayOfYear = Math.floor(diff / oneDay);\nconst topicIndex = dayOfYear % topics.length;\n\nreturn { topic: topics[topicIndex], dayOfYear: dayOfYear, topicIndex: topicIndex };"
+      },
+      "id": "topic-generator",
+      "name": "Topic Generator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a creative content strategist for \"Bandladder\", an IELTS preparation brand.\n\nToday's Topic: {{ $json.topic }}\n\nCreate content for a 5-SLIDE Instagram Story sequence about this topic for IELTS learners.\n\nEach slide must be designed for a vertical format (1080x1920 pixels).\n\n**STRICT FORMAT - Return ONLY valid JSON, no markdown:**\n\n{\n  \"topic\": \"{{ $json.topic }}\",\n  \"slides\": [\n    {\n      \"slideNumber\": 1,\n      \"type\": \"hook\",\n      \"headline\": \"Attention-grabbing question or statement (max 8 words)\",\n      \"subtext\": \"Brief teaser (max 15 words)\",\n      \"emoji\": \"relevant emoji\"\n    },\n    {\n      \"slideNumber\": 2,\n      \"type\": \"vocabulary\",\n      \"headline\": \"Key IELTS Vocabulary\",\n      \"word1\": \"Advanced word related to topic\",\n      \"meaning1\": \"Simple definition\",\n      \"word2\": \"Second advanced word\",\n      \"meaning2\": \"Simple definition\"\n    },\n    {\n      \"slideNumber\": 3,\n      \"type\": \"example\",\n      \"headline\": \"Sample IELTS Answer\",\n      \"context\": \"Speaking Part 2 or Writing Task 2\",\n      \"example\": \"A model sentence using today's vocabulary (max 25 words)\"\n    },\n    {\n      \"slideNumber\": 4,\n      \"type\": \"tip\",\n      \"headline\": \"Pro Tip\",\n      \"tip\": \"Actionable IELTS strategy related to this topic (max 20 words)\",\n      \"emoji\": \"💡\"\n    },\n    {\n      \"slideNumber\": 5,\n      \"type\": \"cta\",\n      \"headline\": \"Ready to Master {{ $json.topic }}?\",\n      \"subtext\": \"Follow @bandladder for daily IELTS tips!\",\n      \"hashtags\": [\"#IELTS\", \"#IELTSPrep\", \"#Bandladder\", \"#IELTSTips\"]\n    }\n  ]\n}\n\nIMPORTANT: Return ONLY the JSON object, no explanations or markdown code blocks.",
+        "options": {
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "ai-content-generator",
+      "name": "AI Content Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [440, 220],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse AI response and extract JSON content\nconst aiOutput = $input.first().json.output;\n\n// Try to extract JSON from the response\nlet content;\ntry {\n  // Handle if response is wrapped in markdown code blocks\n  let jsonString = aiOutput;\n  if (jsonString.includes('```json')) {\n    jsonString = jsonString.replace(/```json\\n?/g, '').replace(/```\\n?/g, '');\n  } else if (jsonString.includes('```')) {\n    jsonString = jsonString.replace(/```\\n?/g, '');\n  }\n  content = JSON.parse(jsonString.trim());\n} catch (e) {\n  throw new Error('Failed to parse AI response as JSON: ' + e.message);\n}\n\nreturn {\n  topic: content.topic,\n  slides: content.slides,\n  slideCount: content.slides.length,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "parse-ai-response",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://slides.googleapis.com/v1/presentations",
+        "authentication": "oAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"title\": \"Bandladder Stories - {{ $json.topic }} - {{ $now.format('yyyy-MM-dd') }}\",\n  \"pageSize\": {\n    \"width\": {\n      \"magnitude\": 1080,\n      \"unit\": \"PT\"\n    },\n    \"height\": {\n      \"magnitude\": 1920,\n      \"unit\": \"PT\"\n    }\n  }\n}",
+        "options": {}
+      },
+      "id": "create-presentation",
+      "name": "Create Google Slides Presentation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare slides data for batch update\nconst slides = $('Parse AI Response').first().json.slides;\nconst presentationId = $input.first().json.presentationId;\n\n// Create requests array for batch update\nconst requests = [];\n\n// First, create 4 additional slides (1 already exists)\nfor (let i = 1; i < 5; i++) {\n  requests.push({\n    createSlide: {\n      insertionIndex: i,\n      slideLayoutReference: {\n        predefinedLayout: 'BLANK'\n      }\n    }\n  });\n}\n\nreturn {\n  presentationId: presentationId,\n  requests: requests,\n  slides: slides\n};"
+      },
+      "id": "prepare-slides-structure",
+      "name": "Prepare Slides Structure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $json.presentationId }}:batchUpdate",
+        "authentication": "oAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": {{ JSON.stringify($json.requests) }}\n}",
+        "options": {}
+      },
+      "id": "create-additional-slides",
+      "name": "Create Additional Slides",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $('Prepare Slides Structure').first().json.presentationId }}",
+        "authentication": "oAuth2",
+        "options": {}
+      },
+      "id": "get-presentation-details",
+      "name": "Get Presentation Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1540, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate content update requests for each slide\nconst presentation = $input.first().json;\nconst slides = $('Prepare Slides Structure').first().json.slides;\nconst presentationId = presentation.presentationId;\nconst pageIds = presentation.slides.map(s => s.objectId);\n\nconst requests = [];\n\n// Brand colors\nconst brandColors = {\n  primary: { red: 0.2, green: 0.4, blue: 0.8 },      // Blue\n  secondary: { red: 0.95, green: 0.95, blue: 0.98 }, // Light bg\n  accent: { red: 1, green: 0.6, blue: 0.2 },         // Orange\n  text: { red: 0.1, green: 0.1, blue: 0.1 }          // Dark text\n};\n\nslides.forEach((slide, index) => {\n  const pageId = pageIds[index];\n  const textId = `text_${index}_${Date.now()}`;\n  \n  // Set background color\n  requests.push({\n    updatePageProperties: {\n      objectId: pageId,\n      pageProperties: {\n        pageBackgroundFill: {\n          solidFill: {\n            color: {\n              rgbColor: index % 2 === 0 ? brandColors.primary : brandColors.secondary\n            }\n          }\n        }\n      },\n      fields: 'pageBackgroundFill'\n    }\n  });\n  \n  // Create text content based on slide type\n  let textContent = '';\n  let textColor = index % 2 === 0 ? brandColors.secondary : brandColors.text;\n  \n  switch(slide.type) {\n    case 'hook':\n      textContent = `${slide.emoji || '🎯'}\\n\\n${slide.headline}\\n\\n${slide.subtext}`;\n      break;\n    case 'vocabulary':\n      textContent = `📚 ${slide.headline}\\n\\n${slide.word1}\\n${slide.meaning1}\\n\\n${slide.word2}\\n${slide.meaning2}`;\n      break;\n    case 'example':\n      textContent = `✍️ ${slide.headline}\\n\\n${slide.context}\\n\\n\"${slide.example}\"`;\n      break;\n    case 'tip':\n      textContent = `${slide.emoji || '💡'} ${slide.headline}\\n\\n${slide.tip}`;\n      break;\n    case 'cta':\n      textContent = `🚀 ${slide.headline}\\n\\n${slide.subtext}\\n\\n${(slide.hashtags || []).join(' ')}`;\n      break;\n  }\n  \n  // Create text box\n  requests.push({\n    createShape: {\n      objectId: textId,\n      shapeType: 'TEXT_BOX',\n      elementProperties: {\n        pageObjectId: pageId,\n        size: {\n          width: { magnitude: 900, unit: 'PT' },\n          height: { magnitude: 1600, unit: 'PT' }\n        },\n        transform: {\n          scaleX: 1,\n          scaleY: 1,\n          translateX: 90,\n          translateY: 160,\n          unit: 'PT'\n        }\n      }\n    }\n  });\n  \n  // Insert text\n  requests.push({\n    insertText: {\n      objectId: textId,\n      insertionIndex: 0,\n      text: textContent\n    }\n  });\n  \n  // Style text\n  requests.push({\n    updateTextStyle: {\n      objectId: textId,\n      style: {\n        fontFamily: 'Montserrat',\n        fontSize: { magnitude: 48, unit: 'PT' },\n        foregroundColor: {\n          opaqueColor: { rgbColor: textColor }\n        },\n        bold: false\n      },\n      textRange: { type: 'ALL' },\n      fields: 'fontFamily,fontSize,foregroundColor,bold'\n    }\n  });\n  \n  // Center align\n  requests.push({\n    updateParagraphStyle: {\n      objectId: textId,\n      style: {\n        alignment: 'CENTER'\n      },\n      textRange: { type: 'ALL' },\n      fields: 'alignment'\n    }\n  });\n});\n\nreturn {\n  presentationId: presentationId,\n  requests: requests,\n  slideCount: slides.length,\n  pageIds: pageIds\n};"
+      },
+      "id": "generate-slide-content-requests",
+      "name": "Generate Slide Content Requests",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass through data for HTTP request and store for later use\nconst data = $input.first().json;\nreturn {\n  presentationId: data.presentationId,\n  requests: data.requests,\n  pageIds: data.pageIds,\n  slideCount: data.slideCount,\n  requestsJson: JSON.stringify({requests: data.requests})\n};"
+      },
+      "id": "prepare-content-update",
+      "name": "Prepare Content Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1980, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $json.presentationId }}:batchUpdate",
+        "authentication": "oAuth2",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.requestsJson }}",
+        "options": {}
+      },
+      "id": "update-slide-content",
+      "name": "Update Slide Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2200, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get stored data and create loop items\nconst storedData = $('Prepare Content Update').first().json;\nconst presentationId = storedData.presentationId;\nconst pageIds = storedData.pageIds;\n\nif (!pageIds || pageIds.length === 0) {\n  throw new Error('No pageIds found! Check Generate Slide Content Requests output.');\n}\n\nconst items = [];\nfor (let index = 0; index < pageIds.length; index++) {\n  items.push({\n    json: {\n      presentationId: presentationId,\n      pageId: pageIds[index],\n      slideIndex: index,\n      slideNumber: index + 1,\n      totalSlides: pageIds.length\n    }\n  });\n}\n\nreturn items;"
+      },
+      "id": "prepare-loop-items",
+      "name": "Prepare Loop Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2420, 0]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-slides",
+      "name": "Loop Through Slides",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [2640, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Store loop context data for use throughout the iteration\nconst item = $input.first().json;\nconsole.log('Processing slide:', item.slideNumber, 'of', item.totalSlides);\nreturn {\n  presentationId: item.presentationId,\n  pageId: item.pageId,\n  slideIndex: item.slideIndex,\n  slideNumber: item.slideNumber,\n  totalSlides: item.totalSlides\n};"
+      },
+      "id": "store-loop-context",
+      "name": "Store Loop Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2860, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://slides.googleapis.com/v1/presentations/{{ $json.presentationId }}/pages/{{ $json.pageId }}/thumbnail?thumbnailProperties.mimeType=PNG&thumbnailProperties.thumbnailSize=LARGE",
+        "authentication": "oAuth2",
+        "options": {}
+      },
+      "id": "get-slide-thumbnail",
+      "name": "Get Slide Thumbnail URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3080, 0],
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "joaBFYGXSwbOVpF4",
+          "name": "Google Slides OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pass through the content URL and loop context\nconst thumbnail = $input.first().json;\nconst context = $('Store Loop Context').first().json;\nreturn {\n  contentUrl: thumbnail.contentUrl,\n  presentationId: context.presentationId,\n  pageId: context.pageId,\n  slideIndex: context.slideIndex,\n  slideNumber: context.slideNumber\n};"
+      },
+      "id": "merge-thumbnail-context",
+      "name": "Merge Thumbnail Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3300, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.contentUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "download-slide-image",
+      "name": "Download Slide Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3520, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare file data with context for upload\nconst context = $('Merge Thumbnail Context').first().json;\nconst binaryData = $input.first().binary;\nreturn {\n  json: {\n    slideNumber: context.slideNumber,\n    slideIndex: context.slideIndex,\n    presentationId: context.presentationId\n  },\n  binary: binaryData\n};"
+      },
+      "id": "prepare-upload-data",
+      "name": "Prepare Upload Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3740, 0]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "name": "=bandladder_story_slide_{{ $json.slideNumber }}_{{ $now.format('yyyyMMdd_HHmmss') }}.png",
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1XgNriZ7OfCXixt6vBA0SSgo_t1O6bGOu"
+        },
+        "options": {}
+      },
+      "id": "upload-to-drive",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [3960, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge upload result with context\nconst uploadResult = $input.first().json;\nconst context = $('Prepare Upload Data').first().json;\nreturn {\n  fileId: uploadResult.id,\n  webViewLink: uploadResult.webViewLink,\n  slideNumber: context.slideNumber,\n  slideIndex: context.slideIndex\n};"
+      },
+      "id": "merge-upload-context",
+      "name": "Merge Upload Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4180, 0]
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.fileId }}"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "id": "make-file-public",
+      "name": "Make File Public",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [4400, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "f2CGoaFye8PSrXzj",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare Instagram Story post data - use Google Slides thumbnail URL directly\n// Instagram API accepts lh3.googleusercontent.com URLs but NOT drive.google.com URLs\nconst thumbnailContext = $('Merge Thumbnail Context').first().json;\nconst uploadContext = $('Merge Upload Context').first().json;\n\n// Use the thumbnail URL from Google Slides (lh3.googleusercontent.com)\nconst imageUrl = thumbnailContext.contentUrl;\n\nreturn {\n  imageUrl: imageUrl,\n  slideNumber: uploadContext.slideNumber,\n  fileId: uploadContext.fileId\n};"
+      },
+      "id": "prepare-instagram-data",
+      "name": "Prepare Instagram Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4620, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge Instagram data with context for tracking\nconst instagramData = $input.first().json;\nreturn {\n  imageUrl: instagramData.imageUrl,\n  slideNumber: instagramData.slideNumber,\n  fileId: instagramData.fileId\n};"
+      },
+      "id": "prepare-media-container",
+      "name": "Prepare Media Container",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [4840, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v18.0/17841454136519089/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.imageUrl }}"
+            },
+            {
+              "name": "media_type",
+              "value": "STORIES"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "create-instagram-media-container",
+      "name": "Create Instagram Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [5060, 0],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph API"
+        }
+      },
+      "notes": "Uses Instagram Graph API to create a media container for Stories"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge media container ID with context\nconst mediaContainer = $input.first().json;\nconst context = $('Prepare Media Container').first().json;\nreturn {\n  containerId: mediaContainer.id,\n  slideNumber: context.slideNumber,\n  fileId: context.fileId\n};"
+      },
+      "id": "merge-container-context",
+      "name": "Merge Container Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [5280, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v18.0/17841454136519089/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.containerId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "publish-instagram-story",
+      "name": "Publish Instagram Story",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [5500, 0],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "qN18Zkmaf2RuSsur",
+          "name": "Facebook Graph API"
+        }
+      },
+      "notes": "Publishes the media container to Instagram Stories"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Add delay between story posts to avoid rate limiting\nconst publishResult = $input.first().json;\nconst context = $('Merge Container Context').first().json;\n\n// Wait 3 seconds between posts\nawait new Promise(resolve => setTimeout(resolve, 3000));\n\nreturn {\n  success: true,\n  slideNumber: context.slideNumber,\n  mediaId: publishResult.id,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "delay-between-posts",
+      "name": "Rate Limit Delay",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [5720, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Summary of all posted stories\nconst items = $input.all();\n\nconst summary = {\n  totalSlides: items.length,\n  postedAt: new Date().toISOString(),\n  slides: items.map(item => ({\n    slideNumber: item.json.slideNumber,\n    mediaId: item.json.mediaId,\n    success: item.json.success\n  }))\n};\n\nreturn summary;"
+      },
+      "id": "summary",
+      "name": "Workflow Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [6160, 0]
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Instagram Stories workflow failed: {{ $json.error?.message || 'Unknown error' }}"
+      },
+      "id": "error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [6160, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Topic Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily 9AM Trigger": {
+      "main": [
+        [
+          {
+            "node": "Topic Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Topic Generator": {
+      "main": [
+        [
+          {
+            "node": "AI Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Content Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Content Generator": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "Create Google Slides Presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Google Slides Presentation": {
+      "main": [
+        [
+          {
+            "node": "Prepare Slides Structure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Slides Structure": {
+      "main": [
+        [
+          {
+            "node": "Create Additional Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Additional Slides": {
+      "main": [
+        [
+          {
+            "node": "Get Presentation Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Presentation Details": {
+      "main": [
+        [
+          {
+            "node": "Generate Slide Content Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Slide Content Requests": {
+      "main": [
+        [
+          {
+            "node": "Prepare Content Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Content Update": {
+      "main": [
+        [
+          {
+            "node": "Update Slide Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Slide Content": {
+      "main": [
+        [
+          {
+            "node": "Prepare Loop Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Loop Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Through Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Through Slides": {
+      "main": [
+        [
+          {
+            "node": "Store Loop Context",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Workflow Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Loop Context": {
+      "main": [
+        [
+          {
+            "node": "Get Slide Thumbnail URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Slide Thumbnail URL": {
+      "main": [
+        [
+          {
+            "node": "Merge Thumbnail Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Thumbnail Context": {
+      "main": [
+        [
+          {
+            "node": "Download Slide Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Slide Image": {
+      "main": [
+        [
+          {
+            "node": "Prepare Upload Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Upload Data": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Merge Upload Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Upload Context": {
+      "main": [
+        [
+          {
+            "node": "Make File Public",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make File Public": {
+      "main": [
+        [
+          {
+            "node": "Prepare Instagram Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Instagram Data": {
+      "main": [
+        [
+          {
+            "node": "Prepare Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Media Container": {
+      "main": [
+        [
+          {
+            "node": "Create Instagram Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Instagram Media Container": {
+      "main": [
+        [
+          {
+            "node": "Merge Container Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Container Context": {
+      "main": [
+        [
+          {
+            "node": "Publish Instagram Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Instagram Story": {
+      "main": [
+        [
+          {
+            "node": "Rate Limit Delay",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limit Delay": {
+      "main": [
+        [
+          {
+            "node": "Loop Through Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": ""
+  },
+  "tags": [
+    {
+      "name": "Instagram",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "IELTS",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "Bandladder",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "Stories",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ]
+}

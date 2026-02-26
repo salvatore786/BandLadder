@@ -1,0 +1,63 @@
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+ENV/
+
+# ── Node / Remotion ──────────────────────────────────────
+remotion-video/node_modules/
+remotion-video/.remotion/
+
+# ── Output videos & media (large files) ──────────────────
+output/
+reference_frames_new/
+content/cta_swipe_voiced.mp4
+content/cta_testimonial_voiced.mp4
+content/thumbnails/
+content/captions/
+
+# ── Logs ─────────────────────────────────────────────────
+logs/
+*.log
+webhook_server.log
+nul
+
+# ── Temp / generated files ───────────────────────────────
+temp_audio.mp3
+remotion-video/public/audio_*.mp3
+remotion-video/input-props.json
+
+# ── Upload / post tracking (local state) ─────────────────
+content/upload_log.json
+content/post_log.json
+
+# ── Environment / secrets ────────────────────────────────
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# ── IDE / OS ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+.ruff_cache/
+
+# ── PowerShell helper scripts (local dev only) ───────────
+*.ps1
+
+# ── Temp n8n workflow files ──────────────────────────────
+temp_carousel_workflow.json
