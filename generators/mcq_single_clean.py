@@ -43,7 +43,7 @@ Return ONLY valid JSON (no markdown fences, no extra text):
 
 CHARACTER LIMITS — the content MUST fit a 1080×1920 vertical mobile screen:
 - "headerText": MAX 25 characters (e.g. "IELTS 6 listening")
-- "question": MAX 70 characters — be specific and detailed
+- "question": Generate a clear question that is strictly between 10 to 15 words (approximately 60 to 80 characters). Do not make the question shorter than 10 words.
 - "options": EXACTLY 3 options, each MAX 35 characters including the "A. " / "B. " / "C. " prefix
 - "audio_script": 25–35 second natural dialogue with 4-6 turns
 
@@ -62,7 +62,7 @@ IMPORTANT:
 - The question should test comprehension of a specific detail from the dialogue.
 - Make wrong options plausible but clearly incorrect based on the dialogue.
 - Every option MUST start with "A. ", "B. ", or "C. " prefix.
-- COUNT your characters carefully. If a question exceeds 70 chars, shorten it.
+- Generate a clear question that is strictly between 10 to 15 words (approximately 60 to 80 characters). Do not make the question shorter than 10 words.
 - Return ONLY the JSON object, nothing else."""
 
     def validate_response(self, data: dict) -> bool:
