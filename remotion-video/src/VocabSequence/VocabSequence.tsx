@@ -11,6 +11,7 @@ import {
   Img,
 } from "remotion";
 import { loadFont } from "@remotion/google-fonts/NotoSerif";
+import { CaptionTrack } from "../shared/CaptionTrack";
 
 const { fontFamily: serifFont } = loadFont();
 
@@ -811,6 +812,7 @@ export const VocabSequence: React.FC<VocabSequenceProps> = ({
       )}
 
       {/* Audio */}
+      <CaptionTrack />
       <Audio src={staticFile(audioFileName)} />
     </AbsoluteFill>
   );

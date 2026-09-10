@@ -15,6 +15,8 @@ import { PulsingRings } from "../shared/PulsingRings";
 import { SpinningVinylRecord } from "../shared/SpinningVinylRecord";
 import { HookIntro } from "../shared/HookIntro";
 import { FormField } from "./FormField";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { useSpeechWindow } from "../utils/timing";
 
 export const NoteCompletion: React.FC<NoteCompletionProps> = ({
   formTitle,
@@ -31,13 +33,16 @@ export const NoteCompletion: React.FC<NoteCompletionProps> = ({
   const { fps } = useVideoConfig();
   const hookFrames = Math.ceil(hookIntroDuration * fps);
   const totalFrames = Math.ceil(durationSeconds * fps);
-  const audioFrames = Math.ceil(audioDurationSeconds * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const audioFrames = Math.ceil(speech.speechEnd * fps);
 
   // Timing: fields appear during audio portion, reveal AFTER audio ends
   const fieldStartFrame = Math.floor(audioFrames * 0.15);
   const fieldSpacing = Math.floor((audioFrames * 0.55) / Math.max(fields.length, 1));
   // Answer reveals 1 second AFTER audio ends
-  const revealFrame = Math.ceil((audioDurationSeconds + 1) * fps);
+  const revealFrame = Math.ceil((speech.speechEnd + 1) * fps);
 
   return (
     <AbsoluteFill style={{ fontFamily }}>
@@ -194,6 +199,7 @@ export const NoteCompletion: React.FC<NoteCompletionProps> = ({
           <AudioWaveViz />
           <ProgressBar durationSeconds={durationSeconds - hookIntroDuration} />
           <Watermark />
+          <CaptionTrack />
           <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

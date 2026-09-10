@@ -1,0 +1,88 @@
+{
+  "composition": "MapWalkthrough",
+  "module": "listening",
+  "eyebrow": "IELTS Listening Part 2",
+  "headline": {
+    "lead": "Label the map",
+    "emphasis": "in real time"
+  },
+  "durationInFrames": 1200,
+  "sectionLabels": {
+    "walkthrough": "Walkthrough",
+    "practice": "Practice"
+  },
+  "practiceStartFrame": 820,
+  "map": {
+    "fixtures": {
+      "entrance": "Entrance",
+      "northLabel": "to the car park \u2192",
+      "corridor": "main corridor",
+      "blockA": "Changing rooms",
+      "blockB": "Store"
+    }
+  },
+  "answers": [
+    {
+      "n": 1,
+      "name": "Reception",
+      "slot": "A",
+      "revealFrame": 240,
+      "color": "#2563EB",
+      "practice": false
+    },
+    {
+      "n": 2,
+      "name": "Swimming pool",
+      "slot": "F",
+      "revealFrame": 430,
+      "color": "#0E9F6E",
+      "practice": false
+    },
+    {
+      "n": 3,
+      "name": "Gym",
+      "slot": "E",
+      "revealFrame": 620,
+      "color": "#7C3AED",
+      "practice": false
+    },
+    {
+      "n": 4,
+      "name": "Caf\u00e9",
+      "slot": "C",
+      "revealFrame": 9999,
+      "color": "#F97316",
+      "practice": true
+    }
+  ],
+  "bubbles": [
+    {
+      "text": "\"immediately on your left\"",
+      "fromFrame": 170,
+      "durationInFrames": 90,
+      "x": 0.26,
+      "y": 0.79
+    },
+    {
+      "text": "far end = top of the plan",
+      "fromFrame": 360,
+      "durationInFrames": 90,
+      "x": 0.72,
+      "y": 0.2
+    },
+    {
+      "text": "opposite, not next to",
+      "fromFrame": 550,
+      "durationInFrames": 90,
+      "x": 0.27,
+      "y": 0.2
+    },
+    {
+      "text": "Answers in the comments",
+      "fromFrame": 880,
+      "durationInFrames": 260,
+      "x": 0.5,
+      "y": 0.5
+    }
+  ]
+}

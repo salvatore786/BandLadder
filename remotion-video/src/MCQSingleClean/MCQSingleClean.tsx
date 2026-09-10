@@ -11,6 +11,9 @@ import {
 } from "remotion";
 import { loadFont } from "@remotion/google-fonts/Bangers";
 import { loadFont as loadPoppins } from "@remotion/google-fonts/Poppins";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { ThreeBackground, COMIC_PALETTE } from "../shared/ThreeBackground";
+import { useSpeechWindow } from "../utils/timing";
 
 const { fontFamily: comicFont } = loadFont();
 const { fontFamily: sansFont } = loadPoppins();
@@ -196,7 +199,10 @@ const QuizContent: React.FC<{
   const frame = useCurrentFrame();
 
   const questionBarStart = Math.ceil(0.5 * fps);
-  const optionsStart = Math.ceil((audioDurationSeconds + 1.5) * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const optionsStart = Math.ceil((speech.speechEnd + 1.5) * fps);
   const OPTION_STAGGER = Math.ceil(0.35 * fps);
   const thinkingDuration = Math.ceil(3 * fps);
   const lastOptionFrame = optionsStart + (options.length - 1) * OPTION_STAGGER;
@@ -220,6 +226,8 @@ const QuizContent: React.FC<{
 
   return (
     <AbsoluteFill style={{ background: BG }}>
+      {/* three.js depth layer, tuned to the flat comic palette */}
+      <ThreeBackground palette={COMIC_PALETTE} count={10} shapeOpacity={0.5} intensity={0.7} />
       <div style={{
         position: "absolute", left: 50, top: 60,
         transform: "rotate(-6deg)", transformOrigin: "left top", opacity: titleOpacity,
@@ -326,6 +334,7 @@ const QuizContent: React.FC<{
         </span>
       </div>
 
+      <CaptionTrack />
       <Audio src={staticFile(audioFileName)} />
     </AbsoluteFill>
   );

@@ -23,6 +23,7 @@ import { MusicNotes } from "../shared/MusicNotes";
 import { PulsingRings } from "../shared/PulsingRings";
 import { CueCardDisplay } from "./CueCardDisplay";
 import { ScrollingAnswer } from "./ScrollingAnswer";
+import { CaptionTrack } from "../shared/CaptionTrack";
 
 /**
  * IELTS Speaking Part 2 — Cue Card Composition
@@ -176,6 +177,7 @@ export const CueCard: React.FC<CueCardProps> = ({
 
           {/* ── Voice narration audio ── */}
           <Sequence from={cueCardFrames}>
+            <CaptionTrack />
             <Audio src={staticFile(audioFileName)} volume={0.95} />
           </Sequence>
 

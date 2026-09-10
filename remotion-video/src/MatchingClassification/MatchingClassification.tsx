@@ -16,6 +16,8 @@ import { SpinningVinylRecord } from "../shared/SpinningVinylRecord";
 import { HookIntro } from "../shared/HookIntro";
 import { CategoryHeader } from "./CategoryHeader";
 import { ClassificationItem } from "./ClassificationItem";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { useSpeechWindow } from "../utils/timing";
 
 export const MatchingClassification: React.FC<MatchingClassificationProps> = ({
   categories,
@@ -31,14 +33,17 @@ export const MatchingClassification: React.FC<MatchingClassificationProps> = ({
 }) => {
   const { fps } = useVideoConfig();
   const hookFrames = Math.ceil(hookIntroDuration * fps);
-  const audioFrames = Math.ceil(audioDurationSeconds * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const audioFrames = Math.ceil(speech.speechEnd * fps);
 
   // Timing — elements appear during audio, answers reveal AFTER audio
   const headerAppearFrame = Math.floor(audioFrames * 0.10);
   const itemStartFrame = Math.floor(audioFrames * 0.18);
   const itemInterval = Math.floor(audioFrames * 0.10);
   // Answer reveals 1 second AFTER audio ends
-  const revealFrame = Math.ceil((audioDurationSeconds + 1) * fps);
+  const revealFrame = Math.ceil((speech.speechEnd + 1) * fps);
 
   return (
     <AbsoluteFill style={{ fontFamily }}>
@@ -180,6 +185,7 @@ export const MatchingClassification: React.FC<MatchingClassificationProps> = ({
           <AudioWaveViz />
           <ProgressBar durationSeconds={durationSeconds - hookIntroDuration} />
           <Watermark />
+          <CaptionTrack />
           <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useVideoConfig } from "remotion";
 import { SentenceItem } from "./SentenceItem";
-import { calculateSentenceTimeline } from "../utils/timing";
+import { calculateSentenceTimeline, useSpeechWindow } from "../utils/timing";
 
 interface SentenceListProps {
   sentences: string[];
@@ -17,8 +17,13 @@ export const SentenceList: React.FC<SentenceListProps> = ({
   audioDurationSeconds,
 }) => {
   const { fps } = useVideoConfig();
-  const { sentenceAppearFrames, answerRevealFrame } =
-    calculateSentenceTimeline(durationSeconds, audioDurationSeconds, fps);
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const { sentenceAppearFrames, answerRevealFrame } = calculateSentenceTimeline(
+    durationSeconds,
+    audioDurationSeconds,
+    fps,
+    speech
+  );
 
   return (
     <div

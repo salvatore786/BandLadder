@@ -16,6 +16,7 @@ import { GlowOrbs } from "../shared/GlowOrbs";
 import { MusicNotes } from "../shared/MusicNotes";
 import { PulsingRings } from "../shared/PulsingRings";
 import { SpinningVinylRecord } from "../shared/SpinningVinylRecord";
+import { CaptionTrack } from "../shared/CaptionTrack";
 
 export const SentenceCompletion: React.FC<SentenceCompletionProps> = ({
   sentences,
@@ -66,6 +67,7 @@ export const SentenceCompletion: React.FC<SentenceCompletionProps> = ({
           <AudioWaveViz />
           <ProgressBar durationSeconds={durationSeconds - hookIntroDuration} />
           <Watermark />
+          <CaptionTrack />
           <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

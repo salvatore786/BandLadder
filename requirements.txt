@@ -4,3 +4,14 @@ mutagen
 instagrapi
 edge-tts
 pydub
+
+# ── Word-level caption timings (optional but recommended) ──────────────────
+# WhisperX = faster-whisper ASR + wav2vec2 forced alignment. Drives the
+# karaoke captions and the speech-accurate reveal timings. Without it the
+# pipeline still runs; reels just render without captions.
+# Installs torch (~2.5 GB). Run `python setup_reels_deps.py` to set it up.
+whisperx
+
+# ffmpeg fallback: used for thumbnails and the CTA concat when ffmpeg is not
+# on PATH. A system ffmpeg is faster and preferred; this is the safety net.
+imageio-ffmpeg
