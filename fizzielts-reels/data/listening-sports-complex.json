@@ -3,8 +3,8 @@
   "module": "listening",
   "eyebrow": "IELTS Listening Part 2",
   "headline": {
-    "lead": "Label the map before",
-    "emphasis": "he says it"
+    "lead": "Label the map",
+    "emphasis": "in real time"
   },
   "durationInFrames": 1200,
   "sectionLabels": {
@@ -15,7 +15,7 @@
   "map": {
     "fixtures": {
       "entrance": "Entrance",
-      "northLabel": "to the car park",
+      "northLabel": "to the car park \u2192",
       "corridor": "main corridor",
       "blockA": "Changing rooms",
       "blockB": "Store"
@@ -27,7 +27,7 @@
       "name": "Reception",
       "slot": "A",
       "revealFrame": 240,
-      "color": "#1F6FB2",
+      "color": "#2563EB",
       "practice": false
     },
     {
@@ -35,7 +35,7 @@
       "name": "Swimming pool",
       "slot": "F",
       "revealFrame": 430,
-      "color": "#0D9488",
+      "color": "#0E9F6E",
       "practice": false
     },
     {
@@ -43,7 +43,7 @@
       "name": "Gym",
       "slot": "E",
       "revealFrame": 620,
-      "color": "#534AB7",
+      "color": "#7C3AED",
       "practice": false
     },
     {
@@ -51,7 +51,7 @@
       "name": "Caf\u00e9",
       "slot": "C",
       "revealFrame": 9999,
-      "color": "#F0654A",
+      "color": "#F97316",
       "practice": true
     }
   ],

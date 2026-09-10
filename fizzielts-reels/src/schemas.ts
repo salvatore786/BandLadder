@@ -77,8 +77,16 @@ export type Bubble = z.infer<typeof bubble>;
 
 // ── Composition 2: ChartWalkthrough ──────────────────────────────────────────
 
-const series = z.object({ name: z.string(), color: zColor() });
-const category = z.object({ name: z.string(), values: z.array(z.number()) });
+const series = z.object({ name: z.string() });
+/**
+ * Each category carries its own full-strength colour; the earlier series is
+ * drawn as a lighter mix of it. Distinct hues per category, not tints of one.
+ */
+const category = z.object({
+  name: z.string(),
+  values: z.array(z.number()),
+  color: zColor(),
+});
 
 const annotation = z.object({
   text: z.string(),

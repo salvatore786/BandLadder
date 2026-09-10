@@ -1,6 +1,6 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, TYPE } from "../../brand";
+import { COLOR, LAYOUT, SHADOW, TYPE, alpha, lighten } from "../../brand";
 import { FONT } from "../../fonts";
 import type { ChartWalkthroughProps } from "../../schemas";
 
@@ -18,11 +18,13 @@ export const CHART = {
   width: 860,
   height: 520,
   padTop: 18,
-  padBottom: 74, // category labels
+  padBottom: 82, // category labels
   padLeft: 78, // y axis
   padRight: 12,
-  groupGap: 0.32, // share of the group slot left as gap
-  barGap: 10,
+  groupGap: 0.28, // share of the group slot left as gap
+  barGap: 12,
+  /** How far the earlier series is mixed toward white. */
+  earlierMix: 0.52,
 } as const;
 
 export interface BarBox {
@@ -92,16 +94,17 @@ export const BarChart: React.FC<{
               x2={CHART.width - CHART.padRight}
               y1={y}
               y2={y}
-              stroke={COLOR.lavender}
-              strokeWidth={v === 0 ? 2 : 1}
+              stroke={v === 0 ? alpha(COLOR.ink, 0.35) : COLOR.lavender}
+              strokeWidth={v === 0 ? 3 : 1.5}
             />
             <text
               x={CHART.padLeft - 16}
               y={y + 8}
               textAnchor="end"
               fontFamily={FONT.sans}
-              fontSize={22}
-              fill={COLOR.muted}
+              fontSize={25}
+              fontWeight={500}
+              fill={COLOR.body}
             >
               {v}
             </text>
@@ -126,9 +129,10 @@ export const BarChart: React.FC<{
             y={baseline - h}
             width={b.w}
             height={h}
-            rx={4}
-            fill={chart.series[b.seriesIndex].color}
-            opacity={dimmed ? 0.34 : 1}
+            rx={LAYOUT.shapeRadius}
+            fill={barFill(chart, b)}
+            opacity={dimmed ? 0.42 : 1}
+            style={{ filter: dimmed ? "none" : `drop-shadow(${SHADOW.shape})` }}
           />
         );
       })}
@@ -145,8 +149,8 @@ export const BarChart: React.FC<{
             textAnchor="middle"
             fontFamily={FONT.sans}
             fontSize={TYPE.label.size}
-            fontWeight={500}
-            fill={COLOR.ink}
+            fontWeight={700}
+            fill={cat.color}
           >
             {cat.name}
           </text>
@@ -158,24 +162,48 @@ export const BarChart: React.FC<{
 
 export const barKey = (category: string, seriesIndex: number) => `${category}#${seriesIndex}`;
 
-export const Legend: React.FC<{ series: ChartWalkthroughProps["chart"]["series"] }> = ({
-  series,
-}) => (
-  <div style={{ display: "flex", gap: 30, alignItems: "center" }}>
-    {series.map((s) => (
-      <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 22, height: 22, borderRadius: 5, backgroundColor: s.color }} />
-        <span
-          style={{
-            fontFamily: FONT.sans,
-            fontSize: TYPE.label.size,
-            fontWeight: 500,
-            color: COLOR.ink,
-          }}
-        >
-          {s.name}
-        </span>
-      </div>
-    ))}
-  </div>
-);
+/** Colour is the category's; the shade says which year. */
+export function barFill(chart: ChartWalkthroughProps["chart"], b: BarBox): string {
+  const base = chart.categories.find((c) => c.name === b.category)?.color ?? COLOR.ink;
+  const isEarlier = b.seriesIndex < chart.series.length - 1;
+  return isEarlier ? lighten(base, CHART.earlierMix) : base;
+}
+
+/**
+ * Hue now means category, so the legend explains the shade instead: pale is the
+ * earlier year, solid is the later one.
+ */
+export const Legend: React.FC<{ chart: ChartWalkthroughProps["chart"] }> = ({ chart }) => {
+  // Neutral, so the swatch cannot be read as "blue means 2020".
+  const sample = COLOR.body;
+  return (
+    <div style={{ display: "flex", gap: 22, alignItems: "center" }}>
+      {chart.series.map((s, i) => {
+        const isEarlier = i < chart.series.length - 1;
+        return (
+          <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 8,
+                backgroundColor: isEarlier ? lighten(sample, CHART.earlierMix) : sample,
+                border: `2px solid ${alpha(COLOR.ink, 0.12)}`,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: FONT.sans,
+                fontSize: TYPE.label.size,
+                fontWeight: 600,
+                color: COLOR.ink,
+              }}
+            >
+              {s.name}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+};

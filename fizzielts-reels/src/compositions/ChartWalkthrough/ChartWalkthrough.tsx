@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, LAYOUT, MODULE_ACCENT, TYPE } from "../../brand";
+import { COLOR, MODULE_ACCENT, TYPE } from "../../brand";
 import { FONT } from "../../fonts";
 import { Card, Page } from "../../components/Page";
 import { Hook } from "../../components/Hook";
@@ -39,22 +39,30 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
   const showOverview = frame >= overview.atFrame;
 
   return (
-    <Page accent={accent}>
-      <Hook eyebrow={eyebrow} headline={headline} accent={accent} />
-
-      <div
-        style={{
-          fontFamily: FONT.hand,
-          fontSize: TYPE.handwritten.size,
-          color: accent,
-          marginTop: 6,
-          opacity: interpolate(frame, [26, 40], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-        }}
-      >
-        {handSubtitle}
-      </div>
-
-      <Card accent={accent} style={{ marginTop: 22, padding: "24px 26px 18px" }}>
+    <Page
+      accent={accent}
+      header={
+        <>
+          <Hook eyebrow={eyebrow} headline={headline} accent={accent} />
+          <div
+            style={{
+              fontFamily: FONT.hand,
+              fontSize: TYPE.handwritten.size,
+              fontWeight: 700,
+              color: COLOR.coral,
+              marginTop: 8,
+              opacity: interpolate(frame, [26, 44], [0, 1], {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+              }),
+            }}
+          >
+            {handSubtitle}
+          </div>
+        </>
+      }
+    >
+      <Card accent={accent} style={{ padding: "26px 26px 20px" }}>
         <div
           style={{
             display: "flex",
@@ -70,13 +78,13 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
               fontSize: TYPE.label.size,
               fontWeight: 700,
               color: COLOR.ink,
-              maxWidth: 470,
+              maxWidth: 440,
               lineHeight: 1.28,
             }}
           >
             {chart.title}
           </div>
-          <Legend series={chart.series} />
+          <Legend chart={chart} />
         </div>
 
         <div style={{ display: "flex", gap: 6 }}>
@@ -86,7 +94,8 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
               transform: "rotate(180deg)",
               fontFamily: FONT.sans,
               fontSize: TYPE.small.size,
-              color: COLOR.muted,
+              fontWeight: 500,
+              color: COLOR.body,
               alignSelf: "center",
               paddingBottom: 60,
             }}
@@ -211,4 +220,3 @@ const AnnotationLayer: React.FC<{
   );
 };
 
-export const CHART_CARD_RADIUS = LAYOUT.cardRadius;

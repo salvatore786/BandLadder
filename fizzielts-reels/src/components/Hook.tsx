@@ -66,10 +66,10 @@ export const Hook: React.FC<{
       <h1
         style={{
           margin: "26px 0 0",
-          fontFamily: FONT.serif,
+          fontFamily: FONT.display,
           fontSize: TYPE.headline.size,
           lineHeight: TYPE.headline.lineHeight,
-          fontWeight: 400,
+          fontWeight: 600,
           color: COLOR.ink,
           display: "flex",
           flexWrap: "wrap",
@@ -91,7 +91,7 @@ export const Hook: React.FC<{
               style={{
                 position: "relative",
                 display: "inline-block",
-                fontStyle: w.italic ? "italic" : "normal",
+                fontWeight: w.italic ? 700 : 600,
                 color: w.italic ? accent : COLOR.ink,
                 opacity: enter,
                 transform: `translateY(${interpolate(enter, [0, 1], [30, 0])}px)`,

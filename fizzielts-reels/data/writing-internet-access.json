@@ -3,7 +3,7 @@
   "module": "writing",
   "eyebrow": "IELTS Writing Task 1",
   "headline": {
-    "lead": "The overview is just",
+    "lead": "The overview is",
     "emphasis": "two moves"
   },
   "handSubtitle": "how to build it from any bar chart",
@@ -16,12 +16,10 @@
     "growEndFrame": 38,
     "series": [
       {
-        "name": "2010",
-        "color": "#A9A2E4"
+        "name": "2010"
       },
       {
-        "name": "2020",
-        "color": "#534AB7"
+        "name": "2020"
       }
     ],
     "categories": [
@@ -30,28 +28,32 @@
         "values": [
           73,
           96
-        ]
+        ],
+        "color": "#2563EB"
       },
       {
         "name": "Japan",
         "values": [
           68,
           93
-        ]
+        ],
+        "color": "#7C3AED"
       },
       {
         "name": "Brazil",
         "values": [
           31,
           81
-        ]
+        ],
+        "color": "#0E9F6E"
       },
       {
         "name": "India",
         "values": [
           8,
           43
-        ]
+        ],
+        "color": "#F97316"
       }
     ]
   },
@@ -70,6 +72,20 @@
     }
   ],
   "annotations": [
+    {
+      "text": "compare these two",
+      "fromFrame": 112,
+      "durationInFrames": 92,
+      "target": {
+        "category": "UK",
+        "seriesIndex": 0
+      },
+      "shape": "circle",
+      "offset": {
+        "dx": -30,
+        "dy": -96
+      }
+    },
     {
       "text": "up 23",
       "fromFrame": 289,

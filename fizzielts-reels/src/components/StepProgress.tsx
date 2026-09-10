@@ -28,21 +28,21 @@ export const StepProgress: React.FC<{
       <div
         style={{
           position: "absolute",
-          top: 30,
+          top: 34,
           left: `${50 / steps.length}%`,
           right: `${50 / steps.length}%`,
-          height: 3,
+          height: 5,
           backgroundColor: COLOR.lavender,
-          borderRadius: 2,
+          borderRadius: 3,
         }}
       />
       <div
         style={{
           position: "absolute",
-          top: 30,
+          top: 34,
           left: `${50 / steps.length}%`,
           width: `${(100 - (100 / steps.length)) * (fill / 100)}%`,
-          height: 3,
+          height: 5,
           backgroundColor: accent,
           borderRadius: 2,
         }}
@@ -73,20 +73,20 @@ export const StepProgress: React.FC<{
             >
               <div
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
+                  width: 52,
+                  height: 52,
+                  borderRadius: 26,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   transform: `scale(${scale})`,
                   backgroundColor: done || active ? accent : COLOR.white,
-                  border: `3px solid ${done || active ? accent : COLOR.lavender}`,
+                  border: `4px solid ${done || active ? accent : alpha(COLOR.body, 0.45)}`,
                   boxShadow: active ? `0 0 0 8px ${alpha(accent, 0.14)}` : "none",
                   fontFamily: FONT.sans,
-                  fontSize: 22,
+                  fontSize: 26,
                   fontWeight: 700,
-                  color: done || active ? COLOR.white : COLOR.muted,
+                  color: done || active ? COLOR.white : COLOR.body,
                 }}
               >
                 {i + 1}
@@ -95,8 +95,8 @@ export const StepProgress: React.FC<{
                 style={{
                   fontFamily: FONT.sans,
                   fontSize: TYPE.small.size,
-                  fontWeight: active ? 700 : 400,
-                  color: active ? COLOR.ink : COLOR.muted,
+                  fontWeight: active ? 700 : 500,
+                  color: active ? COLOR.ink : COLOR.body,
                   textAlign: "center",
                 }}
               >

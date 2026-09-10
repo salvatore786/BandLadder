@@ -1,6 +1,6 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, LAYOUT, TYPE, alpha } from "../brand";
+import { COLOR, SHADOW, TYPE, VIVID, alpha } from "../brand";
 import { FONT } from "../fonts";
 import { Card, Eyebrow } from "./Page";
 import type { FoundTag } from "../schemas";
@@ -11,10 +11,10 @@ import type { FoundTag } from "../schemas";
  */
 
 const TAG_COLOR: Record<FoundTag["tag"], string> = {
-  UP: COLOR.teal,
-  DOWN: COLOR.coral,
-  LARGEST: COLOR.deep,
-  SMALLEST: COLOR.blue,
+  UP: VIVID.green,
+  DOWN: VIVID.red,
+  LARGEST: VIVID.amber,
+  SMALLEST: VIVID.blue,
 };
 
 export const FoundSoFar: React.FC<{
@@ -42,12 +42,13 @@ export const FoundSoFar: React.FC<{
             <div key={t.tag} style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
                 style={{
-                  minWidth: 168,
+                  minWidth: 186,
                   textAlign: "center",
-                  padding: "8px 18px",
+                  padding: "10px 20px",
                   borderRadius: 999,
-                  border: `2px solid ${color}`,
-                  backgroundColor: alpha(color, 0.08),
+                  border: `3px solid ${color}`,
+                  backgroundColor: alpha(color, 0.16),
+                  boxShadow: SHADOW.shape,
                   fontFamily: FONT.mono,
                   fontSize: TYPE.small.size,
                   fontWeight: 500,
@@ -61,10 +62,10 @@ export const FoundSoFar: React.FC<{
               {shown && t.value ? (
                 <div
                   style={{
-                    padding: "8px 20px",
-                    borderRadius: 10,
-                    border: `2px solid ${color}`,
-                    backgroundColor: COLOR.white,
+                    padding: "10px 22px",
+                    borderRadius: 12,
+                    border: `3px solid ${color}`,
+                    backgroundColor: alpha(color, 0.1),
                     fontFamily: FONT.sans,
                     fontSize: TYPE.label.size,
                     fontWeight: 700,
@@ -78,11 +79,11 @@ export const FoundSoFar: React.FC<{
               ) : (
                 <div
                   style={{
-                    width: 120,
-                    height: 44,
-                    borderRadius: 10,
-                    border: `2px dashed ${COLOR.border}`,
-                    backgroundColor: alpha(COLOR.ink, 0.02),
+                    width: 132,
+                    height: 50,
+                    borderRadius: 12,
+                    border: `3px dashed ${COLOR.lavender}`,
+                    backgroundColor: alpha(COLOR.ink, 0.03),
                   }}
                 />
               )}
@@ -94,4 +95,3 @@ export const FoundSoFar: React.FC<{
   );
 };
 
-export const CARD_RADIUS = LAYOUT.cardRadius;

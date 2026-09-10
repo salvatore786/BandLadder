@@ -30,16 +30,20 @@ export const MapWalkthrough: React.FC<MapWalkthroughProps> = ({
   }
 
   return (
-    <Page accent={accent}>
-      <Hook eyebrow={eyebrow} headline={headline} accent={accent} />
-
-      <SectionLabel
-        label={inPractice ? sectionLabels.practice : sectionLabels.walkthrough}
-        accent={inPractice ? COLOR.coral : accent}
-        switchedAt={practiceStartFrame}
-      />
-
-      <Card accent={accent} style={{ marginTop: 18, padding: 22 }}>
+    <Page
+      accent={accent}
+      header={
+        <>
+          <Hook eyebrow={eyebrow} headline={headline} accent={accent} />
+          <SectionLabel
+            label={inPractice ? sectionLabels.practice : sectionLabels.walkthrough}
+            accent={inPractice ? COLOR.coral : accent}
+            switchedAt={practiceStartFrame}
+          />
+        </>
+      }
+    >
+      <Card accent={accent} style={{ padding: 22 }}>
         <div style={{ position: "relative", width: MAP.width, height: MAP.height }}>
           <SportsComplexMap fixtures={map.fixtures} resolved={resolved} />
           {bubbles
@@ -72,8 +76,21 @@ const SectionLabel: React.FC<{ label: string; accent: string; switchedAt: number
   const scale = frame >= switchedAt ? 1 + flip * 0.08 : 1;
 
   return (
-    <div style={{ marginTop: 18, transformOrigin: "left center", transform: `scale(${scale})` }}>
-      <Eyebrow color={accent}>{label}</Eyebrow>
+    <div
+      style={{
+        marginTop: 16,
+        alignSelf: "flex-start",
+        transformOrigin: "left center",
+        transform: `scale(${scale})`,
+        padding: "8px 20px",
+        borderRadius: 999,
+        backgroundColor: alpha(accent, 0.14),
+        border: `2px solid ${alpha(accent, 0.4)}`,
+      }}
+    >
+      <Eyebrow color={accent} size={TYPE.small.size}>
+        {label}
+      </Eyebrow>
     </div>
   );
 };
@@ -162,8 +179,8 @@ const Column: React.FC<{ title: string; rows: MapAnswer[]; color: string }> = ({
                 fontFamily: FONT.sans,
                 fontSize: TYPE.label.size,
                 fontWeight: 700,
-                color: COLOR.muted,
-                minWidth: 22,
+                color: row.color,
+                minWidth: 26,
               }}
             >
               {row.n}
@@ -173,7 +190,7 @@ const Column: React.FC<{ title: string; rows: MapAnswer[]; color: string }> = ({
                 flex: 1,
                 fontFamily: FONT.sans,
                 fontSize: TYPE.label.size,
-                fontWeight: 500,
+                fontWeight: 600,
                 color: answered ? row.color : COLOR.ink,
               }}
             >
@@ -182,16 +199,17 @@ const Column: React.FC<{ title: string; rows: MapAnswer[]; color: string }> = ({
             {answered ? (
               <span
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 8,
+                  width: 52,
+                  height: 52,
+                  borderRadius: 14,
                   backgroundColor: row.color,
+                  boxShadow: SHADOW.shape,
                   color: COLOR.white,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontFamily: FONT.sans,
-                  fontSize: 24,
+                  fontSize: 28,
                   fontWeight: 700,
                   opacity: enter,
                   transform: `scale(${interpolate(enter, [0, 1], [0.7, 1])})`,
@@ -202,16 +220,16 @@ const Column: React.FC<{ title: string; rows: MapAnswer[]; color: string }> = ({
             ) : (
               <span
                 style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 8,
-                  border: `2px dashed ${row.practice ? COLOR.coral : COLOR.border}`,
-                  backgroundColor: row.practice ? alpha(COLOR.coral, 0.06) : "transparent",
+                  width: 52,
+                  height: 52,
+                  borderRadius: 14,
+                  border: `3px dashed ${row.practice ? COLOR.coral : COLOR.lavender}`,
+                  backgroundColor: row.practice ? alpha(COLOR.coral, 0.12) : alpha(COLOR.ink, 0.03),
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontFamily: FONT.sans,
-                  fontSize: 24,
+                  fontSize: 28,
                   fontWeight: 700,
                   color: COLOR.coral,
                 }}

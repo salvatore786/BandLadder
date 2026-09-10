@@ -1,6 +1,6 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { COLOR, MOTION, TYPE } from "../brand";
+import { COLOR, MOTION, SHADOW, TYPE, alpha } from "../brand";
 import { FONT } from "../fonts";
 import type { CaptionWord } from "../schemas";
 
@@ -71,15 +71,16 @@ export const Captions: React.FC<{
           <span
             key={`${w.word}-${globalIndex}`}
             style={{
-              padding: "6px 14px",
-              borderRadius: 12,
-              backgroundColor: COLOR.white,
-              border: `2px solid ${isCurrent ? accent : COLOR.border}`,
+              padding: "8px 16px",
+              borderRadius: 14,
+              backgroundColor: isCurrent ? COLOR.white : alpha(COLOR.white, 0.9),
+              border: `3px solid ${isCurrent ? accent : COLOR.border}`,
+              boxShadow: isCurrent ? SHADOW.shape : "none",
               fontFamily: FONT.sans,
               fontSize: TYPE.caption.size,
               fontWeight: 700,
               lineHeight: 1.12,
-              color: isCurrent ? accent : isSpoken ? COLOR.ink : COLOR.muted,
+              color: isCurrent ? accent : isSpoken ? COLOR.ink : COLOR.body,
               transform: `scale(${1 + pop * 0.06})`,
             }}
           >
