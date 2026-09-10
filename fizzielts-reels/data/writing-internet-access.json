@@ -1,0 +1,476 @@
+{
+  "composition": "ChartWalkthrough",
+  "module": "writing",
+  "eyebrow": "IELTS Writing Task 1",
+  "headline": {
+    "lead": "The overview is just",
+    "emphasis": "two moves"
+  },
+  "handSubtitle": "how to build it from any bar chart",
+  "durationInFrames": 1166,
+  "chart": {
+    "title": "Households with internet access (%), 2010 vs 2020",
+    "yAxisLabel": "% of households",
+    "yMax": 100,
+    "yTick": 20,
+    "growEndFrame": 38,
+    "series": [
+      {
+        "name": "2010",
+        "color": "#A9A2E4"
+      },
+      {
+        "name": "2020",
+        "color": "#534AB7"
+      }
+    ],
+    "categories": [
+      {
+        "name": "UK",
+        "values": [
+          73,
+          96
+        ]
+      },
+      {
+        "name": "Japan",
+        "values": [
+          68,
+          93
+        ]
+      },
+      {
+        "name": "Brazil",
+        "values": [
+          31,
+          81
+        ]
+      },
+      {
+        "name": "India",
+        "values": [
+          8,
+          43
+        ]
+      }
+    ]
+  },
+  "steps": [
+    {
+      "label": "the changes",
+      "atFrame": 237
+    },
+    {
+      "label": "largest and smallest",
+      "atFrame": 434
+    },
+    {
+      "label": "overview",
+      "atFrame": 642
+    }
+  ],
+  "annotations": [
+    {
+      "text": "up 23",
+      "fromFrame": 289,
+      "durationInFrames": 56,
+      "target": {
+        "category": "UK",
+        "seriesIndex": 1
+      },
+      "shape": "circle",
+      "offset": {
+        "dx": -74,
+        "dy": -78
+      }
+    },
+    {
+      "text": "up 50!",
+      "fromFrame": 347,
+      "durationInFrames": 62,
+      "target": {
+        "category": "Brazil",
+        "seriesIndex": 1
+      },
+      "shape": "circle",
+      "offset": {
+        "dx": -66,
+        "dy": -82
+      }
+    },
+    {
+      "text": "highest both years",
+      "fromFrame": 543,
+      "durationInFrames": 62,
+      "target": {
+        "category": "UK",
+        "seriesIndex": 1
+      },
+      "shape": "arrow",
+      "offset": {
+        "dx": 26,
+        "dy": -88
+      }
+    },
+    {
+      "text": "lowest both years",
+      "fromFrame": 595,
+      "durationInFrames": 62,
+      "target": {
+        "category": "India",
+        "seriesIndex": 0
+      },
+      "shape": "arrow",
+      "offset": {
+        "dx": -250,
+        "dy": -46
+      }
+    }
+  ],
+  "foundSoFar": [
+    {
+      "tag": "UP",
+      "value": "every country",
+      "atFrame": 358
+    },
+    {
+      "tag": "DOWN",
+      "value": "none",
+      "atFrame": 399
+    },
+    {
+      "tag": "LARGEST",
+      "value": "UK",
+      "atFrame": 555
+    },
+    {
+      "tag": "SMALLEST",
+      "value": "India",
+      "atFrame": 607
+    }
+  ],
+  "captions": [
+    {
+      "word": "Every",
+      "startFrame": 46
+    },
+    {
+      "word": "Task",
+      "startFrame": 57
+    },
+    {
+      "word": "1",
+      "startFrame": 69
+    },
+    {
+      "word": "overview",
+      "startFrame": 80
+    },
+    {
+      "word": "needs",
+      "startFrame": 92
+    },
+    {
+      "word": "two",
+      "startFrame": 103
+    },
+    {
+      "word": "things.",
+      "startFrame": 115
+    },
+    {
+      "word": "The",
+      "startFrame": 138
+    },
+    {
+      "word": "changes,",
+      "startFrame": 150
+    },
+    {
+      "word": "and",
+      "startFrame": 167
+    },
+    {
+      "word": "the",
+      "startFrame": 179
+    },
+    {
+      "word": "largest",
+      "startFrame": 190
+    },
+    {
+      "word": "and",
+      "startFrame": 202
+    },
+    {
+      "word": "smallest.",
+      "startFrame": 213
+    },
+    {
+      "word": "First,",
+      "startFrame": 237
+    },
+    {
+      "word": "the",
+      "startFrame": 254
+    },
+    {
+      "word": "changes.",
+      "startFrame": 265
+    },
+    {
+      "word": "Compare",
+      "startFrame": 289
+    },
+    {
+      "word": "2010",
+      "startFrame": 300
+    },
+    {
+      "word": "with",
+      "startFrame": 312
+    },
+    {
+      "word": "2020.",
+      "startFrame": 323
+    },
+    {
+      "word": "Every",
+      "startFrame": 347
+    },
+    {
+      "word": "country",
+      "startFrame": 358
+    },
+    {
+      "word": "rose,",
+      "startFrame": 370
+    },
+    {
+      "word": "and",
+      "startFrame": 387
+    },
+    {
+      "word": "nothing",
+      "startFrame": 399
+    },
+    {
+      "word": "fell.",
+      "startFrame": 410
+    },
+    {
+      "word": "Second,",
+      "startFrame": 434
+    },
+    {
+      "word": "the",
+      "startFrame": 451
+    },
+    {
+      "word": "largest",
+      "startFrame": 462
+    },
+    {
+      "word": "and",
+      "startFrame": 474
+    },
+    {
+      "word": "smallest.",
+      "startFrame": 485
+    },
+    {
+      "word": "In",
+      "startFrame": 509
+    },
+    {
+      "word": "both",
+      "startFrame": 520
+    },
+    {
+      "word": "years",
+      "startFrame": 532
+    },
+    {
+      "word": "the",
+      "startFrame": 543
+    },
+    {
+      "word": "UK",
+      "startFrame": 555
+    },
+    {
+      "word": "is",
+      "startFrame": 566
+    },
+    {
+      "word": "highest,",
+      "startFrame": 578
+    },
+    {
+      "word": "and",
+      "startFrame": 595
+    },
+    {
+      "word": "India",
+      "startFrame": 607
+    },
+    {
+      "word": "lowest.",
+      "startFrame": 618
+    },
+    {
+      "word": "Put",
+      "startFrame": 642
+    },
+    {
+      "word": "them",
+      "startFrame": 653
+    },
+    {
+      "word": "together.",
+      "startFrame": 664
+    },
+    {
+      "word": "Overall,",
+      "startFrame": 688
+    },
+    {
+      "word": "access",
+      "startFrame": 705
+    },
+    {
+      "word": "increased",
+      "startFrame": 717
+    },
+    {
+      "word": "in",
+      "startFrame": 728
+    },
+    {
+      "word": "every",
+      "startFrame": 740
+    },
+    {
+      "word": "country,",
+      "startFrame": 751
+    },
+    {
+      "word": "with",
+      "startFrame": 769
+    },
+    {
+      "word": "the",
+      "startFrame": 780
+    },
+    {
+      "word": "sharpest",
+      "startFrame": 792
+    },
+    {
+      "word": "growth",
+      "startFrame": 803
+    },
+    {
+      "word": "in",
+      "startFrame": 815
+    },
+    {
+      "word": "the",
+      "startFrame": 826
+    },
+    {
+      "word": "developing",
+      "startFrame": 838
+    },
+    {
+      "word": "economies.",
+      "startFrame": 849
+    },
+    {
+      "word": "The",
+      "startFrame": 872
+    },
+    {
+      "word": "UK",
+      "startFrame": 884
+    },
+    {
+      "word": "and",
+      "startFrame": 895
+    },
+    {
+      "word": "Japan",
+      "startFrame": 907
+    },
+    {
+      "word": "remained",
+      "startFrame": 918
+    },
+    {
+      "word": "the",
+      "startFrame": 930
+    },
+    {
+      "word": "leaders,",
+      "startFrame": 941
+    },
+    {
+      "word": "while",
+      "startFrame": 959
+    },
+    {
+      "word": "India",
+      "startFrame": 970
+    },
+    {
+      "word": "stayed",
+      "startFrame": 982
+    },
+    {
+      "word": "the",
+      "startFrame": 993
+    },
+    {
+      "word": "lowest.",
+      "startFrame": 1005
+    },
+    {
+      "word": "Your",
+      "startFrame": 1028
+    },
+    {
+      "word": "turn.",
+      "startFrame": 1039
+    },
+    {
+      "word": "New",
+      "startFrame": 1063
+    },
+    {
+      "word": "chart",
+      "startFrame": 1074
+    },
+    {
+      "word": "in",
+      "startFrame": 1086
+    },
+    {
+      "word": "the",
+      "startFrame": 1097
+    },
+    {
+      "word": "comments.",
+      "startFrame": 1109
+    }
+  ],
+  "overview": {
+    "atFrame": 688,
+    "text": "Overall, access increased in every country over the decade, with the sharpest growth in the developing economies. The UK and Japan nevertheless remained the leaders throughout, while India stayed the lowest.",
+    "highlights": [
+      "increased in every country",
+      "the sharpest growth",
+      "remained the leaders throughout",
+      "stayed the lowest"
+    ]
+  }
+}
