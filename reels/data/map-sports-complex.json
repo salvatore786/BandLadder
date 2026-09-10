@@ -1,0 +1,285 @@
+{
+  "kind": "map",
+  "id": "map-sports-complex",
+  "durationInFrames": 1622,
+  "title": "Listening: plan labelling",
+  "subtitle": "the entrance decides everything",
+  "planCaption": "SPORTS COMPLEX",
+  "hook": {
+    "words": [
+      "MAP",
+      "QUESTIONS",
+      "MADE",
+      "EASY"
+    ],
+    "kicker": "IELTS Listening · Section 2",
+    "durationInFrames": 78
+  },
+  "labels": [
+    {
+      "id": "gym",
+      "label": "Gym",
+      "slot": "topLeft"
+    },
+    {
+      "id": "pool",
+      "label": "Swimming pool",
+      "slot": "topRight"
+    },
+    {
+      "id": "changing",
+      "label": "Changing rooms",
+      "slot": "midLeft"
+    },
+    {
+      "id": "hall",
+      "label": "Sports hall",
+      "slot": "midRight"
+    },
+    {
+      "id": "cafe",
+      "label": "Café",
+      "slot": "lowLeft"
+    },
+    {
+      "id": "courts",
+      "label": "Outdoor courts",
+      "slot": "lowRight"
+    },
+    {
+      "id": "reception",
+      "label": "Reception",
+      "slot": "baseLeft"
+    }
+  ],
+  "answers": [
+    {
+      "number": 1,
+      "prompt": "Reception",
+      "answer": "bottom left",
+      "slot": "baseLeft",
+      "revealFrame": 393,
+      "practice": false
+    },
+    {
+      "number": 2,
+      "prompt": "Swimming pool",
+      "answer": "top right",
+      "slot": "topRight",
+      "revealFrame": 632,
+      "practice": false
+    },
+    {
+      "number": 3,
+      "prompt": "Gym",
+      "answer": "top left",
+      "slot": "topLeft",
+      "revealFrame": 831,
+      "practice": false
+    },
+    {
+      "number": 4,
+      "prompt": "Café",
+      "answer": "middle left",
+      "slot": "lowLeft",
+      "revealFrame": 1098,
+      "practice": false
+    },
+    {
+      "number": 5,
+      "prompt": "Changing rooms",
+      "answer": "",
+      "slot": "midLeft",
+      "revealFrame": 1622,
+      "practice": true
+    },
+    {
+      "number": 6,
+      "prompt": "Sports hall",
+      "answer": "",
+      "slot": "midRight",
+      "revealFrame": 1622,
+      "practice": true
+    }
+  ],
+  "tooltips": [
+    {
+      "text": "Start at the entrance — always.",
+      "startFrame": 140,
+      "durationInFrames": 46,
+      "at": {
+        "x": 0.5,
+        "y": 0.55
+      }
+    },
+    {
+      "text": "Wait for the correction.",
+      "startFrame": 507,
+      "durationInFrames": 76,
+      "at": {
+        "x": 0.5,
+        "y": 0.13
+      }
+    },
+    {
+      "text": "Answers are in the comments.",
+      "startFrame": 1398,
+      "durationInFrames": 96,
+      "at": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "annotations": [
+    {
+      "text": "start here",
+      "startFrame": 190,
+      "durationInFrames": 58,
+      "at": {
+        "x": 0.74,
+        "y": 0.945
+      },
+      "place": "below",
+      "pointsAt": {
+        "x": 0.52,
+        "y": 0.955
+      }
+    },
+    {
+      "text": "straight across",
+      "startFrame": 837,
+      "durationInFrames": 74,
+      "at": {
+        "x": 0.5,
+        "y": 0.255
+      },
+      "pointsAt": {
+        "x": 0.28,
+        "y": 0.34
+      }
+    },
+    {
+      "text": "the middle one",
+      "startFrame": 1104,
+      "durationInFrames": 74,
+      "at": {
+        "x": 0.74,
+        "y": 0.62
+      },
+      "ring": {
+        "x": 0.04,
+        "y": 0.58,
+        "w": 0.42,
+        "h": 0.17
+      }
+    }
+  ],
+  "practiceFrame": 1189,
+  "narration": [
+    {
+      "text": "Map questions look impossible until you learn this one habit.",
+      "startFrame": 4,
+      "durationInFrames": 128,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Find the entrance first. Every single description starts from there.",
+      "startFrame": 136,
+      "durationInFrames": 129,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Question one, reception. Listen for the word left.",
+      "startFrame": 269,
+      "durationInFrames": 109,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Reception. Immediately on your left as you enter.",
+      "startFrame": 393,
+      "durationInFrames": 100,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "Question two, the swimming pool. Far end, right hand side.",
+      "startFrame": 497,
+      "durationInFrames": 120,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Far end means the top of the plan.",
+      "startFrame": 632,
+      "durationInFrames": 83,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "Question three, the gym. Opposite the pool.",
+      "startFrame": 719,
+      "durationInFrames": 97,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Opposite means straight across the corridor, so top left.",
+      "startFrame": 831,
+      "durationInFrames": 112,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "Question four, the cafe. Between reception and the changing rooms.",
+      "startFrame": 947,
+      "durationInFrames": 136,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Between. So it has to be the middle room.",
+      "startFrame": 1098,
+      "durationInFrames": 87,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "Your turn now. Two rooms left on the plan.",
+      "startFrame": 1189,
+      "durationInFrames": 96,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Where do the changing rooms go? And the sports hall?",
+      "startFrame": 1289,
+      "durationInFrames": 99,
+      "emphasis": false,
+      "muteBed": true
+    },
+    {
+      "text": "Pause the video and mark them on your own plan.",
+      "startFrame": 1392,
+      "durationInFrames": 92,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Answers are in the comments. Follow for one every day.",
+      "startFrame": 1488,
+      "durationInFrames": 112,
+      "emphasis": false,
+      "muteBed": false
+    }
+  ],
+  "footer": {
+    "handle": "@fizzielts",
+    "url": "fizzielts.com"
+  },
+  "audioSrc": "audio/map-sports-complex.mp3",
+  "musicSrc": "audio/bed-soft.mp3"
+}
