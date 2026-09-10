@@ -1,0 +1,273 @@
+{
+  "kind": "chart",
+  "id": "chart-internet-access",
+  "durationInFrames": 1682,
+  "title": "Writing Task 1: the overview",
+  "subtitle": "three steps, no numbers",
+  "hook": {
+    "words": [
+      "WRITE",
+      "THE",
+      "OVERVIEW",
+      "FIRST"
+    ],
+    "kicker": "IELTS Writing · Task 1",
+    "durationInFrames": 78
+  },
+  "unit": "%",
+  "categories": [
+    "UK",
+    "Japan",
+    "Brazil",
+    "India"
+  ],
+  "series": [
+    {
+      "label": "2010",
+      "values": [
+        73,
+        68,
+        31,
+        8
+      ]
+    },
+    {
+      "label": "2020",
+      "values": [
+        96,
+        93,
+        81,
+        43
+      ]
+    }
+  ],
+  "seriesRevealFrames": [
+    10,
+    126
+  ],
+  "steps": [
+    {
+      "label": "the changes",
+      "startFrame": 259
+    },
+    {
+      "label": "largest and smallest",
+      "startFrame": 463
+    },
+    {
+      "label": "overview",
+      "startFrame": 953
+    }
+  ],
+  "focus": [
+    {
+      "categoryIndex": 0,
+      "startFrame": 120
+    },
+    {
+      "categoryIndex": 1,
+      "startFrame": 259
+    },
+    {
+      "categoryIndex": 3,
+      "startFrame": 371
+    },
+    {
+      "categoryIndex": 2,
+      "startFrame": 463
+    },
+    {
+      "categoryIndex": 0,
+      "startFrame": 692
+    },
+    {
+      "categoryIndex": 3,
+      "startFrame": 832
+    },
+    {
+      "categoryIndex": 1,
+      "startFrame": 953
+    }
+  ],
+  "tags": [
+    {
+      "kind": "UP",
+      "value": "all four",
+      "foundFrame": 371
+    },
+    {
+      "kind": "DOWN",
+      "value": "none",
+      "foundFrame": 385
+    },
+    {
+      "kind": "LARGEST",
+      "value": "Brazil +50",
+      "foundFrame": 568
+    },
+    {
+      "kind": "SMALLEST",
+      "value": "India 43%",
+      "foundFrame": 832
+    }
+  ],
+  "annotations": [
+    {
+      "text": "5 up, 1 down? no — all up",
+      "startFrame": 375,
+      "durationInFrames": 76,
+      "at": {
+        "x": 0.32,
+        "y": 0.07
+      },
+      "pointsAt": {
+        "x": 0.55,
+        "y": 0.3
+      }
+    },
+    {
+      "text": "biggest jump",
+      "startFrame": 572,
+      "durationInFrames": 78,
+      "at": {
+        "x": 0.28,
+        "y": 0.08
+      },
+      "ring": {
+        "x": 0.645,
+        "y": 0.215,
+        "w": 0.12,
+        "h": 0.71
+      }
+    },
+    {
+      "text": "no years? no change over time",
+      "startFrame": 836,
+      "durationInFrames": 78,
+      "at": {
+        "x": 0.44,
+        "y": 0.09
+      },
+      "pointsAt": {
+        "x": 0.9,
+        "y": 0.62
+      }
+    }
+  ],
+  "overview": {
+    "startFrame": 1198,
+    "text": "Overall, access increased in every country over the decade, with the sharpest growth in the developing economies. The UK and Japan nevertheless remained the leaders throughout, while India stayed the lowest.",
+    "highlight": [
+      "increased in every country",
+      "the sharpest growth",
+      "remained the leaders throughout",
+      "stayed the lowest"
+    ]
+  },
+  "narration": [
+    {
+      "text": "Task one overview? This is where most bands are lost.",
+      "startFrame": 4,
+      "durationInFrames": 112,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Four countries, two years, internet access. Do not list everything.",
+      "startFrame": 120,
+      "durationInFrames": 135,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Step one. What changed? Every country went up.",
+      "startFrame": 259,
+      "durationInFrames": 97,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Up in all four. That is your first sentence.",
+      "startFrame": 371,
+      "durationInFrames": 88,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "Step two. Largest and smallest change.",
+      "startFrame": 463,
+      "durationInFrames": 90,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Brazil jumped fifty points. The UK only twenty three.",
+      "startFrame": 568,
+      "durationInFrames": 120,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "So the developing economies grew fastest. That is a pattern.",
+      "startFrame": 692,
+      "durationInFrames": 125,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "India stayed lowest throughout. The UK stayed highest.",
+      "startFrame": 832,
+      "durationInFrames": 117,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "Step three. Put the pattern into one overview sentence.",
+      "startFrame": 953,
+      "durationInFrames": 109,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "No numbers in the overview. Numbers belong in the body.",
+      "startFrame": 1066,
+      "durationInFrames": 117,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Overall, access increased in every country over the decade.",
+      "startFrame": 1198,
+      "durationInFrames": 125,
+      "emphasis": true,
+      "muteBed": false
+    },
+    {
+      "text": "With the sharpest growth in the developing economies.",
+      "startFrame": 1327,
+      "durationInFrames": 103,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Leaders stayed leaders. India stayed the lowest.",
+      "startFrame": 1434,
+      "durationInFrames": 102,
+      "emphasis": false,
+      "muteBed": false
+    },
+    {
+      "text": "Save this. Follow fizzIELTS for a task one every day.",
+      "startFrame": 1540,
+      "durationInFrames": 120,
+      "emphasis": false,
+      "muteBed": false
+    }
+  ],
+  "footer": {
+    "handle": "@fizzielts",
+    "url": "fizzielts.com"
+  },
+  "audioSrc": "audio/chart-internet-access.mp3",
+  "musicSrc": "audio/bed-soft.mp3"
+}

@@ -1,0 +1,29 @@
+{
+  "engine": "kokoro",
+  "voice": "af_heart",
+  "speed": 1.08,
+  "kokoro": {
+    "model": "onnx-community/Kokoro-82M-v1.0-ONNX",
+    "dtype": "q8",
+    "device": "cpu"
+  },
+  "piper": {
+    "binary": "piper",
+    "model": "en_US-amy-medium.onnx"
+  },
+  "elevenlabs": {
+    "voiceId": "",
+    "modelId": "eleven_turbo_v2_5",
+    "apiKeyEnv": "ELEVENLABS_API_KEY",
+    "stability": 0.35,
+    "similarityBoost": 0.8,
+    "style": 0.45
+  },
+  "mix": {
+    "bed": "audio/bed-soft.mp3",
+    "bedDb": -28,
+    "duckDb": -6,
+    "targetLufs": -16,
+    "truePeakDb": -1.5
+  }
+}
