@@ -65,8 +65,9 @@ export const Captions: React.FC<{
           boxShadow: SHADOW.card,
           display: 'flex',
           flexWrap: 'wrap',
+          alignItems: 'center',
           justifyContent: 'center',
-          gap: '0 14px',
+          gap: '4px 8px',
           maxWidth: maxWidth,
         }}
       >
@@ -78,8 +79,11 @@ export const Captions: React.FC<{
             frame: frame - Math.round(w.from),
             fps,
             config: SPRINGS.snap,
-            durationInFrames: 9,
+            durationInFrames: 11,
           });
+          // The spoken word takes a filled accent pill and jumps — one clear,
+          // large movement per word, which is what keeps the frame alive
+          // between the bigger beats.
           return (
             <span
               key={w.index}
@@ -89,13 +93,16 @@ export const Captions: React.FC<{
                 fontWeight: TYPE.caption.weight,
                 lineHeight: TYPE.caption.lineHeight,
                 letterSpacing: TYPE.caption.letterSpacing,
-                color: active ? accent : spoken ? INK.strong : INK.muted,
+                color: active ? INK.white : spoken ? INK.strong : INK.muted,
+                backgroundColor: active ? accent : 'transparent',
+                borderRadius: LAYOUT.radius.md,
+                padding: '2px 12px',
                 display: 'inline-block',
                 transform: active
-                  ? `translateY(${interpolate(lift, [0, 1], [10, -5])}px) scale(${interpolate(
+                  ? `translateY(${interpolate(lift, [0, 1], [16, -9])}px) scale(${interpolate(
                       lift,
                       [0, 1],
-                      [0.95, 1.07]
+                      [0.88, 1.12]
                     )})`
                   : 'translateY(0px) scale(1)',
               }}

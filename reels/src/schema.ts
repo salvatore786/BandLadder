@@ -140,6 +140,15 @@ export const chartWalkthroughSchema = z.object({
   /** Frame each series' bars start growing from the axis. */
   seriesRevealFrames: z.array(z.number().int().nonnegative()),
   steps: z.array(chartStepSchema).length(3),
+  /** A soft band slides across the plot to the category under discussion. */
+  focus: z
+    .array(
+      z.object({
+        categoryIndex: z.number().int().nonnegative(),
+        startFrame: z.number().int().nonnegative(),
+      })
+    )
+    .default([]),
   tags: z.array(foundTagSchema),
   annotations: z.array(annotationSchema).default([]),
   overview: z.object({

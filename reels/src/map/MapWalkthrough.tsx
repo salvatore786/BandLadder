@@ -24,10 +24,12 @@ import {Footer} from '../components/Footer';
 import {Captions} from '../components/Captions';
 import {Tooltip} from '../components/Tooltip';
 import {Annotation} from '../components/Hand';
+import {BeatSweep} from '../components/BeatSweep';
 import {SportsComplexPlan} from './SportsComplexPlan';
 import {AnswerList} from './AnswerList';
 import {PLAN, type SlotId} from './planGeometry';
-import {pushIn} from '../lib/motion';
+import {pushIn, beatStep} from '../lib/motion';
+import {wordBeats} from '../lib/text';
 import type {MapWalkthroughProps} from '../schema';
 import '../lib/fonts';
 
@@ -46,7 +48,7 @@ const BLOBS: BlobSpec[] = [
 
 export const MapWalkthrough: React.FC<MapWalkthroughProps> = (props) => {
   const frame = useCurrentFrame();
-  const {width, height, durationInFrames} = useVideoConfig();
+  const {width, height, durationInFrames, fps} = useVideoConfig();
 
   const stageW = 800;
   const stageLeft = (width - stageW) / 2;
@@ -65,6 +67,40 @@ export const MapWalkthrough: React.FC<MapWalkthroughProps> = (props) => {
     }))
     .filter((h) => frame >= h.at);
 
+  // Every narration line, answer reveal, tooltip and annotation is a beat.
+  const cueBeats = props.narration.map((c) => c.startFrame);
+  const structuralBeats = [
+    ...props.answers.filter((a) => !a.practice).map((a) => a.revealFrame),
+    props.practiceFrame,
+    ...props.tooltips.map((t) => t.startFrame),
+    ...props.narration.filter((c) => c.emphasis).map((c) => c.startFrame),
+  ].sort((a, b) => a - b);
+  // Two layers of accent. Every spoken word gives the frame a small punch —
+  // that is roughly one visible movement every 0.4s, matching the narration's
+  // own cadence — and the structural beats give it a much bigger one.
+  const step = beatStep({
+    frame,
+    fps,
+    beats: wordBeats(props.narration, 15),
+    travel: 21,
+    scaleAmount: 0.015,
+    durationInFrames: 7,
+  });
+  // A larger, slower reframe on each narration line and structural beat —
+  // one sustained move rather than a there-and-back pulse.
+  const reframe = beatStep({
+    frame,
+    fps,
+    beats: [...new Set([
+      ...cueBeats,
+      ...structuralBeats,
+      ...props.annotations.map((a) => a.startFrame),
+    ])].sort((a, b) => a - b),
+    travel: 28,
+    scaleAmount: 0.024,
+    durationInFrames: 27,
+  });
+
   const bodyStart = props.hook.durationInFrames;
   // The body begins BEFORE the hook has finished lifting away, so the frame
   // never comes to a full stop between beats.
@@ -75,6 +111,14 @@ export const MapWalkthrough: React.FC<MapWalkthroughProps> = (props) => {
       <Backdrop base={MAP_PALETTE.base} blobs={BLOBS} durationInFrames={durationInFrames} />
 
       {props.audioSrc ? <Audio src={staticFile(props.audioSrc)} /> : null}
+
+      <BeatSweep
+        beats={[...new Set([...cueBeats, ...structuralBeats])].sort(
+          (a, b) => a - b
+        )}
+        colors={[B.cyan, B.peach, B.lime, B.blue, B.green]}
+        durationInFrames={42}
+      />
 
       <CameraMotionBlur shutterAngle={160} samples={2}>
         <Sequence from={0} durationInFrames={bodyStart + 2}>
@@ -90,7 +134,9 @@ export const MapWalkthrough: React.FC<MapWalkthroughProps> = (props) => {
         <Sequence from={bodyStart - overlap}>
           <AbsoluteFill
             style={{
-              transform: `scale(${pushIn(frame, durationInFrames)})`,
+              transform: `translate(${step.x + reframe.x}px, ${step.y + reframe.y}px) scale(${
+                pushIn(frame, durationInFrames) * step.scale * reframe.scale * 1.03
+              })`,
             }}
           >
             <Header

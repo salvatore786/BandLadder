@@ -178,6 +178,15 @@ const chartReelFrom = (chart) => (
     {label: 'largest and smallest', startFrame: chart.mark.step2},
     {label: 'overview', startFrame: chart.mark.step3},
   ],
+  focus: [
+    {categoryIndex: 0, startFrame: chart.mark.setup},
+    {categoryIndex: 1, startFrame: chart.mark.step1},
+    {categoryIndex: 3, startFrame: chart.mark.up},
+    {categoryIndex: 2, startFrame: chart.mark.step2},
+    {categoryIndex: 0, startFrame: chart.mark.pattern},
+    {categoryIndex: 3, startFrame: chart.mark.smallest},
+    {categoryIndex: 1, startFrame: chart.mark.step3},
+  ],
   tags: [
     {kind: 'UP', value: 'all four', foundFrame: chart.mark.up},
     {kind: 'DOWN', value: 'none', foundFrame: chart.mark.up + 14},
@@ -185,9 +194,9 @@ const chartReelFrom = (chart) => (
     {kind: 'SMALLEST', value: 'India 43%', foundFrame: chart.mark.smallest},
   ],
   annotations: [
-    {text: '5 up, 1 down? no — all up', startFrame: chart.mark.up + 4, durationInFrames: 76, at: {x: 0.3, y: 0.1}, pointsAt: {x: 0.62, y: 0.42}},
-    {text: 'biggest jump', startFrame: chart.mark.largest + 4, durationInFrames: 78, at: {x: 0.42, y: 0.16}, ring: {x: 0.55, y: 0.3, w: 0.16, h: 0.62}},
-    {text: 'no years? no change over time', startFrame: chart.mark.smallest + 4, durationInFrames: 78, at: {x: 0.5, y: 0.12}, pointsAt: {x: 0.88, y: 0.72}},
+    {text: '5 up, 1 down? no — all up', startFrame: chart.mark.up + 4, durationInFrames: 76, at: {x: 0.32, y: 0.07}, pointsAt: {x: 0.55, y: 0.30}},
+    {text: 'biggest jump', startFrame: chart.mark.largest + 4, durationInFrames: 78, at: {x: 0.28, y: 0.08}, ring: {x: 0.645, y: 0.215, w: 0.12, h: 0.71}},
+    {text: 'no years? no change over time', startFrame: chart.mark.smallest + 4, durationInFrames: 78, at: {x: 0.44, y: 0.09}, pointsAt: {x: 0.90, y: 0.62}},
   ],
   overview: {
     startFrame: chart.mark.overview,

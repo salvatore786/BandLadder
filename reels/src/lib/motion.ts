@@ -149,3 +149,57 @@ export const countUp = ({
 /** True once a beat has started; used to hold completed states. */
 export const isLive = (frame: number, at: number, until?: number) =>
   frame >= at && (until === undefined || frame < until);
+
+/**
+ * A per-beat micro-move of the whole frame: on each beat the composition
+ * springs to a new, slightly offset resting position and stays there until the
+ * next beat.
+ *
+ * Deliberately NOT a there-and-back pulse — a pulse has a velocity null at its
+ * midpoint, which splits one beat into two very short movements and makes the
+ * reel read as choppy rather than smooth. A directional settle keeps each beat
+ * a single, sustained move followed by a genuine hold.
+ */
+export const beatStep = ({
+  frame,
+  fps,
+  beats,
+  travel = 7,
+  scaleAmount = 0.007,
+  durationInFrames = 9,
+}: {
+  frame: number;
+  fps: number;
+  beats: number[];
+  travel?: number;
+  scaleAmount?: number;
+  durationInFrames?: number;
+}) => {
+  // Deterministic per-beat target, so the frame wanders without ever repeating.
+  const target = (i: number) => ({
+    x: noise2D('beat-x', i * 0.7, 0) * travel,
+    y: noise2D('beat-y', 0, i * 0.7) * travel,
+    scale: 1 + noise2D('beat-s', i * 0.7, 3) * scaleAmount,
+  });
+
+  let index = -1;
+  for (let i = 0; i < beats.length; i++) {
+    if (frame >= beats[i]) index = i;
+    else break;
+  }
+  if (index < 0) return {x: 0, y: 0, scale: 1};
+
+  const from = index === 0 ? {x: 0, y: 0, scale: 1} : target(index - 1);
+  const to = target(index);
+  const p = spring({
+    frame: frame - beats[index],
+    fps,
+    config: SPRINGS.glide,
+    durationInFrames,
+  });
+  return {
+    x: interpolate(p, [0, 1], [from.x, to.x]),
+    y: interpolate(p, [0, 1], [from.y, to.y]),
+    scale: interpolate(p, [0, 1], [from.scale, to.scale]),
+  };
+};

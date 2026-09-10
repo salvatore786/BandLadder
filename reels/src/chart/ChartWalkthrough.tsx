@@ -16,11 +16,13 @@ import {Header} from '../components/Header';
 import {Footer} from '../components/Footer';
 import {Captions} from '../components/Captions';
 import {Annotation} from '../components/Hand';
+import {BeatSweep} from '../components/BeatSweep';
 import {BarChart, CHART_BOX} from './BarChart';
 import {FoundSoFar} from './FoundSoFar';
 import {StepProgress} from './StepProgress';
 import {OverviewCard} from './OverviewCard';
-import {pushIn} from '../lib/motion';
+import {pushIn, beatStep} from '../lib/motion';
+import {wordBeats} from '../lib/text';
 import type {ChartWalkthroughProps} from '../schema';
 import '../lib/fonts';
 
@@ -39,7 +41,7 @@ const BLOBS: BlobSpec[] = [
 
 export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = (props) => {
   const frame = useCurrentFrame();
-  const {width, durationInFrames} = useVideoConfig();
+  const {width, durationInFrames, fps} = useVideoConfig();
 
   const inner = width - LAYOUT.gutter * 2;
   const chartScale = inner / CHART_BOX.width;
@@ -51,6 +53,44 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = (props) => {
   const shift = bodyStart - overlap;
 
   const overviewAt = props.overview.startFrame - shift;
+
+  // Every narration line, step change, tag find and the overview is a beat.
+  // The whole frame takes a short accent on each one, and the bigger
+  // structural beats also throw a colour band across the frame.
+  const cueBeats = props.narration.map((c) => c.startFrame);
+  const structuralBeats = [
+    ...props.focus.map((f) => f.startFrame),
+    ...props.steps.map((st) => st.startFrame),
+    ...props.tags.map((t) => t.foundFrame),
+    props.overview.startFrame,
+    ...props.seriesRevealFrames,
+    ...props.narration.filter((c) => c.emphasis).map((c) => c.startFrame),
+  ].sort((a, b) => a - b);
+  // Two layers of accent. Every spoken word gives the frame a small punch —
+  // that is roughly one visible movement every 0.4s, matching the narration's
+  // own cadence — and the structural beats give it a much bigger one.
+  const step = beatStep({
+    frame,
+    fps,
+    beats: wordBeats(props.narration, 14),
+    travel: 21,
+    scaleAmount: 0.015,
+    durationInFrames: 7,
+  });
+  // A larger, slower reframe on each narration line and structural beat —
+  // one sustained move rather than a there-and-back pulse.
+  const reframe = beatStep({
+    frame,
+    fps,
+    beats: [...new Set([
+      ...cueBeats,
+      ...structuralBeats,
+      ...props.annotations.map((a) => a.startFrame),
+    ])].sort((a, b) => a - b),
+    travel: 28,
+    scaleAmount: 0.024,
+    durationInFrames: 27,
+  });
   // The chart recedes as the overview arrives — overlapping, never a hard cut.
   const handoff = interpolate(
     frame,
@@ -69,6 +109,14 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = (props) => {
 
       {props.audioSrc ? <Audio src={staticFile(props.audioSrc)} /> : null}
 
+      <BeatSweep
+        beats={[...new Set([...cueBeats, ...structuralBeats])].sort(
+          (a, b) => a - b
+        )}
+        colors={[B.apricot, B.teal, B.gold, B.greyBlue]}
+        durationInFrames={42}
+      />
+
       <CameraMotionBlur shutterAngle={160} samples={2}>
         <Sequence from={0} durationInFrames={bodyStart + 2}>
           <Hook
@@ -81,7 +129,11 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = (props) => {
         </Sequence>
 
         <Sequence from={shift}>
-          <AbsoluteFill style={{transform: `scale(${pushIn(frame, durationInFrames)})`}}>
+          <AbsoluteFill
+            style={{transform: `translate(${step.x + reframe.x}px, ${step.y + reframe.y}px) scale(${
+                pushIn(frame, durationInFrames) * step.scale * reframe.scale * 1.03
+              })`}}
+          >
             <Header
               title={props.title}
               section="Task 1 · Overview"
@@ -114,6 +166,7 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = (props) => {
                   series={props.series}
                   seriesRevealFrames={props.seriesRevealFrames.map((f) => f - shift)}
                   unit={props.unit}
+                  focus={props.focus.map((f) => ({...f, startFrame: f.startFrame - shift}))}
                 />
               </div>
 

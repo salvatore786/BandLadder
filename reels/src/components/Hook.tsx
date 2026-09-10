@@ -36,7 +36,7 @@ export const Hook: React.FC<{
     {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
   );
 
-  const kickerIn = spring({frame: frame - 2, fps, config: SPRINGS.snap, durationInFrames: 10});
+  const kickerIn = spring({frame: frame - 2, fps, config: SPRINGS.snap, durationInFrames: 14});
 
   return (
     <AbsoluteFill
@@ -52,7 +52,7 @@ export const Hook: React.FC<{
           frame: frame - at,
           fps,
           config: SPRINGS.sustain,
-          durationInFrames: 26,
+          durationInFrames: 34,
         });
         const dir = i % 2 === 0 ? -1 : 1;
         const x = interpolate(p, [0, 1], [dir * (width + 400), 0]);
@@ -114,7 +114,7 @@ export const Hook: React.FC<{
             frame: frame - at,
             fps,
             config: SPRINGS.pop,
-            durationInFrames: Math.max(MOTION.minEntrance, 14),
+            durationInFrames: Math.max(MOTION.minEntrance, 19),
           });
           const dir = i % 2 === 0 ? -1 : 1;
           const x = interpolate(p, [0, 1], [dir * 760, 0]);

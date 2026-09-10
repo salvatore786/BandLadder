@@ -23,7 +23,7 @@ const blobPath = (r: number, frame: number, seed: string) => {
   const step = (Math.PI * 2) / points;
   const pts: {x: number; y: number}[] = [];
   for (let i = 0; i < points; i++) {
-    const wobble = noise2D(seed + i, frame * 0.006, i * 0.9);
+    const wobble = noise2D(seed + i, frame * 0.009, i * 0.9);
     const rr = r * (1 + wobble * 0.18);
     const a = i * step;
     pts.push({x: Math.cos(a) * rr, y: Math.sin(a) * rr});
@@ -70,7 +70,7 @@ export const Backdrop: React.FC<{
           style={{position: 'absolute', inset: 0}}
         >
           {blobs.map((b, i) => {
-            const d = drift({frame, seed: b.seed, amplitude: 46, speed: 0.0042});
+            const d = drift({frame, seed: b.seed, amplitude: 52, speed: 0.0055});
             const cx = b.x * width + d.x;
             const cy = b.y * height + d.y;
             return (
@@ -91,8 +91,8 @@ export const Backdrop: React.FC<{
             const d = drift({
               frame,
               seed: b.seed + '-dot',
-              amplitude: 90,
-              speed: 0.009,
+              amplitude: 80,
+              speed: 0.010,
             });
             const c = makeCircle({radius: 9 + i * 2});
             return (

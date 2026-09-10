@@ -50,7 +50,9 @@ export const BarChart: React.FC<{
   seriesRevealFrames: number[];
   unit: string;
   max?: number;
-}> = ({categories, series, seriesRevealFrames, unit, max = 100}) => {
+  /** The band slides to each category as the narration reaches it. */
+  focus?: ChartWalkthroughProps['focus'];
+}> = ({categories, series, seriesRevealFrames, unit, max = 100, focus = []}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -59,6 +61,33 @@ export const BarChart: React.FC<{
   const groupW = plotW / categories.length;
   const barW = Math.min(78, (groupW - 34) / series.length);
   const gridlines = [0, 25, 50, 75, 100];
+
+  // Focus state: the band slides to the group under discussion and the other
+  // groups step back, so the eye is led instead of left to search.
+  const activeFocus = focus.filter((f) => frame >= f.startFrame);
+  const currentFocus = activeFocus[activeFocus.length - 1];
+  const previousFocus =
+    activeFocus.length > 1 ? activeFocus[activeFocus.length - 2] : currentFocus;
+  const focusP = currentFocus
+    ? spring({
+        frame: frame - currentFocus.startFrame,
+        fps,
+        config: SPRINGS.sustain,
+        durationInFrames: 26,
+      })
+    : 0;
+  const dimOf = (ci: number) => {
+    if (!currentFocus) return 1;
+    const from = previousFocus.categoryIndex === ci ? 1 : 0.42;
+    const to = currentFocus.categoryIndex === ci ? 1 : 0.42;
+    return interpolate(focusP, [0, 1], [from, to]);
+  };
+  const liftOf = (ci: number) => {
+    if (!currentFocus) return 0;
+    const from = previousFocus.categoryIndex === ci ? -16 : 0;
+    const to = currentFocus.categoryIndex === ci ? -16 : 0;
+    return interpolate(focusP, [0, 1], [from, to]);
+  };
 
   return (
     <div style={{position: 'relative', width: CHART_BOX.width, height: CHART_BOX.height}}>
@@ -120,6 +149,32 @@ export const BarChart: React.FC<{
           );
         })}
       </div>
+
+      {/* The focus band — slides to the group under discussion, so the eye is
+          led rather than left to search, and the plot is never fully still. */}
+      {(() => {
+        if (!currentFocus) return null;
+        const leftOf = (i: number) => AXIS_W + i * groupW;
+        const left = interpolate(
+          focusP,
+          [0, 1],
+          [leftOf(previousFocus.categoryIndex), leftOf(currentFocus.categoryIndex)]
+        );
+        return (
+          <div
+            style={{
+              position: 'absolute',
+              left,
+              top: LEGEND_H - 10,
+              width: groupW,
+              height: plotH + 20,
+              backgroundColor: CHART_PALETTE.blobs.apricot,
+              borderRadius: LAYOUT.radius.lg,
+              opacity: 0.62,
+            }}
+          />
+        );
+      })()}
 
       {/* Gridlines and axis */}
       {gridlines.map((g) => {
@@ -190,6 +245,8 @@ export const BarChart: React.FC<{
                   backgroundColor: SERIES_COLORS[si % SERIES_COLORS.length],
                   borderRadius: `${LAYOUT.radius.md}px ${LAYOUT.radius.md}px 6px 6px`,
                   boxShadow: SHADOW.card,
+                  opacity: dimOf(ci),
+                  transform: `translateY(${liftOf(ci)}px)`,
                 }}
               />
               {p > 0.02 ? (
@@ -198,16 +255,17 @@ export const BarChart: React.FC<{
                     position: 'absolute',
                     left: left - 14,
                     width: barW + 28,
-                    bottom: LABEL_H + Math.max(0, h) + 12,
+                    bottom: LABEL_H + Math.max(0, h) + 12 - liftOf(ci),
                     textAlign: 'center',
                     fontFamily: FONTS.body,
                     fontSize: 30,
                     fontWeight: 600,
                     color: SERIES_COLORS[si % SERIES_COLORS.length],
-                    opacity: interpolate(p, [0.15, 0.6], [0, 1], {
-                      extrapolateLeft: 'clamp',
-                      extrapolateRight: 'clamp',
-                    }),
+                    opacity:
+                      interpolate(p, [0.15, 0.6], [0, 1], {
+                        extrapolateLeft: 'clamp',
+                        extrapolateRight: 'clamp',
+                      }) * dimOf(ci),
                   }}
                 >
                   <TrailBox height={38} layers={3} lag={0.7} opacity={0.3}>

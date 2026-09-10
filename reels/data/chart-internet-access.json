@@ -59,6 +59,36 @@
       "startFrame": 953
     }
   ],
+  "focus": [
+    {
+      "categoryIndex": 0,
+      "startFrame": 120
+    },
+    {
+      "categoryIndex": 1,
+      "startFrame": 259
+    },
+    {
+      "categoryIndex": 3,
+      "startFrame": 371
+    },
+    {
+      "categoryIndex": 2,
+      "startFrame": 463
+    },
+    {
+      "categoryIndex": 0,
+      "startFrame": 692
+    },
+    {
+      "categoryIndex": 3,
+      "startFrame": 832
+    },
+    {
+      "categoryIndex": 1,
+      "startFrame": 953
+    }
+  ],
   "tags": [
     {
       "kind": "UP",
@@ -87,12 +117,12 @@
       "startFrame": 375,
       "durationInFrames": 76,
       "at": {
-        "x": 0.3,
-        "y": 0.1
+        "x": 0.32,
+        "y": 0.07
       },
       "pointsAt": {
-        "x": 0.62,
-        "y": 0.42
+        "x": 0.55,
+        "y": 0.3
       }
     },
     {
@@ -100,14 +130,14 @@
       "startFrame": 572,
       "durationInFrames": 78,
       "at": {
-        "x": 0.42,
-        "y": 0.16
+        "x": 0.28,
+        "y": 0.08
       },
       "ring": {
-        "x": 0.55,
-        "y": 0.3,
-        "w": 0.16,
-        "h": 0.62
+        "x": 0.645,
+        "y": 0.215,
+        "w": 0.12,
+        "h": 0.71
       }
     },
     {
@@ -115,12 +145,12 @@
       "startFrame": 836,
       "durationInFrames": 78,
       "at": {
-        "x": 0.5,
-        "y": 0.12
+        "x": 0.44,
+        "y": 0.09
       },
       "pointsAt": {
-        "x": 0.88,
-        "y": 0.72
+        "x": 0.9,
+        "y": 0.62
       }
     }
   ],

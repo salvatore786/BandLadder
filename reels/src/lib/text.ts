@@ -73,3 +73,26 @@ export const wordTimings = (
     return {word, from, to: cursor, index: i};
   });
 };
+
+/**
+ * Beat frames for the narration: one on every spoken word, plus a second
+ * accent inside any word long enough to carry one. Word onsets alone leave
+ * roughly half a second between movements on longer words, which is where the
+ * frame starts to feel like it has stopped.
+ */
+export const wordBeats = (
+  cues: {text: string; startFrame: number; durationInFrames: number}[],
+  /** Shortest word, in frames, that earns a second accent. */
+  subWordMinSpan = 11
+) =>
+  cues
+    .flatMap((c) =>
+      wordTimings(c.text, c.startFrame, c.durationInFrames).flatMap((w) => {
+        const onset = Math.round(w.from);
+        const span = w.to - w.from;
+        return span >= subWordMinSpan
+          ? [onset, Math.round(w.from + span * 0.55)]
+          : [onset];
+      })
+    )
+    .sort((a, b) => a - b);
