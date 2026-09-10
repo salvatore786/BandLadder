@@ -32,6 +32,8 @@ nul
 
 # ── Temp / generated files ───────────────────────────────
 temp_audio.mp3
+temp_audio.mp3.words.json
+*.words.json
 remotion-video/public/audio_*.mp3
 remotion-video/input-props.json
 

@@ -15,6 +15,8 @@ import { PulsingRings } from "../shared/PulsingRings";
 import { SpinningVinylRecord } from "../shared/SpinningVinylRecord";
 import { HookIntro } from "../shared/HookIntro";
 import { TableGrid } from "./TableGrid";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { useSpeechWindow } from "../utils/timing";
 
 export const TableCompletion: React.FC<TableCompletionProps> = ({
   tableTitle,
@@ -32,12 +34,15 @@ export const TableCompletion: React.FC<TableCompletionProps> = ({
   const { fps } = useVideoConfig();
   const hookFrames = Math.ceil(hookIntroDuration * fps);
   const totalFrames = Math.ceil(durationSeconds * fps);
-  const audioFrames = Math.ceil(audioDurationSeconds * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const audioFrames = Math.ceil(speech.speechEnd * fps);
 
   // Table appears during audio portion, answers reveal AFTER audio ends
   const tableAppearFrame = Math.floor(audioFrames * 0.15);
   // Answer reveals 1 second AFTER audio ends
-  const revealFrame = Math.ceil((audioDurationSeconds + 1) * fps);
+  const revealFrame = Math.ceil((speech.speechEnd + 1) * fps);
 
   return (
     <AbsoluteFill>
@@ -175,6 +180,7 @@ export const TableCompletion: React.FC<TableCompletionProps> = ({
           <AudioWaveViz />
           <ProgressBar durationSeconds={durationSeconds - hookIntroDuration} />
           <Watermark />
+          <CaptionTrack />
           <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

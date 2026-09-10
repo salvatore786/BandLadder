@@ -14,6 +14,8 @@ import { GlowOrbs } from "../shared/GlowOrbs";
 import { MusicNotes } from "../shared/MusicNotes";
 import { PulsingRings } from "../shared/PulsingRings";
 import { SpinningVinylRecord } from "../shared/SpinningVinylRecord";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { useSpeechWindow } from "../utils/timing";
 
 export const HighlightIncorrect: React.FC<HighlightIncorrectProps> = ({
   transcript,
@@ -31,12 +33,15 @@ export const HighlightIncorrect: React.FC<HighlightIncorrectProps> = ({
   const { fps } = useVideoConfig();
   const hookFrames = Math.ceil(hookIntroDuration * fps);
   const totalFrames = Math.ceil(durationSeconds * fps);
-  const audioFrames = Math.ceil(audioDurationSeconds * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const audioFrames = Math.ceil(speech.speechEnd * fps);
 
   // Timing: transcript appears during audio, corrections start AFTER audio ends
   const transcriptAppear = Math.floor(audioFrames * 0.12);
   // Corrections start 1 second after audio ends
-  const correctionsStart = Math.ceil((audioDurationSeconds + 1) * fps);
+  const correctionsStart = Math.ceil((speech.speechEnd + 1) * fps);
   // Space corrections across the remaining time (about 3 seconds)
   const remainingFrames = totalFrames - correctionsStart;
   const correctionSpacing = Math.floor((remainingFrames * 0.7) / Math.max(incorrectWords.length, 1));
@@ -269,6 +274,7 @@ export const HighlightIncorrect: React.FC<HighlightIncorrectProps> = ({
           <AudioWaveViz />
           <ProgressBar durationSeconds={durationSeconds - hookIntroDuration} />
           <Watermark />
+          <CaptionTrack />
           <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

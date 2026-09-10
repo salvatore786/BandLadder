@@ -1,7 +1,23 @@
+// ── Word-level audio alignment (WhisperX) ───────────────────────────────────
+export interface AlignedWord {
+  word: string;
+  start: number;                   // Seconds from the start of the audio file
+  end: number;
+  speaker?: string;
+}
+
 // ── Hook Intro (shared optional props) ──────────────────────────────────────
 export interface HookIntroConfig {
   hookIntroDuration?: number;      // Duration of hook intro in seconds (0 = no hook)
   questionTypeLabel?: string;      // Label shown in hook, e.g. "Multiple Choice"
+
+  // ── Optional, injected by generate_reel.py. Every one of these is absent
+  //    when transcription is unavailable, and the reel renders as before.
+  words?: AlignedWord[];           // Karaoke caption timings (see transcribe.py)
+  speechStartSeconds?: number;     // First aligned word — audio minus lead-in silence
+  speechEndSeconds?: number;       // Last aligned word — audio minus trailing silence
+  captionsEnabled?: boolean;       // false hides burned-in captions
+  three3d?: boolean;               // false falls back to the flat background
 }
 
 // ── Sentence Completion ──────────────────────────────────────────────────────
