@@ -1,0 +1,39 @@
+{
+  "comment": "Which voice the reels speak with. Swap `engine` and re-run scripts/build_audio.py to A/B; each engine writes its own public/audio/<slug>.<engine>.mp3, so both survive side by side and only `engine` decides which one the render picks up.",
+  "engine": "piper",
+  "engines": {
+    "piper": {
+      "comment": "Free, local, no API key. Voice models are fetched by scripts/fetch_voices.sh into .voices/.",
+      "voice": "en_US-amy-medium",
+      "voicesDir": ".voices",
+      "lengthScale": 0.95,
+      "noiseScale": 0.667,
+      "noiseW": 0.85
+    },
+    "kokoro": {
+      "comment": "Free and local, warmer than piper but a heavier install (torch + a 350MB checkpoint).",
+      "voice": "af_heart",
+      "speed": 1.04,
+      "langCode": "a"
+    },
+    "elevenlabs": {
+      "comment": "Paid. Needs ELEVENLABS_API_KEY in the environment; nothing is sent anywhere unless `engine` is set to this.",
+      "voiceId": "",
+      "modelId": "eleven_turbo_v2_5",
+      "apiKeyEnv": "ELEVENLABS_API_KEY",
+      "stability": 0.4,
+      "similarityBoost": 0.75,
+      "style": 0.45,
+      "speakerBoost": true
+    }
+  },
+  "music": {
+    "enabled": true,
+    "bedDb": -28,
+    "duckDb": -36
+  },
+  "master": {
+    "lufs": -16,
+    "truePeakDb": -1.5
+  }
+}

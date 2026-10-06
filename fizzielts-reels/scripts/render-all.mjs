@@ -23,9 +23,12 @@ const LICENSE_KEY = "free-license";
 
 const filter = process.argv[2] ?? "";
 
-const files = (await readdir(DATA))
-  .filter((f) => f.endsWith(".json"))
-  .filter((f) => f.includes(filter));
+// data/ also holds the hand-written narration scripts and the generated audio
+// sidecars; only the reel files themselves are rendered.
+const isReel = (f) =>
+  f.endsWith(".json") && !f.endsWith(".narration.json") && !f.endsWith(".audio.json");
+
+const files = (await readdir(DATA)).filter(isReel).filter((f) => f.includes(filter));
 
 if (files.length === 0) {
   console.error(`No reels in data/${filter ? ` matching "${filter}"` : ""}.`);
@@ -44,7 +47,20 @@ process.stdout.write("\n");
 let failures = 0;
 
 for (const file of files) {
-  const inputProps = JSON.parse(await readFile(path.join(DATA, file), "utf-8"));
+  const slug = file.replace(/\.json$/, "");
+  const content = JSON.parse(await readFile(path.join(DATA, file), "utf-8"));
+
+  // The audio build contributes the narration track and the caption timings.
+  // A reel without one still renders, silent and uncaptioned.
+  let narration = {};
+  try {
+    const sidecar = JSON.parse(await readFile(path.join(DATA, `${slug}.audio.json`), "utf-8"));
+    narration = { audioSrc: sidecar.audioSrc, captions: sidecar.captions };
+  } catch {
+    console.warn(`  ${file}: no ${slug}.audio.json — rendering silent. Run scripts/build_audio.py.`);
+  }
+
+  const inputProps = { ...content, ...narration };
   const id = inputProps.composition;
 
   if (!id) {
@@ -53,7 +69,7 @@ for (const file of files) {
     continue;
   }
 
-  const outputLocation = path.join(OUT, file.replace(/\.json$/, ".mp4"));
+  const outputLocation = path.join(OUT, `${slug}.mp4`);
 
   try {
     const composition = await selectComposition({

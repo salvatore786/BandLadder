@@ -1,7 +1,8 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, LAYOUT, SHADOW, VIVID, alpha, lighten } from "../../brand";
+import { COLOR, LAYOUT, MOTION, SHADOW, VIVID, alpha, lighten } from "../../brand";
 import { FONT } from "../../fonts";
+import { idle } from "../../motion";
 import type { MapWalkthroughProps } from "../../schemas";
 
 /**
@@ -49,7 +50,9 @@ export const SportsComplexMap: React.FC<{
   fixtures: MapWalkthroughProps["map"]["fixtures"];
   /** Slot letter -> what it turned out to be. Absent slots stay unlabelled. */
   resolved: Record<string, ResolvedSlot>;
-}> = ({ fixtures, resolved }) => {
+  /** The walker climbs the corridor until this frame, then stops at the top. */
+  walkUntilFrame?: number;
+}> = ({ fixtures, resolved, walkUntilFrame = 820 }) => {
   const frame = useCurrentFrame();
 
   // The plan draws itself in over the first second — the hook window must move.
@@ -63,9 +66,10 @@ export const SportsComplexMap: React.FC<{
 
   return (
     <svg
-      width={MAP.width}
-      height={MAP.height}
+      width="100%"
+      height="100%"
       viewBox={`0 0 ${MAP.width} ${MAP.height}`}
+      preserveAspectRatio="xMidYMid meet"
       style={{ display: "block" }}
     >
       <defs>
@@ -157,7 +161,7 @@ export const SportsComplexMap: React.FC<{
 
       {/* Trees dotted through the grounds */}
       {TREES.map((t, i) => (
-        <Tree key={i} x={t[0]} y={t[1]} r={t[2]} opacity={draw} />
+        <Tree key={i} x={t[0]} y={t[1]} r={t[2]} opacity={draw} sway={idle(frame, 112 + i * 13, i)} />
       ))}
 
       {/* Pre-labelled block */}
@@ -189,6 +193,8 @@ export const SportsComplexMap: React.FC<{
         />
       ))}
 
+      <Walker until={walkUntilFrame} frame={frame} opacity={draw} />
+
       <Key opacity={draw} />
     </svg>
   );
@@ -207,18 +213,64 @@ const TREES: [number, number, number][] = [
   [46, 610, 12],
 ];
 
-const Tree: React.FC<{ x: number; y: number; r: number; opacity: number }> = ({
-  x,
-  y,
-  r,
-  opacity,
-}) => (
+const Tree: React.FC<{
+  x: number;
+  y: number;
+  r: number;
+  opacity: number;
+  /** -1..1, drives a slow lean so the grounds are never a still image. */
+  sway: number;
+}> = ({ x, y, r, opacity, sway }) => (
   <g opacity={opacity}>
     <rect x={x - 2.5} y={y + r - 3} width={5} height={r * 0.7} rx={2} fill="#9C7A52" />
-    <circle cx={x} cy={y} r={r} fill={TREE} />
-    <circle cx={x - r * 0.3} cy={y - r * 0.25} r={r * 0.55} fill={TREE_DARK} opacity={0.45} />
+    <g transform={`rotate(${(sway * 3.2).toFixed(2)} ${x} ${y + r})`}>
+      <circle cx={x} cy={y} r={r} fill={TREE} />
+      <circle cx={x - r * 0.3} cy={y - r * 0.25} r={r * 0.55} fill={TREE_DARK} opacity={0.45} />
+    </g>
   </g>
 );
+
+/**
+ * The viewer's position on the plan: a dot that walks up from the entrance.
+ *
+ * It exists because a floor plan with four scheduled reveals is a still image
+ * for most of its runtime. The walk gives the map continuous motion with real
+ * amplitude, and doubles as the thing the narration is describing — "you enter
+ * at the bottom" is easier to follow when something is actually entering.
+ */
+const Walker: React.FC<{ until: number; frame: number; opacity: number }> = ({
+  until,
+  frame,
+  opacity,
+}) => {
+  const start = 40;
+  const progress = interpolate(frame, [start, until], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const cx = CORRIDOR.x + CORRIDOR.w / 2 + idle(frame, 47) * 7;
+  const cy = interpolate(progress, [0, 1], [CORRIDOR.bottom - 20, CORRIDOR.top + 40]);
+  // A step bounce, so it reads as walking rather than sliding.
+  const bob = Math.abs(Math.sin((frame / 13) * Math.PI)) * 5 * (progress < 1 ? 1 : 0.25);
+
+  return (
+    <g opacity={opacity}>
+      {/* The stretch already walked, drawn in behind. */}
+      <line
+        x1={CORRIDOR.x + CORRIDOR.w / 2}
+        y1={CORRIDOR.bottom - 20}
+        x2={CORRIDOR.x + CORRIDOR.w / 2}
+        y2={cy}
+        stroke={alpha(VIVID.orange, 0.45)}
+        strokeWidth={6}
+        strokeLinecap="round"
+        strokeDasharray="2 14"
+      />
+      <circle cx={cx} cy={cy - bob} r={17} fill={VIVID.orange} opacity={0.22} />
+      <circle cx={cx} cy={cy - bob} r={10} fill={VIVID.orange} stroke={COLOR.white} strokeWidth={3} />
+    </g>
+  );
+};
 
 const FixtureBox: React.FC<{
   x: number;
@@ -263,15 +315,43 @@ const RoomBox: React.FC<{
   fallbackLabel?: string;
 }> = ({ letter, rect, resolved, frame, appear, fallbackLabel }) => {
   const answered = resolved !== undefined && frame >= resolved.revealFrame;
-  const fill = interpolate(frame - (resolved?.revealFrame ?? 0), [0, 14], [0, 1], {
+  const since = frame - (resolved?.revealFrame ?? 0);
+  // 20 frames to fill, not 14, and the box swells past its size on the way.
+  const fill = interpolate(since, [0, MOTION.keyRevealFrames], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const swell = answered
+    ? 1 + Math.sin(Math.min(1, since / MOTION.keyRevealFrames) * Math.PI) * 0.035
+    : 1;
+  // A ring expands out of the room as it lands, then fades.
+  const ring = interpolate(since, [0, 26], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
   const color = resolved?.color ?? COLOR.ink;
+  const cx = rect.x + rect.w / 2;
+  const cy = rect.y + rect.h / 2;
 
   return (
-    <g opacity={appear}>
+    <g
+      opacity={appear}
+      transform={`translate(${cx} ${cy}) scale(${swell.toFixed(4)}) translate(${-cx} ${-cy})`}
+    >
+      {answered && ring < 1 ? (
+        <rect
+          x={rect.x - 30 * ring}
+          y={rect.y - 30 * ring}
+          width={rect.w + 60 * ring}
+          height={rect.h + 60 * ring}
+          rx={LAYOUT.shapeRadius + 14 * ring}
+          fill="none"
+          stroke={color}
+          strokeWidth={5 * (1 - ring)}
+          opacity={1 - ring}
+        />
+      ) : null}
       <rect
         x={rect.x}
         y={rect.y}

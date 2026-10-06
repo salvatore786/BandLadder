@@ -1,8 +1,9 @@
 import React from "react";
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, TINT, TYPE } from "../../brand";
+import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { COLOR, MOTION, TINT, TYPE } from "../../brand";
 import { FONT } from "../../fonts";
 import { Card, Eyebrow } from "../../components/Page";
+import { idle } from "../../motion";
 
 /**
  * The payoff: the finished overview paragraph, with the phrases that earn the
@@ -16,18 +17,27 @@ export const OverviewCard: React.FC<{
   style?: React.CSSProperties;
 }> = ({ text, highlights, accent, atFrame, style }) => {
   const frame = useCurrentFrame();
-  const enter = interpolate(frame - atFrame, [0, 12], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
+  const { fps } = useVideoConfig();
+  // The payoff card is the longest move in the reel: it rises the full travel
+  // distance over 20 frames, overshoots, and settles.
+  const enter = spring({
+    frame: frame - atFrame,
+    fps,
+    config: MOTION.settle,
+    durationInFrames: MOTION.keyRevealFrames,
   });
+  const breathe = idle(frame, 197) * 2.2;
+  const parts = splitOnHighlights(text, highlights);
 
   return (
     <Card
       accent={accent}
       style={{
         padding: "26px 30px 30px",
-        opacity: enter,
-        transform: `translateY(${interpolate(enter, [0, 1], [22, 0])}px)`,
+        opacity: interpolate(enter, [0, 0.35], [0, 1], { extrapolateRight: "clamp" }),
+        transform:
+          `translateY(${(interpolate(enter, [0, 1], [MOTION.travel + 16, 0]) + breathe).toFixed(2)}px) ` +
+          `scale(${interpolate(enter, [0, 1], [0.9, 1]).toFixed(4)})`,
         ...style,
       }}
     >
@@ -43,12 +53,20 @@ export const OverviewCard: React.FC<{
           color: COLOR.ink,
         }}
       >
-        {splitOnHighlights(text, highlights).map((part, i) =>
+        {parts.map((part, i) =>
           part.highlighted ? (
             <span
               key={i}
               style={{
+                // The tints come up one phrase at a time after the card lands,
+                // so the paragraph keeps moving while it is being read.
                 backgroundColor: TINT.scoring,
+                opacity: interpolate(
+                  frame - atFrame - MOTION.keyRevealFrames - highlightOrder(parts, i) * 14,
+                  [0, 12],
+                  [0.25, 1],
+                  { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+                ),
                 color: COLOR.deep,
                 fontWeight: 500,
                 borderRadius: 5,
@@ -102,4 +120,9 @@ function splitOnHighlights(
   }
 
   return parts;
+}
+
+/** Which highlight this is, counting from the start of the paragraph. */
+function highlightOrder(parts: { text: string; highlighted: boolean }[], index: number): number {
+  return parts.slice(0, index).filter((p) => p.highlighted).length;
 }

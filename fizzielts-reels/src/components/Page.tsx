@@ -32,12 +32,13 @@ export const Page: React.FC<{
   const pushIn = interpolate(frame, [0, durationInFrames], [1, 1.03], {
     extrapolateRight: "clamp",
   });
+  const float = Math.sin((frame / 173) * Math.PI * 2) * 4;
 
   return (
     <AbsoluteFill style={{ background: PAGE_GRADIENT, overflow: "hidden" }}>
       <AbsoluteFill
         style={{
-          transform: `scale(${pushIn})`,
+          transform: `scale(${pushIn}) translateY(${float.toFixed(2)}px)`,
           transformOrigin: "50% 42%",
           display: "flex",
           flexDirection: "column",
@@ -103,12 +104,13 @@ const Blobs: React.FC = () => {
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
       {BLOBS.map((b, i) => {
-        // Long, mutually prime periods so the field never visibly repeats.
-        const period = 340 + i * 47;
+        // Mutually prime periods so the field never visibly repeats, and short
+        // enough that the blobs are genuinely in motion rather than creeping.
+        const period = 196 + i * 29;
         const t = (frame / period) * Math.PI * 2;
-        const driftX = Math.sin(t + i) * 26;
-        const driftY = Math.cos(t * 0.8 + i * 1.7) * 22;
-        const breathe = 1 + Math.sin(t * 0.6 + i) * 0.07;
+        const driftX = Math.sin(t + i) * 84;
+        const driftY = Math.cos(t * 0.8 + i * 1.7) * 66;
+        const breathe = 1 + Math.sin(t * 0.6 + i) * 0.14;
 
         return (
           <div

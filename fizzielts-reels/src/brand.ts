@@ -112,13 +112,30 @@ export const MOTION = {
   hookFrames: 60,
   /** Entrances overshoot then settle. Nothing completes in under 8 frames. */
   minEntranceFrames: 8,
-  revealFrames: 18,
+  /** Default entrance length. */
+  revealFrames: 14,
+  /** An answer landing, a step turning over — the moves that carry the lesson. */
+  keyRevealFrames: 20,
+  /** A grouped set enters one element at a time, this many frames apart. */
   staggerFrames: 3,
   /** Slide distance for an entrance — a fade in place does not read as motion. */
   travel: 52,
+  /** A finished state stays put this long before anything replaces it. */
+  holdFrames: 18,
+  /** Exits overlap the next entrance, so the frame never comes to a stop. */
+  exitFrames: 10,
+  /**
+   * Spring configs. Damping below ~12 at this stiffness overshoots visibly,
+   * which is the whole point: `bounce` passes its target and comes back,
+   * `settle` arrives heavily, `gentle` never overshoots and is for ambient
+   * movement only.
+   */
+  bounce: { damping: 9.5, stiffness: 140, mass: 0.85 },
   snap: { damping: 12, stiffness: 170, mass: 0.7 },
-  settle: { damping: 16, stiffness: 110, mass: 0.9 },
+  settle: { damping: 13, stiffness: 95, mass: 1.05 },
   gentle: { damping: 22, stiffness: 70, mass: 1 },
+  /** Motion-blur trail on the fastest entrances. */
+  trail: { layers: 3, lagInFrames: 1.1, opacity: 0.45 },
 } as const;
 
 // ── Shadows ──────────────────────────────────────────────────────────────────

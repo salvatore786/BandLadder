@@ -1,0 +1,22 @@
+{
+  "slug": "writing-internet-access",
+  "comment": "Narration for the Writing Task 1 reel. atFrame is the earliest frame a line may start; the builder never starts a line before its beat, and inserts silence to reach it. pauseAfter buys the beat of silence before a reveal. rate scales the engine's speaking rate: >1 is brisker. Lines are deliberately short — a wall-to-wall voice track leaves no room for the reveals to land.",
+  "lines": [
+    { "text": "Most people write the Task One overview wrong.", "atFrame": 4, "rate": 1.06 },
+    { "text": "It is two moves.", "atFrame": 112, "rate": 1.04, "pauseAfter": 0.35 },
+    { "text": "Move one: the changes.", "atFrame": 197, "rate": 0.98, "emphasis": true, "pauseAfter": 0.45 },
+    { "text": "Every country went up.", "atFrame": 270, "rate": 1.02, "pauseAfter": 0.4 },
+    { "text": "U.K. up twenty three. Brazil up fifty!", "atFrame": 340, "rate": 1.02, "emphasis": true },
+    { "text": "Move two: largest and smallest.", "atFrame": 440, "rate": 0.98, "emphasis": true, "pauseAfter": 0.4 },
+    { "text": "U.K. highest in both years. India lowest in both.", "atFrame": 538, "rate": 1.04 },
+    { "text": "That is it. Write it.", "atFrame": 660, "rate": 1.0, "pauseAfter": 0.4 },
+    { "text": "Overall, access increased in every country, with the sharpest growth in developing economies.", "atFrame": 738, "rate": 1.03 },
+    { "text": "The U.K. and Japan stayed the leaders; India stayed lowest.", "atFrame": 908, "rate": 1.03 },
+    { "text": "Two moves. Save this.", "atFrame": 1058, "rate": 1.0, "emphasis": true }
+  ],
+  "duckFrames": [
+    { "from": 289, "to": 420 },
+    { "from": 538, "to": 660 }
+  ],
+  "musicMuteFrames": []
+}

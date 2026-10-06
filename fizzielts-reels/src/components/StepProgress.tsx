@@ -2,10 +2,16 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLOR, MOTION, TYPE, alpha } from "../brand";
 import { FONT } from "../fonts";
+import { idle } from "../motion";
 
 /**
  * The numbered spine of the walkthrough: which step of the method we are on.
  * A step is "done" once the next one has started.
+ *
+ * The filled track springs from node to node rather than jumping, the active
+ * node swells and keeps a pulsing halo while it is current, and the nodes still
+ * to come drift gently — so this strip is moving on every frame, not only on
+ * the three frames a step changes.
  */
 export const StepProgress: React.FC<{
   steps: { label: string; atFrame: number }[];
@@ -14,14 +20,21 @@ export const StepProgress: React.FC<{
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const activeIndex = steps.reduce(
-    (acc, s, i) => (frame >= s.atFrame ? i : acc),
-    -1
-  );
+  const activeIndex = steps.reduce((acc, s, i) => (frame >= s.atFrame ? i : acc), -1);
 
-  // The filled track runs to the centre of the active node.
-  const reach = activeIndex < 0 ? 0 : (activeIndex / (steps.length - 1)) * 100;
-  const fill = interpolate(reach, [0, 100], [0, 100]);
+  // The track eases to the active node over 20 frames instead of snapping.
+  const previousReach = activeIndex <= 0 ? 0 : (activeIndex - 1) / (steps.length - 1);
+  const reach = activeIndex < 0 ? 0 : activeIndex / (steps.length - 1);
+  const advance =
+    activeIndex < 0
+      ? 0
+      : spring({
+          frame: frame - steps[activeIndex].atFrame,
+          fps,
+          config: MOTION.settle,
+          durationInFrames: MOTION.keyRevealFrames,
+        });
+  const fill = interpolate(advance, [0, 1], [previousReach, reach]) * 100;
 
   return (
     <div style={{ position: "relative", paddingTop: 8 }}>
@@ -41,7 +54,7 @@ export const StepProgress: React.FC<{
           position: "absolute",
           top: 34,
           left: `${50 / steps.length}%`,
-          width: `${(100 - (100 / steps.length)) * (fill / 100)}%`,
+          width: `${(100 - 100 / steps.length) * (fill / 100)}%`,
           height: 5,
           backgroundColor: accent,
           borderRadius: 2,
@@ -55,10 +68,14 @@ export const StepProgress: React.FC<{
           const pop = spring({
             frame: frame - step.atFrame,
             fps,
-            config: MOTION.snap,
-            durationInFrames: 16,
+            config: MOTION.bounce,
+            durationInFrames: MOTION.keyRevealFrames,
           });
-          const scale = active ? 1 + pop * 0.12 : 1;
+          // While a step is current its halo breathes; before its turn the node
+          // drifts, so no part of the strip is ever held still.
+          const pulse = active ? 1 + idle(frame, 46) * 0.5 : 1;
+          const lift = done || active ? 0 : idle(frame, 151 + i * 23, i * 1.1) * 2.4;
+          const scale = active ? interpolate(pop, [0, 1], [0.78, 1.1]) : done ? 1 : 0.96;
 
           return (
             <div
@@ -69,6 +86,7 @@ export const StepProgress: React.FC<{
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 12,
+                transform: `translateY(${lift.toFixed(2)}px)`,
               }}
             >
               <div
@@ -79,10 +97,12 @@ export const StepProgress: React.FC<{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  transform: `scale(${scale})`,
+                  transform: `scale(${scale.toFixed(4)})`,
                   backgroundColor: done || active ? accent : COLOR.white,
                   border: `4px solid ${done || active ? accent : alpha(COLOR.body, 0.45)}`,
-                  boxShadow: active ? `0 0 0 8px ${alpha(accent, 0.14)}` : "none",
+                  boxShadow: active
+                    ? `0 0 0 ${(8 * pulse).toFixed(1)}px ${alpha(accent, 0.16)}`
+                    : "none",
                   fontFamily: FONT.sans,
                   fontSize: 26,
                   fontWeight: 700,

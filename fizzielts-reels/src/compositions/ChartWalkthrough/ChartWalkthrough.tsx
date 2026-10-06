@@ -1,6 +1,6 @@
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, MODULE_ACCENT, TYPE } from "../../brand";
+import { AbsoluteFill, Audio, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { COLOR, MODULE_ACCENT, MOTION, TYPE } from "../../brand";
 import { FONT } from "../../fonts";
 import { Card, Page } from "../../components/Page";
 import { Hook } from "../../components/Hook";
@@ -8,6 +8,7 @@ import { StepProgress } from "../../components/StepProgress";
 import { FoundSoFar } from "../../components/FoundSoFar";
 import { Captions } from "../../components/Captions";
 import { RoughShape } from "../../components/RoughShape";
+import { beat, idle } from "../../motion";
 import { BarChart, CHART, Legend, barKey, barLayout } from "./BarChart";
 import { OverviewCard } from "./OverviewCard";
 import type { Annotation, ChartWalkthroughProps } from "../../schemas";
@@ -23,12 +24,15 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
   foundSoFar,
   captions,
   overview,
+  audioSrc,
 }) => {
   const frame = useCurrentFrame();
   const accent = MODULE_ACCENT[module];
 
+  // An annotation stays in the list through its exit, so the outgoing one is
+  // still moving while the next is arriving and the frame never settles.
   const live = annotations.filter(
-    (a) => frame >= a.fromFrame && frame < a.fromFrame + a.durationInFrames
+    (a) => frame >= a.fromFrame && frame < a.fromFrame + a.durationInFrames + MOTION.exitFrames
   );
   // While an annotation is up, its bar is the only one at full strength.
   const focus =
@@ -51,10 +55,17 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
               fontWeight: 700,
               color: COLOR.coral,
               marginTop: 8,
-              opacity: interpolate(frame, [26, 44], [0, 1], {
+              opacity: interpolate(frame, [26, 38], [0, 1], {
                 extrapolateLeft: "clamp",
                 extrapolateRight: "clamp",
               }),
+              transform:
+                `translateY(${interpolate(frame, [26, 48], [34, 0], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                }).toFixed(2)}px) ` +
+                `rotate(${(idle(frame, 233) * 0.7).toFixed(2)}deg)`,
+              transformOrigin: "left center",
             }}
           >
             {handSubtitle}
@@ -132,6 +143,8 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
       </div>
 
       <Captions words={captions} accent={accent} style={{ marginTop: "auto", paddingTop: 18 }} />
+
+      {audioSrc ? <Audio src={staticFile(audioSrc)} /> : null}
     </Page>
   );
 };
@@ -147,21 +160,29 @@ const AnnotationLayer: React.FC<{
   accent: string;
 }> = ({ annotation, chart, accent }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const boxes = barLayout(chart);
   const bar = boxes.find(
     (b) => b.category === annotation.target.category && b.seriesIndex === annotation.target.seriesIndex
   );
   if (!bar) return null;
 
-  const t = frame - annotation.fromFrame;
-  const progress = interpolate(t, [0, 14], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
+  // The stroke draws itself on over 20 frames, holds, then leaves while the
+  // next annotation is already arriving.
+  const { enter: progress, exit } = beat(
+    frame,
+    annotation.fromFrame,
+    annotation.durationInFrames,
+    MOTION.keyRevealFrames
+  );
+  const textSpring = spring({
+    frame: frame - annotation.fromFrame - 4,
+    fps,
+    config: MOTION.bounce,
+    durationInFrames: MOTION.keyRevealFrames,
   });
-  const textIn = interpolate(t, [4, 16], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const textIn = interpolate(textSpring, [0, 0.4], [0, 1], { extrapolateRight: "clamp" });
+  const leaving = 1 - exit;
 
   const cx = bar.x + bar.w / 2;
   const labelX = cx + annotation.offset.dx;
@@ -192,7 +213,7 @@ const AnnotationLayer: React.FC<{
   })();
 
   return (
-    <AbsoluteFill style={{ pointerEvents: "none" }}>
+    <AbsoluteFill style={{ pointerEvents: "none", opacity: leaving }}>
       <RoughShape
         shape={shape}
         color={accent}
@@ -210,7 +231,13 @@ const AnnotationLayer: React.FC<{
           fontWeight: 700,
           color: accent,
           opacity: textIn,
-          transform: `translateY(${interpolate(textIn, [0, 1], [10, 0])}px) rotate(-3deg)`,
+          transform:
+            `translate(${interpolate(textSpring, [0, 1], [-34, 0]).toFixed(2)}px, ` +
+            `${interpolate(textSpring, [0, 1], [26, 0]).toFixed(2)}px) ` +
+            `scale(${interpolate(textSpring, [0, 1], [0.8, 1]).toFixed(4)}) ` +
+            // The handwriting keeps a slow tilt, as if held rather than placed.
+            `rotate(${(-3 + idle(frame, 71, annotation.fromFrame) * 1.4).toFixed(2)}deg)`,
+          transformOrigin: "left center",
           whiteSpace: "nowrap",
         }}
       >

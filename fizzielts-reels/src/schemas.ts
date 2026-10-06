@@ -17,6 +17,27 @@ const headline = z.object({
   trail: z.string().optional(),
 });
 
+/**
+ * One entry per word with the frame it lands on; the word stays highlighted
+ * until the next word's startFrame.
+ *
+ * These are not hand-authored. scripts/build_audio.py force-aligns the
+ * synthesised narration and writes them to data/<slug>.audio.json, which the
+ * render merges in — so the captions are the measured position of each word in
+ * the audio rather than an estimate from a word count.
+ */
+const captionWord = z.object({
+  word: z.string(),
+  startFrame: z.number().int().nonnegative(),
+});
+
+/** What the audio build contributes to any reel's props. */
+const narration = {
+  captions: z.array(captionWord).default([]),
+  /** Path under public/, as staticFile() wants it. Absent renders silent. */
+  audioSrc: z.string().optional(),
+};
+
 const pageChrome = z.object({
   /** Which composition renders this reel. */
   composition: z.enum(["MapWalkthrough", "ChartWalkthrough"]),
@@ -69,6 +90,7 @@ export const mapWalkthroughSchema = pageChrome.extend({
   }),
   answers: z.array(mapAnswer),
   bubbles: z.array(bubble),
+  ...narration,
 });
 
 export type MapWalkthroughProps = z.infer<typeof mapWalkthroughSchema>;
@@ -109,15 +131,6 @@ const foundTag = z.object({
   atFrame: z.number().int().nonnegative(),
 });
 
-/**
- * Captions are pre-scripted: one entry per word with the frame it lands on.
- * The word stays highlighted until the next word's startFrame.
- */
-const captionWord = z.object({
-  word: z.string(),
-  startFrame: z.number().int().nonnegative(),
-});
-
 export const chartWalkthroughSchema = pageChrome.extend({
   handSubtitle: z.string(),
   chart: z.object({
@@ -133,7 +146,7 @@ export const chartWalkthroughSchema = pageChrome.extend({
   annotations: z.array(annotation),
   steps: z.array(z.object({ label: z.string(), atFrame: z.number().int().nonnegative() })),
   foundSoFar: z.array(foundTag),
-  captions: z.array(captionWord),
+  ...narration,
   overview: z.object({
     text: z.string(),
     /** Substrings tinted pale blue — the phrases that earn the band score. */

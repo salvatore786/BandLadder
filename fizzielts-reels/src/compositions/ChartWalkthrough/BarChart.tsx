@@ -1,7 +1,8 @@
 import React from "react";
-import { interpolate, useCurrentFrame } from "remotion";
-import { COLOR, LAYOUT, SHADOW, TYPE, alpha, lighten } from "../../brand";
+import { spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { COLOR, LAYOUT, MOTION, SHADOW, TYPE, alpha, lighten } from "../../brand";
 import { FONT } from "../../fonts";
+import { countUp, idle } from "../../motion";
 import type { ChartWalkthroughProps } from "../../schemas";
 
 /**
@@ -17,7 +18,7 @@ import type { ChartWalkthroughProps } from "../../schemas";
 export const CHART = {
   width: 860,
   height: 520,
-  padTop: 18,
+  padTop: 52, // headroom for the value labels and the grow overshoot
   padBottom: 82, // category labels
   padLeft: 78, // y axis
   padRight: 12,
@@ -70,6 +71,7 @@ export const BarChart: React.FC<{
   focus?: Set<string>;
 }> = ({ chart, focus }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const plotH = CHART.height - CHART.padTop - CHART.padBottom;
   const baseline = CHART.padTop + plotH;
   const boxes = barLayout(chart);
@@ -112,28 +114,50 @@ export const BarChart: React.FC<{
         );
       })}
 
-      {/* Bars grow out of the axis, staggered left to right */}
+      {/* Bars grow out of the axis on a spring, staggered left to right, and
+          overshoot their value before settling back onto it. Each one's number
+          counts up alongside rather than appearing at the total. */}
       {boxes.map((b, i) => {
-        const delay = i * 2;
-        const grow = interpolate(frame - delay, [0, chart.growEndFrame], [0, 1], {
-          extrapolateLeft: "clamp",
-          extrapolateRight: "clamp",
+        const at = i * MOTION.staggerFrames;
+        const grow = spring({
+          frame: frame - at,
+          fps,
+          config: MOTION.bounce,
+          durationInFrames: Math.max(MOTION.keyRevealFrames, chart.growEndFrame),
         });
-        const h = b.h * grow;
         const dimmed = focus ? !focus.has(barKey(b.category, b.seriesIndex)) : false;
+        // A focused bar lifts a little and keeps breathing while it is discussed.
+        const lift = !dimmed && focus ? 4 + idle(frame, 38) * 2.5 : 0;
+        const h = Math.min(plotH, Math.max(0, b.h * grow + lift));
+        const settled = grow > 0.08;
 
         return (
-          <rect
-            key={`${b.category}-${b.seriesIndex}`}
-            x={b.x}
-            y={baseline - h}
-            width={b.w}
-            height={h}
-            rx={LAYOUT.shapeRadius}
-            fill={barFill(chart, b)}
-            opacity={dimmed ? 0.42 : 1}
-            style={{ filter: dimmed ? "none" : `drop-shadow(${SHADOW.shape})` }}
-          />
+          <g key={`${b.category}-${b.seriesIndex}`}>
+            <rect
+              x={b.x}
+              y={baseline - h}
+              width={b.w}
+              height={h}
+              rx={LAYOUT.shapeRadius}
+              fill={barFill(chart, b)}
+              opacity={dimmed ? 0.42 : 1}
+              style={{ filter: dimmed ? "none" : `drop-shadow(${SHADOW.shape})` }}
+            />
+            {settled ? (
+              <text
+                x={b.x + b.w / 2}
+                y={baseline - h - 13}
+                textAnchor="middle"
+                fontFamily={FONT.sans}
+                fontSize={26}
+                fontWeight={700}
+                fill={dimmed ? COLOR.muted : COLOR.ink}
+                opacity={dimmed ? 0.5 : 1}
+              >
+                {countUp(grow, b.value)}
+              </text>
+            ) : null}
+          </g>
         );
       })}
 
