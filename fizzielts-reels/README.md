@@ -189,6 +189,15 @@ long ones. Ambient drift survives only where something genuinely never stops —
 trees in the grounds, the walker's gait, the blobs, and a 3% push-in over the
 full duration.
 
+Be careful with anything that transforms the whole page. A 4px sway on a
+6-second cycle looked like nothing and measured like everything: at 0.15px a
+frame it sat right on the threshold where a change becomes visible, crossing it
+and falling back every few frames, which halved the length of every gesture in
+the reel and tripled the apparent motion in tiles holding nothing but still
+text. Removing it took average event length from 190ms to 302ms and the static
+share from 38% to 61%, with no other change. The push-in survives because at
+0.02px a frame it is six times slower and stays under that threshold.
+
 `scripts/measure_motion.py` scores a render on the same five numbers the
 reference reels were scored on. Run it against both to compare:
 

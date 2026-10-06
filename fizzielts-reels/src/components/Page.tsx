@@ -20,6 +20,14 @@ import { FONT } from "../fonts";
  * The whole page also creeps in by ~3% over the reel's length. It is barely
  * perceptible frame to frame, and it means the composition is never completely
  * static even while a beat is being held.
+ *
+ * It used to also sway 4px on a 6-second cycle. That had to go: a global
+ * transform moves every high-contrast edge in the frame at once, and at 0.15px
+ * a frame it sat right on the threshold where a change becomes visible —
+ * crossing it and falling back every few frames. Measured, it was halving the
+ * length of every gesture in the reel and tripling the apparent motion in tiles
+ * that held nothing but still text. The push-in survives because at 0.02px a
+ * frame it is six times slower and stays under that threshold.
  */
 export const Page: React.FC<{
   accent: string;
@@ -32,13 +40,12 @@ export const Page: React.FC<{
   const pushIn = interpolate(frame, [0, durationInFrames], [1, 1.03], {
     extrapolateRight: "clamp",
   });
-  const float = Math.sin((frame / 173) * Math.PI * 2) * 4;
 
   return (
     <AbsoluteFill style={{ background: PAGE_GRADIENT, overflow: "hidden" }}>
       <AbsoluteFill
         style={{
-          transform: `scale(${pushIn}) translateY(${float.toFixed(2)}px)`,
+          transform: `scale(${pushIn})`,
           transformOrigin: "50% 42%",
           display: "flex",
           flexDirection: "column",
