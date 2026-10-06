@@ -21,6 +21,8 @@ import { Watermark } from "../shared/Watermark";
 import { GlowOrbs } from "../shared/GlowOrbs";
 import { PulsingRings } from "../shared/PulsingRings";
 import { WordPairCard } from "./WordPairCard";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { useSpeechWindow } from "../utils/timing";
 
 export const VocabularyComparison: React.FC<VocabularyComparisonProps> = ({
   topic,
@@ -38,7 +40,10 @@ export const VocabularyComparison: React.FC<VocabularyComparisonProps> = ({
   const { fps } = useVideoConfig();
   const hookFrames = Math.ceil(hookIntroDuration * fps);
   const contentDuration = durationSeconds - hookIntroDuration;
-  const audioFrames = Math.ceil(audioDurationSeconds * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const audioFrames = Math.ceil(speech.speechEnd * fps);
 
   // Timing: stagger each word pair across the audio duration
   // Leave first 12% for intro, last portion for outro
@@ -173,6 +178,7 @@ export const VocabularyComparison: React.FC<VocabularyComparisonProps> = ({
 
           <ProgressBar durationSeconds={contentDuration} />
           <Watermark />
+          <CaptionTrack />
           <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

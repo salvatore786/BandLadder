@@ -19,6 +19,8 @@ from pathlib import Path
 import requests
 import time
 
+from media import ffmpeg_bin, FFmpegNotFound
+
 BASE_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = BASE_DIR / "output"
 CUE_CARD_OUTPUT_DIR = BASE_DIR / "output" / "cue_cards"
@@ -81,8 +83,14 @@ def extract_thumbnail(video_path: Path, timestamp: float = 3.0) -> Path | None:
     if thumb_path.exists():
         return thumb_path
 
+    try:
+        ffmpeg = ffmpeg_bin()
+    except FFmpegNotFound as exc:
+        print(f"  WARNING: cannot extract thumbnail — {exc}")
+        return None
+
     cmd = [
-        "ffmpeg", "-y",
+        ffmpeg, "-y",
         "-ss", str(timestamp),
         "-i", str(video_path),
         "-frames:v", "1",

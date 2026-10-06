@@ -14,6 +14,8 @@ import { MusicNotes } from "../shared/MusicNotes";
 import { PulsingRings } from "../shared/PulsingRings";
 import { SpinningVinylRecord } from "../shared/SpinningVinylRecord";
 import { HookIntro } from "../shared/HookIntro";
+import { CaptionTrack } from "../shared/CaptionTrack";
+import { useSpeechWindow } from "../utils/timing";
 
 export const WriteFromDictation: React.FC<WriteFromDictationProps> = ({
   sentence,
@@ -30,13 +32,16 @@ export const WriteFromDictation: React.FC<WriteFromDictationProps> = ({
   const { fps } = useVideoConfig();
   const hookFrames = Math.ceil(hookIntroDuration * fps);
   const totalFrames = Math.ceil(durationSeconds * fps);
-  const audioFrames = Math.ceil(audioDurationSeconds * fps);
+  // WhisperX speech bounds when available, so the timings below key off
+  // when the voice actually stops rather than the padded file duration.
+  const speech = useSpeechWindow(audioDurationSeconds);
+  const audioFrames = Math.ceil(speech.speechEnd * fps);
 
   // Phases: listening during audio, typing starts 1s after audio, complete 0.5s before end
   // Listening phase = entire audio duration
   const listeningEnd = audioFrames;
   // Typing starts 1 second after audio ends
-  const typingStart = Math.ceil((audioDurationSeconds + 1) * fps);
+  const typingStart = Math.ceil((speech.speechEnd + 1) * fps);
   // Typing ends 0.5s before video ends to show "Complete!" briefly
   const typingEnd = totalFrames - Math.floor(fps * 0.5);
 
@@ -292,6 +297,7 @@ export const WriteFromDictation: React.FC<WriteFromDictationProps> = ({
       <AudioWaveViz />
       <ProgressBar durationSeconds={durationSeconds - hookIntroDuration} />
       <Watermark />
+      <CaptionTrack />
       <Audio src={staticFile(audioFileName)} />
         </AbsoluteFill>
       </Sequence>

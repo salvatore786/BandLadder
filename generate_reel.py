@@ -28,6 +28,9 @@ from config import (
     OUTPUT_DIR, CUE_CARD_OUTPUT_DIR, CLEAN_MCQ_OUTPUT_DIR,
     REMOTION_DIR, REMOTION_PUBLIC, CAPTIONS_DIR, CTA_VIDEO, FPS,
 )
+from media import ffmpeg_bin, FFmpegNotFound
+from transcribe import transcribe_words
+
 from generators.base import BaseGenerator
 from generators.sentence_completion import SentenceCompletionGenerator
 from generators.mcq_single import MCQSingleGenerator
@@ -314,7 +317,7 @@ def render_with_remotion(
         cwd=str(REMOTION_DIR),
         capture_output=True,
         text=True,
-        shell=True,  # Required on Windows for npx
+        shell=(os.name == "nt"),  # npx needs a shell on Windows only
         timeout=600,
     )
 
@@ -347,8 +350,14 @@ def extract_thumbnail(video_path: Path, timestamp: float = 3.0) -> Path | None:
     thumb_name = video_path.stem + "_thumb.jpg"
     thumb_path = THUMBNAILS_DIR / thumb_name
 
+    try:
+        ffmpeg = ffmpeg_bin()
+    except FFmpegNotFound as exc:
+        print(f"  WARNING: cannot extract thumbnail — {exc}")
+        return None
+
     cmd = [
-        "ffmpeg", "-y",
+        ffmpeg, "-y",
         "-ss", str(timestamp),
         "-i", str(video_path),
         "-frames:v", "1",
@@ -377,6 +386,12 @@ def append_cta(video_path: Path) -> Path:
         print(f"  WARNING: CTA video not found at {CTA_VIDEO}. Skipping CTA append.")
         return video_path
 
+    try:
+        ffmpeg = ffmpeg_bin()
+    except FFmpegNotFound as exc:
+        print(f"  WARNING: cannot append CTA — {exc}")
+        return video_path
+
     # Create concat list file (ASCII, no BOM — ffmpeg requirement)
     list_file = Path(tempfile.gettempdir()) / "cta_concat_list.txt"
     list_content = f"file '{video_path}'\nfile '{CTA_VIDEO}'"
@@ -386,7 +401,7 @@ def append_cta(video_path: Path) -> Path:
     temp_output = video_path.with_suffix(".cta_tmp.mp4")
 
     cmd = [
-        "ffmpeg", "-y",
+        ffmpeg, "-y",
         "-f", "concat", "-safe", "0",
         "-i", str(list_file),
         "-c", "copy",
@@ -535,8 +550,20 @@ def generate_single_reel(
             audio_path,
         )
 
+    # 2b. Align words to the audio (WhisperX) — drives the karaoke captions and
+    #     lets reveal timings key off real speech instead of fixed percentages.
+    words = transcribe_words(audio_path, use_cache=False)
+
     # 3. Build Remotion props
     props = generator.build_remotion_props(content, duration, f"audio_{entry_id}.mp3")
+
+    # 3a. Caption + speech-timing props (all optional on the Remotion side)
+    if words:
+        props["words"] = words
+        # Trailing TTS silence is common; the last aligned word is the real end
+        # of speech, so answers can reveal on it instead of on file duration.
+        props["speechStartSeconds"] = round(words[0]["start"], 3)
+        props["speechEndSeconds"] = round(words[-1]["end"], 3)
 
     # 3b. Inject hook/CTA props — different for clean vs standard compositions
     if generator.question_type == "mcq_single_clean":
@@ -588,9 +615,12 @@ def generate_single_reel(
         entry_id=entry_id,
     )
 
-    # 5. Clean up temp audio
+    # 5. Clean up temp audio (and any word-timing cache left by an older run)
     if audio_path.exists():
         audio_path.unlink()
+    stale_words = audio_path.with_suffix(audio_path.suffix + ".words.json")
+    if stale_words.exists():
+        stale_words.unlink()
 
     # 5b. Append CTA end screen — skip for clean (CTA is baked into Remotion)
     if generator.question_type != "mcq_single_clean":

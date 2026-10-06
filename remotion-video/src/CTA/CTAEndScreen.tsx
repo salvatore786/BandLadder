@@ -11,6 +11,7 @@ import { FeaturesCTA } from "./variants/FeaturesCTA";
 import { TrialCTA } from "./variants/TrialCTA";
 import { SwipeCTA } from "./variants/SwipeCTA";
 import { TestimonialCTA } from "./variants/TestimonialCTA";
+import { CaptionTrack } from "../shared/CaptionTrack";
 
 const VARIANT_MAP = {
   follow: FollowCTA,
@@ -45,7 +46,10 @@ export const CTAEndScreen: React.FC<CTAEndScreenProps> = ({ variant, durationSec
     >
       {/* Voiceover audio */}
       {audioFileName && (
-        <Audio src={staticFile(audioFileName)} volume={1} />
+        <>
+          <CaptionTrack />
+          <Audio src={staticFile(audioFileName)} volume={1} />
+        </>
       )}
 
       {/* Decorative gradient orbs */}

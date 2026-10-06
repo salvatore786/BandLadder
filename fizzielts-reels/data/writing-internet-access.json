@@ -1,0 +1,178 @@
+{
+  "composition": "ChartWalkthrough",
+  "module": "writing",
+  "eyebrow": "IELTS Writing Task 1",
+  "headline": {
+    "lead": "The overview is",
+    "emphasis": "two moves"
+  },
+  "handSubtitle": "how to build it from any bar chart",
+  "durationInFrames": 1166,
+  "chart": {
+    "title": "Households with internet access (%), 2010 vs 2020",
+    "yAxisLabel": "% of households",
+    "yMax": 100,
+    "yTick": 20,
+    "growEndFrame": 38,
+    "series": [
+      {
+        "name": "2010"
+      },
+      {
+        "name": "2020"
+      }
+    ],
+    "categories": [
+      {
+        "name": "UK",
+        "values": [
+          73,
+          96
+        ],
+        "color": "#2563EB"
+      },
+      {
+        "name": "Japan",
+        "values": [
+          68,
+          93
+        ],
+        "color": "#7C3AED"
+      },
+      {
+        "name": "Brazil",
+        "values": [
+          31,
+          81
+        ],
+        "color": "#0E9F6E"
+      },
+      {
+        "name": "India",
+        "values": [
+          8,
+          43
+        ],
+        "color": "#F97316"
+      }
+    ]
+  },
+  "steps": [
+    {
+      "label": "the changes",
+      "atFrame": 237
+    },
+    {
+      "label": "largest and smallest",
+      "atFrame": 434
+    },
+    {
+      "label": "overview",
+      "atFrame": 642
+    }
+  ],
+  "annotations": [
+    {
+      "text": "compare these two",
+      "fromFrame": 112,
+      "durationInFrames": 92,
+      "target": {
+        "category": "UK",
+        "seriesIndex": 0
+      },
+      "shape": "circle",
+      "offset": {
+        "dx": -30,
+        "dy": -96
+      }
+    },
+    {
+      "text": "up 23",
+      "fromFrame": 289,
+      "durationInFrames": 56,
+      "target": {
+        "category": "UK",
+        "seriesIndex": 1
+      },
+      "shape": "circle",
+      "offset": {
+        "dx": -74,
+        "dy": -78
+      }
+    },
+    {
+      "text": "up 50!",
+      "fromFrame": 347,
+      "durationInFrames": 62,
+      "target": {
+        "category": "Brazil",
+        "seriesIndex": 1
+      },
+      "shape": "circle",
+      "offset": {
+        "dx": -66,
+        "dy": -82
+      }
+    },
+    {
+      "text": "highest both years",
+      "fromFrame": 543,
+      "durationInFrames": 62,
+      "target": {
+        "category": "UK",
+        "seriesIndex": 1
+      },
+      "shape": "arrow",
+      "offset": {
+        "dx": 26,
+        "dy": -88
+      }
+    },
+    {
+      "text": "lowest both years",
+      "fromFrame": 595,
+      "durationInFrames": 62,
+      "target": {
+        "category": "India",
+        "seriesIndex": 0
+      },
+      "shape": "arrow",
+      "offset": {
+        "dx": -250,
+        "dy": -46
+      }
+    }
+  ],
+  "foundSoFar": [
+    {
+      "tag": "UP",
+      "value": "every country",
+      "atFrame": 358
+    },
+    {
+      "tag": "DOWN",
+      "value": "none",
+      "atFrame": 399
+    },
+    {
+      "tag": "LARGEST",
+      "value": "UK",
+      "atFrame": 555
+    },
+    {
+      "tag": "SMALLEST",
+      "value": "India",
+      "atFrame": 607
+    }
+  ],
+  "overview": {
+    "atFrame": 688,
+    "text": "Overall, access increased in every country over the decade, with the sharpest growth in the developing economies. The UK and Japan nevertheless remained the leaders throughout, while India stayed the lowest.",
+    "highlights": [
+      "increased in every country",
+      "the sharpest growth",
+      "remained the leaders throughout",
+      "stayed the lowest"
+    ]
+  }
+}

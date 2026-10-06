@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { COLORS } from "../styles/colors";
+import { ThreeBackground } from "./ThreeBackground";
 
 export const Background: React.FC = () => {
   const frame = useCurrentFrame();
@@ -24,6 +25,9 @@ export const Background: React.FC = () => {
           background: `linear-gradient(${angle}deg, ${COLORS.bgGradientStart} 0%, ${COLORS.bgGradientMid} 50%, ${COLORS.bgGradientEnd} 100%)`,
         }}
       />
+
+      {/* three.js depth layer — floating geometry behind the content */}
+      <ThreeBackground />
 
       {/* Decorative circle top-right */}
       <div

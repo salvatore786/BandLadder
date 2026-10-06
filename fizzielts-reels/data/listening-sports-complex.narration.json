@@ -1,0 +1,95 @@
+{
+  "slug": "listening-sports-complex",
+  "comment": "Narration for the Listening Part 2 reel. The practice section gets no music under it so the viewer can think.",
+  "lines": [
+    {
+      "text": "Map labelling is the easiest part of IELTS Listening.",
+      "atFrame": 4,
+      "rate": 1.06
+    },
+    {
+      "text": "If you know where you are standing.",
+      "atFrame": 105,
+      "rate": 1.02,
+      "pauseAfter": 0.35
+    },
+    {
+      "text": "You enter at the bottom.",
+      "atFrame": 172,
+      "rate": 1.0,
+      "pauseAfter": 0.5
+    },
+    {
+      "text": "Immediately on your left — that is Reception. Box A.",
+      "atFrame": 240,
+      "rate": 1.0,
+      "emphasis": true
+    },
+    {
+      "text": "Far end means the top of the plan.",
+      "atFrame": 346,
+      "rate": 1.04,
+      "pauseAfter": 0.25
+    },
+    {
+      "text": "So the swimming pool is box F.",
+      "atFrame": 430,
+      "rate": 1.0,
+      "emphasis": true
+    },
+    {
+      "text": "Now, the gym is opposite the pool.",
+      "atFrame": 528,
+      "rate": 1.04,
+      "pauseAfter": 0.45
+    },
+    {
+      "text": "Opposite, not next to. That is box E.",
+      "atFrame": 620,
+      "rate": 1.0,
+      "emphasis": true
+    },
+    {
+      "text": "Right — your turn.",
+      "atFrame": 730,
+      "rate": 1.02,
+      "pauseAfter": 0.3
+    },
+    {
+      "text": "Where is the café? Between reception and the changing rooms.",
+      "atFrame": 822,
+      "rate": 1.02
+    },
+    {
+      "text": "Pause the reel, pick your box, then check the comments.",
+      "atFrame": 958,
+      "rate": 1.04
+    },
+    {
+      "text": "Follow for the whole Part Two method.",
+      "atFrame": 1088,
+      "rate": 1.02,
+      "emphasis": true
+    }
+  ],
+  "duckFrames": [
+    {
+      "from": 236,
+      "to": 350
+    },
+    {
+      "from": 426,
+      "to": 520
+    },
+    {
+      "from": 616,
+      "to": 720
+    }
+  ],
+  "musicMuteFrames": [
+    {
+      "from": 806,
+      "to": 960
+    }
+  ]
+}

@@ -14,7 +14,8 @@ This document captures the complete pipeline logic for generating, uploading, an
 ```
 PHASE 1: Generate (5:30 AM IST daily)
   Task Scheduler → run_daily.bat → run_daily_pipeline.py --count 9
-    → generate_reel.py --batch 9  (LLM content → TTS audio → Remotion video → thumbnail → caption)
+    → generate_reel.py --batch 9  (LLM content → TTS audio → WhisperX word alignment
+                                   → Remotion video → thumbnail → caption)
     → upload_to_drive.py          (videos + thumbs → Google Drive via n8n webhook)
     → cleanup local files
 
@@ -77,6 +78,26 @@ Each generator extends `BaseGenerator` (in `generators/base.py`) and implements:
 - Dialogue segments merged with 400ms silence gaps via pydub
 - Output: MP3 audio file
 
+### Step 3b — Word-Level Alignment (WhisperX)
+- **Module**: `transcribe.py` → `transcribe_words(audio_path)`
+- **Backend**: WhisperX (faster-whisper ASR + wav2vec2 forced alignment); falls
+  back to plain faster-whisper, then to no captions at all
+- Runs over the TTS audio that was just generated, returning
+  `[{word, start, end}, ...]` with times relative to the start of the file
+- Injected into the Remotion props as:
+  - `words` — drives the burned-in karaoke captions
+  - `speechStartSeconds` / `speechEndSeconds` — the first and last aligned word
+- **Why**: every reveal used to be a percentage of the raw audio duration.
+  edge-tts leaves ~1s of trailing silence, so answers appeared while the file
+  was still playing silence, and sentences drifted out of sync with the voice.
+  Reveals now key off when speech actually stops.
+- **Config** (env): `WHISPER_MODEL` (default `base`), `WHISPER_DEVICE`
+  (auto: cuda if available), `WHISPER_COMPUTE_TYPE` (`int8` cpu / `float16`
+  cuda), `WHISPER_BATCH_SIZE`, `WHISPER_DISABLE=1` to turn it off
+- **Fully optional**: with no backend installed the call returns `[]`, no
+  caption/speech props are set, and every composition falls back to the old
+  percentage timings
+
 ### Step 4 — Video Rendering (Remotion)
 - **Remotion project**: `remotion-video/` (React + TypeScript)
 - **Resolution**: 1080x1920 (9:16 portrait), 30fps
@@ -86,6 +107,19 @@ Each generator extends `BaseGenerator` (in `generators/base.py`) and implements:
   3. `npx remotion render src/index.ts {CompositionId} output.mp4 --props input-props.json --codec h264`
 - **Hook intro**: 5-second animated intro with question type label (configurable via `HOOK_INTRO_DURATION`)
 - **CTA**: Pre-rendered `content/cta_swipe_voiced.mp4` appended to end via ffmpeg concat
+- **Karaoke captions**: `shared/CaptionTrack.tsx` burns in word-level captions
+  from the `words` prop — the spoken word is highlighted, past words are dark,
+  upcoming words are grey. Rendered as a sibling of each `<Audio>` tag, so
+  timings need no offset. Set `captionsEnabled: false` in props to hide them.
+- **three.js background**: `shared/ThreeBackground.tsx` renders a drifting
+  low-poly field behind the content via `@remotion/three`. Automatic for every
+  composition that uses `shared/Background.tsx`; the flat comic-style
+  compositions (MCQSingle, MCQMultiple, MCQSingleClean, ListeningQuiz) mount it
+  with `COMIC_PALETTE`. Set `three3d: false` in props to fall back to the flat
+  background.
+- **OpenGL renderer**: three.js needs WebGL in headless Chromium.
+  `remotion.config.ts` picks `angle` on Windows/macOS and `swangle` on Linux;
+  override with the `REMOTION_GL` env var.
 - Output: `output/{type}_{id}_{date}.mp4` (typically 3-12 MB)
 
 ### Step 5 — Thumbnail Extraction
@@ -201,6 +235,9 @@ Post Schedule (every 2h)
 D:\ielts-reel-generator\
 ├── config.py                    # Central config (paths, video settings)
 ├── generate_reel.py             # Main generator orchestrator
+├── transcribe.py                # WhisperX word-level alignment (captions)
+├── media.py                     # ffmpeg/ffprobe discovery + duration probe
+├── setup_reels_deps.py          # Install/verify ffmpeg, Remotion, WhisperX
 ├── upload_to_drive.py           # Upload videos/thumbs via n8n webhook
 ├── run_daily_pipeline.py        # Daily pipeline: generate → upload → cleanup
 ├── run_daily.bat                # Task Scheduler entry point (retries, logging)
@@ -221,8 +258,16 @@ D:\ielts-reel-generator\
 │   └── table_completion.py
 │
 ├── remotion-video/              # Remotion (React) video rendering project
+│   ├── remotion.config.ts       # Image format + OpenGL renderer for three.js
 │   ├── src/
 │   │   ├── index.ts             # Composition registry (Root)
+│   │   ├── shared/
+│   │   │   ├── CaptionTrack.tsx     # Karaoke captions from WhisperX words
+│   │   │   ├── ThreeBackground.tsx  # three.js drifting geometry layer
+│   │   │   └── Background.tsx       # Gradient + 3D layer (used by most types)
+│   │   ├── utils/
+│   │   │   ├── captions.ts      # Word list -> timed caption pages
+│   │   │   └── timing.ts        # Speech-window + sentence reveal timing
 │   │   └── compositions/        # React components per question type
 │   └── public/                  # Temp audio files during render
 │
@@ -238,6 +283,31 @@ D:\ielts-reel-generator\
     ├── daily_pipeline.log       # Pipeline execution log
     └── task_scheduler.log       # Windows Task Scheduler wrapper log
 ```
+
+---
+
+## Toolchain Setup
+
+Run once on a fresh machine, or after pulling changes that touch dependencies:
+
+```
+python setup_reels_deps.py            # install/verify everything
+python setup_reels_deps.py --check    # report only
+python setup_reels_deps.py --skip-whisper   # skip the ~2.5 GB torch download
+```
+
+| Tool | Why | If missing |
+|------|-----|-----------|
+| **ffmpeg** | Thumbnails, CTA concat | Falls back to `imageio-ffmpeg`'s bundled build; both absent = no thumbnail, no CTA (reel still renders) |
+| **Remotion + three.js** | Video render, 3D background | `npm install` in `remotion-video/` |
+| **WhisperX** | Word timings for captions and reveal sync | Reels render without captions, reveals fall back to percentage timings |
+
+Notes:
+- WhisperX 3.8+ needs the NLTK `punkt_tab` tokenizer at runtime. The setup
+  script pre-downloads it; without it the first transcription fails.
+- If `pip install whisperx` fails building `antlr4-python3-runtime`, upgrade the
+  build tools first: `python -m pip install --upgrade pip setuptools wheel`.
+- Set `FFMPEG_BINARY` / `FFPROBE_BINARY` to point at a specific ffmpeg build.
 
 ---
 
