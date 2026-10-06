@@ -13,7 +13,7 @@ import { Card, Eyebrow, Page } from "../../components/Page";
 import { Hook } from "../../components/Hook";
 import { Captions } from "../../components/Captions";
 import { MotionTrail } from "../../components/MotionTrail";
-import { beat, idle } from "../../motion";
+import { beat } from "../../motion";
 import { SportsComplexMap, type ResolvedSlot } from "./SportsComplexMap";
 import type { Bubble, MapAnswer, MapWalkthroughProps } from "../../schemas";
 
@@ -111,9 +111,7 @@ const SectionLabel: React.FC<{ label: string; accent: string; switchedAt: number
     durationInFrames: MOTION.keyRevealFrames,
   });
   const flipped = frame >= switchedAt;
-  // Before the flip the pill drifts; after it, it lands with a swell.
   const scale = flipped ? interpolate(flip, [0, 1], [0.84, 1]) : 1;
-  const drift = flipped ? 0 : idle(frame, 127) * 3;
 
   return (
     <div
@@ -121,7 +119,7 @@ const SectionLabel: React.FC<{ label: string; accent: string; switchedAt: number
         marginTop: 16,
         alignSelf: "flex-start",
         transformOrigin: "left center",
-        transform: `translateX(${drift.toFixed(2)}px) scale(${scale.toFixed(4)})`,
+        transform: `scale(${scale.toFixed(4)})`,
         padding: "8px 20px",
         borderRadius: 999,
         backgroundColor: alpha(accent, 0.14),
@@ -159,9 +157,8 @@ const TooltipBubble: React.FC<{ bubble: Bubble }> = ({ bubble }) => {
   const transform = (framesAgo: number) => {
     const p = progressAt(framesAgo);
     const rise = interpolate(p, [0, 1], [MOTION.travel, 0]) - exit * 30;
-    const float = idle(frame - framesAgo, 83, bubble.fromFrame) * 3.5;
     return (
-      `translate(-50%, -50%) translateY(${(rise + float).toFixed(2)}px) ` +
+      `translate(-50%, -50%) translateY(${rise.toFixed(2)}px) ` +
       `scale(${(interpolate(p, [0, 1], [0.78, 1]) * (1 - exit * 0.12)).toFixed(4)})`
     );
   };
@@ -261,8 +258,6 @@ const Column: React.FC<{ title: string; rows: MapAnswer[]; color: string }> = ({
           );
         };
         const moving = answered && frame < row.revealFrame + MOTION.keyRevealFrames + 4;
-        // An unanswered row keeps a slow pulse so the list is never frozen.
-        const waiting = answered ? 0 : idle(frame, 109 + i * 17, i * 1.4);
 
         return (
           <div key={row.n} style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -334,7 +329,6 @@ const Column: React.FC<{ title: string; rows: MapAnswer[]; color: string }> = ({
                   fontSize: 28,
                   fontWeight: 700,
                   color: COLOR.coral,
-                  transform: `scale(${(1 + waiting * 0.05).toFixed(4)}) rotate(${(waiting * 2.5).toFixed(2)}deg)`,
                 }}
               >
                 ?

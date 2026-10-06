@@ -3,7 +3,6 @@ import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLOR, MOTION, TYPE, alpha } from "../../brand";
 import { FONT } from "../../fonts";
 import { Card, Eyebrow } from "../../components/Page";
-import { idle } from "../../motion";
 
 /**
  * The payoff: the finished overview paragraph, with the phrases that earn the
@@ -26,7 +25,6 @@ export const OverviewCard: React.FC<{
     config: MOTION.settle,
     durationInFrames: MOTION.keyRevealFrames,
   });
-  const breathe = idle(frame, 197) * 2.2;
   const parts = splitOnHighlights(text, highlights);
 
   return (
@@ -36,7 +34,7 @@ export const OverviewCard: React.FC<{
         padding: "26px 30px 30px",
         opacity: interpolate(enter, [0, 0.35], [0, 1], { extrapolateRight: "clamp" }),
         transform:
-          `translateY(${(interpolate(enter, [0, 1], [MOTION.travel + 16, 0]) + breathe).toFixed(2)}px) ` +
+          `translateY(${interpolate(enter, [0, 1], [MOTION.travel + 16, 0]).toFixed(2)}px) ` +
           `scale(${interpolate(enter, [0, 1], [0.9, 1]).toFixed(4)})`,
         ...style,
       }}

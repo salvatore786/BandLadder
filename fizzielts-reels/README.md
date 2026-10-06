@@ -176,10 +176,18 @@ all — the listening reel was identical frame-to-frame 98% of the time.
 - an entrance travels 52 px or scales from 0.82, never a bare opacity fade
 - springs with real overshoot (`MOTION.bounce`), never a linear ramp
 - grouped elements stagger 3 frames apart
-- a finished state is held 18 frames before anything replaces it
-- exits overlap the next entrance, so the frame never comes to a stop
-- something ambient always moves: blobs drift and breathe, the page floats and
-  creeps in 3%, idle chips pulse, trees sway, the walker climbs the corridor
+- a finished state is held 20 frames before anything replaces it
+- exits overlap the next entrance, so one gesture starts before the last ends
+- between gestures the frame holds still
+
+That last one was learned the hard way. An earlier cut put a slow drift on
+nearly every idle element to push the static-frame share down, and measuring it
+showed the median motion event was **two frames long**: every tile was crossing
+the threshold on and off perpetually, chopping the real gestures into fragments.
+The reference reel holds 89% of its frames still and spends its motion on a few
+long ones. Ambient drift survives only where something genuinely never stops —
+trees in the grounds, the walker's gait, the blobs, and a 3% push-in over the
+full duration.
 
 `scripts/measure_motion.py` scores a render on the same five numbers the
 reference reels were scored on. Run it against both to compare:

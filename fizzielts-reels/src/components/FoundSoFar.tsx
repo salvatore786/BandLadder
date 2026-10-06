@@ -2,7 +2,6 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLOR, MOTION, SHADOW, TYPE, VIVID, alpha } from "../brand";
 import { FONT } from "../fonts";
-import { idle } from "../motion";
 import { Card, Eyebrow } from "./Page";
 import { MotionTrail } from "./MotionTrail";
 import type { FoundTag } from "../schemas";
@@ -41,9 +40,6 @@ export const FoundSoFar: React.FC<{
           const color = TAG_COLOR[t.tag];
           const shown = frame >= t.atFrame;
 
-          // A still-empty row breathes, so the panel is never a frozen block.
-          const waiting = idle(frame, 137 + row * 19, row * 1.3) * 1.8;
-
           const progressAt = (framesAgo: number) =>
             spring({
               frame: frame - t.atFrame - framesAgo,
@@ -77,7 +73,6 @@ export const FoundSoFar: React.FC<{
                   fontWeight: 500,
                   letterSpacing: 3,
                   color,
-                  transform: shown ? "none" : `translateX(${waiting.toFixed(2)}px)`,
                 }}
               >
                 {t.tag}
@@ -116,7 +111,6 @@ export const FoundSoFar: React.FC<{
                     borderRadius: 12,
                     border: `3px dashed ${COLOR.lavender}`,
                     backgroundColor: alpha(COLOR.ink, 0.03),
-                    transform: `translateX(${(-waiting).toFixed(2)}px)`,
                   }}
                 />
               )}

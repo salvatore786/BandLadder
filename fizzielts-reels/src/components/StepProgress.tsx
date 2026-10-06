@@ -2,7 +2,6 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLOR, MOTION, TYPE, alpha } from "../brand";
 import { FONT } from "../fonts";
-import { idle } from "../motion";
 
 /**
  * The numbered spine of the walkthrough: which step of the method we are on.
@@ -71,10 +70,13 @@ export const StepProgress: React.FC<{
             config: MOTION.bounce,
             durationInFrames: MOTION.keyRevealFrames,
           });
-          // While a step is current its halo breathes; before its turn the node
-          // drifts, so no part of the strip is ever held still.
-          const pulse = active ? 1 + idle(frame, 46) * 0.5 : 1;
-          const lift = done || active ? 0 : idle(frame, 151 + i * 23, i * 1.1) * 2.4;
+          // The halo rings out once as the step turns over, then holds.
+          const pulse = active
+            ? interpolate(frame - step.atFrame, [0, MOTION.keyRevealFrames], [2.2, 1], {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+              })
+            : 1;
           const scale = active ? interpolate(pop, [0, 1], [0.78, 1.1]) : done ? 1 : 0.96;
 
           return (
@@ -86,7 +88,6 @@ export const StepProgress: React.FC<{
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 12,
-                transform: `translateY(${lift.toFixed(2)}px)`,
               }}
             >
               <div

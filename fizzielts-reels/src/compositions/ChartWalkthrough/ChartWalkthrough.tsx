@@ -8,7 +8,7 @@ import { StepProgress } from "../../components/StepProgress";
 import { FoundSoFar } from "../../components/FoundSoFar";
 import { Captions } from "../../components/Captions";
 import { RoughShape } from "../../components/RoughShape";
-import { beat, idle } from "../../motion";
+import { beat } from "../../motion";
 import { BarChart, CHART, Legend, barKey, barLayout } from "./BarChart";
 import { OverviewCard } from "./OverviewCard";
 import type { Annotation, ChartWalkthroughProps } from "../../schemas";
@@ -64,7 +64,7 @@ export const ChartWalkthrough: React.FC<ChartWalkthroughProps> = ({
                   extrapolateLeft: "clamp",
                   extrapolateRight: "clamp",
                 }).toFixed(2)}px) ` +
-                `rotate(${(idle(frame, 233) * 0.7).toFixed(2)}deg)`,
+                `rotate(-1deg)`,
               transformOrigin: "left center",
             }}
           >
@@ -235,8 +235,7 @@ const AnnotationLayer: React.FC<{
             `translate(${interpolate(textSpring, [0, 1], [-34, 0]).toFixed(2)}px, ` +
             `${interpolate(textSpring, [0, 1], [26, 0]).toFixed(2)}px) ` +
             `scale(${interpolate(textSpring, [0, 1], [0.8, 1]).toFixed(4)}) ` +
-            // The handwriting keeps a slow tilt, as if held rather than placed.
-            `rotate(${(-3 + idle(frame, 71, annotation.fromFrame) * 1.4).toFixed(2)}deg)`,
+            `rotate(-3deg)`,
           transformOrigin: "left center",
           whiteSpace: "nowrap",
         }}

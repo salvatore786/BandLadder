@@ -161,7 +161,7 @@ export const SportsComplexMap: React.FC<{
 
       {/* Trees dotted through the grounds */}
       {TREES.map((t, i) => (
-        <Tree key={i} x={t[0]} y={t[1]} r={t[2]} opacity={draw} sway={idle(frame, 112 + i * 13, i)} />
+        <Tree key={i} x={t[0]} y={t[1]} r={t[2]} opacity={draw} sway={idle(frame, 168 + i * 19, i)} />
       ))}
 
       {/* Pre-labelled block */}
@@ -223,7 +223,7 @@ const Tree: React.FC<{
 }> = ({ x, y, r, opacity, sway }) => (
   <g opacity={opacity}>
     <rect x={x - 2.5} y={y + r - 3} width={5} height={r * 0.7} rx={2} fill="#9C7A52" />
-    <g transform={`rotate(${(sway * 3.2).toFixed(2)} ${x} ${y + r})`}>
+    <g transform={`rotate(${(sway * 1.1).toFixed(2)} ${x} ${y + r})`}>
       <circle cx={x} cy={y} r={r} fill={TREE} />
       <circle cx={x - r * 0.3} cy={y - r * 0.25} r={r * 0.55} fill={TREE_DARK} opacity={0.45} />
     </g>

@@ -2,7 +2,7 @@ import React from "react";
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLOR, LAYOUT, MOTION, SHADOW, TYPE, alpha, lighten } from "../../brand";
 import { FONT } from "../../fonts";
-import { countUp, idle } from "../../motion";
+import { countUp } from "../../motion";
 import type { ChartWalkthroughProps } from "../../schemas";
 
 /**
@@ -126,8 +126,8 @@ export const BarChart: React.FC<{
           durationInFrames: Math.max(MOTION.keyRevealFrames, chart.growEndFrame),
         });
         const dimmed = focus ? !focus.has(barKey(b.category, b.seriesIndex)) : false;
-        // A focused bar lifts a little and keeps breathing while it is discussed.
-        const lift = !dimmed && focus ? 4 + idle(frame, 38) * 2.5 : 0;
+        // A focused bar lifts once as it comes into focus and holds there.
+        const lift = !dimmed && focus ? 6 : 0;
         const h = Math.min(plotH, Math.max(0, b.h * grow + lift));
         const settled = grow > 0.08;
 

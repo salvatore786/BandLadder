@@ -2,7 +2,6 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLOR, LAYOUT, MOTION, TYPE, alpha } from "../brand";
 import { FONT } from "../fonts";
-import { useIdle } from "../motion";
 import { MotionTrail } from "./MotionTrail";
 import { Eyebrow } from "./Page";
 import { RoughUnderlineFit } from "./RoughShape";
@@ -70,10 +69,6 @@ export const Hook: React.FC<{
     extrapolateRight: "clamp",
   });
 
-  // Once the words have landed the headline keeps breathing, so the top of the
-  // frame is never completely still either.
-  const breathe = useIdle(221) * 2.4;
-
   return (
     <div>
       <div style={{ position: "relative", overflow: "hidden", paddingBottom: 2 }}>
@@ -119,7 +114,6 @@ export const Hook: React.FC<{
           flexWrap: "wrap",
           columnGap: 18,
           rowGap: 2,
-          transform: `translateY(${breathe.toFixed(2)}px)`,
         }}
       >
         {allWords.map((w, i) => {

@@ -14,7 +14,8 @@
  *   - grouped elements stagger by MOTION.staggerFrames so a row of chips reads
  *     as one gesture instead of a simultaneous blink
  *   - a completed state is held for MOTION.holdFrames before anything replaces it
- *   - something ambient is always moving, so the frame never fully stops
+ *   - between gestures the frame holds still: perpetual idle drift reads as
+ *     restlessness, and it fragments the gestures that matter
  */
 
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
@@ -94,19 +95,19 @@ export function countUp(p: number, to: number, decimals = 0): string {
 }
 
 /**
- * Continuous ambient motion: a slow, seamless oscillation.
+ * A slow, seamless oscillation, for the few things that genuinely never stop:
+ * trees in the grounds, a walker's gait.
  *
- * Every element that has nothing scheduled still drifts on one of these, which
- * is what keeps the static-frame share down between beats. `phase` separates
- * neighbours so a group never breathes in unison.
+ * It is deliberately rare. An early cut put one of these on nearly every idle
+ * element to keep the static-frame share down, and measuring that showed why it
+ * was the wrong instinct: the median motion event came out at two frames,
+ * because every tile of the frame was crossing the threshold on and off
+ * perpetually and chopping the real gestures into fragments. The reference reel
+ * holds 89% of its frames still and spends its motion on a few long ones.
+ * `phase` separates neighbours so a group never moves in unison.
  */
 export function idle(frame: number, periodInFrames: number, phase = 0): number {
   return Math.sin((frame / periodInFrames) * Math.PI * 2 + phase);
-}
-
-/** The same thing as a hook, for a component that is not inside a loop. */
-export function useIdle(periodInFrames: number, phase = 0): number {
-  return idle(useCurrentFrame(), periodInFrames, phase);
 }
 
 /**
