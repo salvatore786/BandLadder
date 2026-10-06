@@ -113,17 +113,17 @@ export const MOTION = {
   /** Entrances overshoot then settle. Nothing completes in under 8 frames. */
   minEntranceFrames: 8,
   /** Default entrance length. */
-  revealFrames: 14,
+  revealFrames: 18,
   /** An answer landing, a step turning over — the moves that carry the lesson. */
-  keyRevealFrames: 20,
+  keyRevealFrames: 26,
   /** A grouped set enters one element at a time, this many frames apart. */
   staggerFrames: 3,
   /** Slide distance for an entrance — a fade in place does not read as motion. */
   travel: 52,
   /** A finished state stays put this long before anything replaces it. */
-  holdFrames: 18,
+  holdFrames: 20,
   /** Exits overlap the next entrance, so the frame never comes to a stop. */
-  exitFrames: 10,
+  exitFrames: 14,
   /**
    * Spring configs. Damping below ~12 at this stiffness overshoots visibly,
    * which is the whole point: `bounce` passes its target and comes back,
@@ -162,8 +162,8 @@ export function lighten(hex: string, amount: number): string {
   return `rgb(${mix((n >> 16) & 255)}, ${mix((n >> 8) & 255)}, ${mix(n & 255)})`;
 }
 
-export const TINT = {
-  /** Behind the phrases that earn the band score. */
-  scoring: alpha(COLOR.blue, 0.18),
-  chipFill: alpha(COLOR.ink, 0.04),
-} as const;
+/**
+ * Derived tints are built with alpha() at the point of use rather than frozen
+ * here, because most of them animate — the scoring highlight comes up from 0
+ * to 0.18 one phrase at a time, so a fixed constant could not express it.
+ */

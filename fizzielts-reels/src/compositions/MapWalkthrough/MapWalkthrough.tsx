@@ -14,7 +14,7 @@ import { Hook } from "../../components/Hook";
 import { Captions } from "../../components/Captions";
 import { MotionTrail } from "../../components/MotionTrail";
 import { beat, idle } from "../../motion";
-import { MAP, SportsComplexMap, type ResolvedSlot } from "./SportsComplexMap";
+import { SportsComplexMap, type ResolvedSlot } from "./SportsComplexMap";
 import type { Bubble, MapAnswer, MapWalkthroughProps } from "../../schemas";
 
 /** What is left for the plan once the header, answer list and captions are placed. */

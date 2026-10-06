@@ -106,10 +106,10 @@ const Blobs: React.FC = () => {
       {BLOBS.map((b, i) => {
         // Mutually prime periods so the field never visibly repeats, and short
         // enough that the blobs are genuinely in motion rather than creeping.
-        const period = 196 + i * 29;
+        const period = 232 + i * 31;
         const t = (frame / period) * Math.PI * 2;
-        const driftX = Math.sin(t + i) * 84;
-        const driftY = Math.cos(t * 0.8 + i * 1.7) * 66;
+        const driftX = Math.sin(t + i) * 64;
+        const driftY = Math.cos(t * 0.8 + i * 1.7) * 50;
         const breathe = 1 + Math.sin(t * 0.6 + i) * 0.14;
 
         return (

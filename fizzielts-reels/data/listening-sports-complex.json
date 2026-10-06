@@ -15,7 +15,7 @@
   "map": {
     "fixtures": {
       "entrance": "Entrance",
-      "northLabel": "to the car park \u2192",
+      "northLabel": "to the car park →",
       "corridor": "main corridor",
       "blockA": "Changing rooms",
       "blockB": "Store"
@@ -48,7 +48,7 @@
     },
     {
       "n": 4,
-      "name": "Caf\u00e9",
+      "name": "Café",
       "slot": "C",
       "revealFrame": 9999,
       "color": "#F97316",
@@ -60,22 +60,22 @@
       "text": "\"immediately on your left\"",
       "fromFrame": 170,
       "durationInFrames": 90,
-      "x": 0.26,
-      "y": 0.79
+      "x": 0.68,
+      "y": 0.45
     },
     {
       "text": "far end = top of the plan",
       "fromFrame": 360,
       "durationInFrames": 90,
-      "x": 0.72,
-      "y": 0.2
+      "x": 0.3,
+      "y": 0.62
     },
     {
       "text": "opposite, not next to",
       "fromFrame": 550,
       "durationInFrames": 90,
-      "x": 0.27,
-      "y": 0.2
+      "x": 0.68,
+      "y": 0.84
     },
     {
       "text": "Answers in the comments",

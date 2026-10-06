@@ -25,7 +25,7 @@ export const CHART = {
   groupGap: 0.28, // share of the group slot left as gap
   barGap: 12,
   /** How far the earlier series is mixed toward white. */
-  earlierMix: 0.52,
+  earlierMix: 0.42,
 } as const;
 
 export interface BarBox {

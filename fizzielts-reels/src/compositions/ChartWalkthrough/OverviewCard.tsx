@@ -1,6 +1,6 @@
 import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
-import { COLOR, MOTION, TINT, TYPE } from "../../brand";
+import { COLOR, MOTION, TYPE, alpha } from "../../brand";
 import { FONT } from "../../fonts";
 import { Card, Eyebrow } from "../../components/Page";
 import { idle } from "../../motion";
@@ -59,13 +59,17 @@ export const OverviewCard: React.FC<{
               key={i}
               style={{
                 // The tints come up one phrase at a time after the card lands,
-                // so the paragraph keeps moving while it is being read.
-                backgroundColor: TINT.scoring,
-                opacity: interpolate(
-                  frame - atFrame - MOTION.keyRevealFrames - highlightOrder(parts, i) * 14,
-                  [0, 12],
-                  [0.25, 1],
-                  { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+                // so the paragraph keeps moving while it is being read. Only the
+                // tint animates — fading the span would grey out the words too,
+                // which reads as unimportant rather than not-yet-highlighted.
+                backgroundColor: alpha(
+                  COLOR.blue,
+                  interpolate(
+                    frame - atFrame - MOTION.keyRevealFrames - highlightOrder(parts, i) * 14,
+                    [0, 12],
+                    [0, 0.18],
+                    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+                  )
                 ),
                 color: COLOR.deep,
                 fontWeight: 500,
